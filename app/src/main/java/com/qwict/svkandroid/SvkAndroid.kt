@@ -3,8 +3,8 @@ package com.qwict.svkandroid
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -84,7 +84,7 @@ fun SvkAndroidAppbar(
         actions = {
             IconButton(onClick = { onAccountButtonClicked() }) {
                 Icon(
-                    imageVector = Icons.Filled.AccountCircle,
+                    imageVector = Icons.Filled.ExitToApp,
                     contentDescription = "The Account screen",
                 )
             }
