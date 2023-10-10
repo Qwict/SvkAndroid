@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.qwict.svkandroid.ui.MainViewModel
-import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -23,14 +22,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         mainViewModel.setContext(this)
         setContent {
-            SvkAndroidTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                ) {
-                    SvkAndroidApp(mainViewModel)
-                }
+            // A surface container using the 'background' color from the theme
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background,
+            ) {
+                SvkAndroidApp(mainViewModel)
             }
         }
     }
