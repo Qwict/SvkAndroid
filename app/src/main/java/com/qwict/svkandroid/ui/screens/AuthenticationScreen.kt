@@ -1,4 +1,4 @@
-package com.qwict.svkandroid.ui
+package com.qwict.svkandroid.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.qwict.svkandroid.R
+import com.qwict.svkandroid.ui.MainViewModel
 
 // TODO: this is an implementation for auth0, we will probably need to change this to our own implementation
 @Composable

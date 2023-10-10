@@ -1,6 +1,7 @@
 package com.qwict.svkandroid
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -25,23 +26,25 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.qwict.svkandroid.ui.AuthenticationScreen
-import com.qwict.svkandroid.ui.LoginScreen
+import com.qwict.svkandroid.ui.screens.AuthenticationScreen
+import com.qwict.svkandroid.ui.screens.LoginScreen
 import com.qwict.svkandroid.ui.MainViewModel
+import com.qwict.svkandroid.utils.NavGraph
+import com.qwict.svkandroid.utils.Navigations
 
-enum class SvkAndroidScreens(@StringRes val title: Int) {
-    LoginScreen(title = R.string.title_login_screen),
-    LoadingScreen(title = R.string.title_loading_screen),
-    OverviewScreen(title = R.string.title_overview_screen),
-    BarcodeScannerScreen(title = R.string.title_barcode_scanner_screen),
-    UploadingScreen(title = R.string.title_uploading_screen),
-    InformationScreen(title = R.string.title_information_screen),
-}
+//enum class SvkAndroidScreens(@StringRes val title: Int) {
+//    LoginScreen(title = R.string.title_login_screen),
+//    LoadingScreen(title = R.string.title_loading_screen),
+//    OverviewScreen(title = R.string.title_overview_screen),
+//    BarcodeScannerScreen(title = R.string.title_barcode_scanner_screen),
+//    UploadingScreen(title = R.string.title_uploading_screen),
+//    InformationScreen(title = R.string.title_information_screen),
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SvkAndroidAppbar(
-    currentScreen: SvkAndroidScreens,
+    currentScreen: Navigations,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
@@ -105,8 +108,8 @@ fun SvkAndroidApp(
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
-    val currentScreen = SvkAndroidScreens.valueOf(
-        backStackEntry?.destination?.route ?: SvkAndroidScreens.LoginScreen.name,
+    val currentScreen = Navigations.valueOf(
+        backStackEntry?.destination?.route ?: Navigations.Login.route,
     )
 
     Scaffold(
@@ -116,47 +119,50 @@ fun SvkAndroidApp(
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 onAccountButtonClicked = {
-                    navController.navigate(SvkAndroidScreens.LoginScreen.name)
+                    navController.navigate(Navigations.Login.route)
                 },
             )
         },
-    ) { innerPadding ->
+    ) {innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
+        Box(modifier = Modifier.padding(innerPadding)){
+            NavGraph(navController = navController, viewModel = viewModel)
+        }
 
-        NavHost(
-            navController = navController,
-            startDestination = SvkAndroidScreens.LoginScreen.name,
-            modifier = Modifier.padding(innerPadding),
-        ) {
-            composable(route = SvkAndroidScreens.LoginScreen.name) {
-                LoginScreen(
-                    viewModel = viewModel,
-                    onLoginButtonClicked = {
-                        navController.navigate(SvkAndroidScreens.LoadingScreen.name)
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium)),
-                )
-            }
-            composable(route = SvkAndroidScreens.LoginScreen.name) {
-                AuthenticationScreen(
-                    viewModel = viewModel,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium)),
-                )
-            }
-//            composable(route = SvkAndroidScreens.Example.name) {
-//                val context = LocalContext.current
-//                ExampleScreen(
+//        NavHost(
+//            navController = navController,
+//            startDestination = SvkAndroidScreens.LoginScreen.name,
+//            modifier = Modifier.padding(innerPadding),
+//        ) {
+//            composable(route = SvkAndroidScreens.LoginScreen.name) {
+//                LoginScreen(
 //                    viewModel = viewModel,
-//                    onExamplButtonClicked = {
-//                        navController.navigate(SvkAndroidScreens.OtherScreen.name)
+//                    onLoginButtonClicked = {
+//                        navController.navigate(SvkAndroidScreens.LoadingScreen.name)
 //                    },
-//                    modifier = Modifier.fillMaxHeight()
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(dimensionResource(R.dimen.padding_medium)),
 //                )
 //            }
-        }
+//            composable(route = SvkAndroidScreens.LoginScreen.name) {
+//                AuthenticationScreen(
+//                    viewModel = viewModel,
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(dimensionResource(R.dimen.padding_medium)),
+//                )
+//            }
+////            composable(route = SvkAndroidScreens.Example.name) {
+////                val context = LocalContext.current
+////                ExampleScreen(
+////                    viewModel = viewModel,
+////                    onExamplButtonClicked = {
+////                        navController.navigate(SvkAndroidScreens.OtherScreen.name)
+////                    },
+////                    modifier = Modifier.fillMaxHeight()
+////                )
+////            }
+//        }
     }
 }
