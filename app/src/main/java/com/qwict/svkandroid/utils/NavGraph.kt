@@ -16,22 +16,42 @@ import com.qwict.svkandroid.ui.screens.UploadScreen
 fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
     NavHost(navController = navController, startDestination = Navigations.Start.route) {
         composable(Navigations.Start.route) {
-            AuthenticationScreen(viewModel = viewModel)
+            AuthenticationScreen(
+                viewModel = viewModel,
+                userAuthNav = {
+                    navController.navigate(Navigations.Scan.route) {
+                        popUpTo(Navigations.Start.route) { inclusive = true }
+                    }
+                },
+                loginNav = {
+                    navController.navigate(Navigations.Login.route) {
+                        popUpTo(Navigations.Start.route) { inclusive = true }
+                    }
+                },
+            )
         }
         composable(Navigations.Scan.route) {
-            ScanScreen()
+            ScanScreen(nextNav = { navController.navigate(Navigations.Edit.route) })
         }
         composable(Navigations.Login.route) {
-            LoginScreen(viewModel = viewModel)
+            LoginScreen(viewModel = viewModel, onLoginButtonClicked = {
+                navController.navigate(Navigations.Scan.route) {
+                    popUpTo(Navigations.Login.route) { inclusive = true }
+                }
+            })
         }
         composable(Navigations.Edit.route) {
-            EditScreen()
+            EditScreen { navController.navigate(Navigations.Photo.route) }
         }
         composable(Navigations.Photo.route) {
-            PhotoScreen()
+            PhotoScreen { navController.navigate(Navigations.Upload.route) }
         }
         composable(Navigations.Upload.route) {
-            UploadScreen()
+            UploadScreen {
+                navController.navigate(Navigations.Scan.route) {
+                    popUpTo(Navigations.Scan.route) { inclusive = true }
+                }
+            }
         }
     }
 }
