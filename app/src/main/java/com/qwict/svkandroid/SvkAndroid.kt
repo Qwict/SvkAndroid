@@ -58,7 +58,8 @@ fun SvkAndroidAppbar(
     CenterAlignedTopAppBar(
         title = { Text(stringResource(currentScreen.title) + " " + "version") }, // Version here
         colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         modifier = modifier,
         navigationIcon = {
