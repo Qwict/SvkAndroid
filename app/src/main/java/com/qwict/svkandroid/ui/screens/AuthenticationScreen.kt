@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ fun AuthenticationView(
         modifier = Modifier.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
+
     ) {
         val Title = if (viewModel.userIsAuthenticated) {
             stringResource(R.string.logged_in_title)
@@ -55,6 +57,7 @@ fun AuthenticationView(
             }
         }
         Title(
+
             text = Title,
         )
 
@@ -121,6 +124,7 @@ fun Title(
     text: String,
 ) {
     Text(
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
         text = text,
         style = TextStyle(
             fontFamily = FontFamily.Default,

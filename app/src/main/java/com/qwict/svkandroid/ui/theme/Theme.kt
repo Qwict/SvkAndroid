@@ -87,7 +87,7 @@ private val darkColors = darkColorScheme(
  * @param content The content of the app
  */
 @Composable
-fun ExpenseSageTheme(
+fun SvkAndroidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
