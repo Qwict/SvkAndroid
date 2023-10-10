@@ -26,15 +26,6 @@ import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.utils.NavGraph
 import com.qwict.svkandroid.utils.Navigations
 
-// enum class SvkAndroidScreens(@StringRes val title: Int) {
-//    LoginScreen(title = R.string.title_login_screen),
-//    LoadingScreen(title = R.string.title_loading_screen),
-//    OverviewScreen(title = R.string.title_overview_screen),
-//    BarcodeScannerScreen(title = R.string.title_barcode_scanner_screen),
-//    UploadingScreen(title = R.string.title_uploading_screen),
-//    InformationScreen(title = R.string.title_information_screen),
-// }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SvkAndroidAppbar(
@@ -42,7 +33,7 @@ fun SvkAndroidAppbar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    onAccountButtonClicked: () -> Unit = {},
+    onLogOutClicked: () -> Unit = {},
 ) {
 //    val healthService = HealthService()
 //    val health = healthService.getHealth()
@@ -82,11 +73,14 @@ fun SvkAndroidAppbar(
         },
 //        TODO: Should see in mockup what we want here... (this is the top right icon)
         actions = {
-            IconButton(onClick = { onAccountButtonClicked() }) {
-                Icon(
-                    imageVector = Icons.Filled.ExitToApp,
-                    contentDescription = "The Account screen",
-                )
+            if (currentScreen.route != Navigations.Login.route) {
+                IconButton(onClick = { onLogOutClicked() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ExitToApp,
+                        contentDescription = "The Account screen",
+                    )
+                }
+            } else {
             }
         },
 
@@ -112,8 +106,10 @@ fun SvkAndroidApp(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
-                onAccountButtonClicked = {
-                    navController.navigate(Navigations.Login.route)
+                onLogOutClicked = {
+                    navController.navigate(Navigations.Login.route) {
+                        popUpTo(Navigations.Scan.route) { inclusive = true }
+                    }
                 },
             )
         },
@@ -122,41 +118,5 @@ fun SvkAndroidApp(
         Box(modifier = Modifier.padding(innerPadding)) {
             NavGraph(navController = navController, viewModel = viewModel)
         }
-
-//        NavHost(
-//            navController = navController,
-//            startDestination = SvkAndroidScreens.LoginScreen.name,
-//            modifier = Modifier.padding(innerPadding),
-//        ) {
-//            composable(route = SvkAndroidScreens.LoginScreen.name) {
-//                LoginScreen(
-//                    viewModel = viewModel,
-//                    onLoginButtonClicked = {
-//                        navController.navigate(SvkAndroidScreens.LoadingScreen.name)
-//                    },
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(dimensionResource(R.dimen.padding_medium)),
-//                )
-//            }
-//            composable(route = SvkAndroidScreens.LoginScreen.name) {
-//                AuthenticationScreen(
-//                    viewModel = viewModel,
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(dimensionResource(R.dimen.padding_medium)),
-//                )
-//            }
-// //            composable(route = SvkAndroidScreens.Example.name) {
-// //                val context = LocalContext.current
-// //                ExampleScreen(
-// //                    viewModel = viewModel,
-// //                    onExamplButtonClicked = {
-// //                        navController.navigate(SvkAndroidScreens.OtherScreen.name)
-// //                    },
-// //                    modifier = Modifier.fillMaxHeight()
-// //                )
-// //            }
-//        }
     }
 }
