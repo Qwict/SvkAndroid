@@ -1,26 +1,31 @@
 package com.qwict.svkandroid.utils
 
 import androidx.annotation.StringRes
+import com.qwict.svkandroid.R
 
 enum class Navigations(val route: String, @StringRes val title: Int) {
     Start(
-        route = "start",
-        title = 0
+        route = "Start",
+        title = R.string.initial_title,
+    ),
+    Scan(
+        route = "Scan",
+        title = R.string.logged_in_title,
     ),
     Login(
-        route = "login",
-        title = 0
+        route = "Login",
+        title = R.string.logged_out_title,
     ),
     Edit(
-        route = "edit",
-        title = 0
+        route = "Edit",
+        title = R.string.app_name,
     ),
     Photo(
-        route = "photo",
-        title = 0
+        route = "Photo",
+        title = R.string.app_name,
     ),
     Upload(
-        route = "upload",
-        title = 0
-    )
+        route = "Upload",
+        title = R.string.app_name,
+    ),
 }

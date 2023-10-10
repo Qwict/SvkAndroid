@@ -31,14 +31,13 @@ fun AuthenticationScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
 ) {
-    Column() {
-        AuthenticationView(modifier, viewModel)
+    Column {
+        AuthenticationView(viewModel)
     }
 }
 
 @Composable
 fun AuthenticationView(
-    modifier: Modifier = Modifier,
     viewModel: MainViewModel,
 ) {
     Column(
