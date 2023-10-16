@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.qwict.svkandroid.ui.MainViewModel
@@ -18,6 +19,6 @@ fun AuthenticationScreen(
         loginNav()
     }
     Column {
-        Text(text = "Authentication Screen")
+        Text(text = "Authentication Screen", color = MaterialTheme.colorScheme.onSurface)
     }
 }

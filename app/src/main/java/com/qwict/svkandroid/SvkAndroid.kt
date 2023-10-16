@@ -9,6 +9,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -56,7 +57,7 @@ fun SvkAndroidAppbar(
 //    })
 
     CenterAlignedTopAppBar(
-        title = { Text(stringResource(currentScreen.title) + " " + "version") }, // Version here
+        title = { Text(stringResource(currentScreen.title)) }, // Version here
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -75,7 +76,7 @@ fun SvkAndroidAppbar(
 //        TODO: Should see in mockup what we want here... (this is the top right icon)
         actions = {
             if (currentScreen.route != Navigations.Login.route) {
-                IconButton(onClick = { onLogOutClicked() }) {
+                IconButton(onClick = { onLogOutClicked() }, colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
                     Icon(
                         imageVector = Icons.Filled.ExitToApp,
                         contentDescription = "The Account screen",
