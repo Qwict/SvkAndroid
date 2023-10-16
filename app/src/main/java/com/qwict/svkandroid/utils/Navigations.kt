@@ -10,7 +10,7 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
     ),
     Scan(
         route = "Scan",
-        title = R.string.logged_in_title,
+        title = R.string.app_name,
     ),
     Login(
         route = "Login",
