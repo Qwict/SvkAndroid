@@ -28,7 +28,6 @@ class MainViewModel : ViewModel() {
     var jwt: String = ""
     val snackbarHostState = SnackbarHostState()
 
-    //    For Auth0 to work
     var appJustLaunched by mutableStateOf(true)
     var userIsAuthenticated by mutableStateOf(false)
 
