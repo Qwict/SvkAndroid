@@ -65,7 +65,7 @@ fun SvkAndroidAppbar(
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
+                IconButton(onClick = navigateUp,  colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Return",
