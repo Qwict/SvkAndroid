@@ -18,6 +18,7 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.qwict.svkandroid.ui.theme.SVKTextfield
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,8 +58,8 @@ fun EditScreen(nextNav: () -> Unit) {
                     Text(text = "RouteNummer 654481519849")
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -109,26 +111,33 @@ fun Textfields() {
             .padding(bottom = 20.dp)
 
     )
-    TextField(
-        value = laadbonNummer,
-        onValueChange = { laadbonNummer = it },
-        label = { Text("RouteNummer") },
-        modifier = Modifier.padding(bottom = 5.dp)
-    )
+    SVKTextfield {
+        OutlinedTextField(
+            value = laadbonNummer,
+            onValueChange = { laadbonNummer = it },
+            label = { Text("RouteNummer") },
+            modifier = Modifier.padding(bottom = 5.dp)
+        )
+    }
 
-    TextField(
-        value = nummerplaat,
-        onValueChange = { nummerplaat = it },
-        label = { Text("Nummerplaat") },
-        modifier = Modifier.padding(bottom = 5.dp)
-    )
 
-    TextField(
-        value = chauffeur,
-        onValueChange = { chauffeur = it },
-        label = { Text("Chauffeur") },
-        modifier = Modifier.padding(bottom = 5.dp)
-    )
+    SVKTextfield {
+        OutlinedTextField(
+            value = nummerplaat,
+            onValueChange = { nummerplaat = it },
+            label = { Text("Nummerplaat") },
+            modifier = Modifier.padding(bottom = 5.dp)
+        )
+    }
+
+    SVKTextfield {
+        OutlinedTextField(
+            value = chauffeur,
+            onValueChange = { chauffeur = it },
+            label = { Text("Chauffeur") },
+            modifier = Modifier.padding(bottom = 5.dp)
+        )
+    }
 
 
 }
