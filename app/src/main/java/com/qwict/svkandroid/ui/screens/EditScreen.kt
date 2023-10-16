@@ -14,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,13 +43,12 @@ fun EditScreen(nextNav: () -> Unit) {
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+            ExtendedFloatingActionButton(
+                onClick = { onClick() },
+                icon = { Icon(Icons.Filled.Add, "Voeg foto toe button") },
+                text = { Text(text = "Voeg foto toe") },
+            )
+
         },
         topBar = {
             TopAppBar(
@@ -74,10 +74,19 @@ fun EditScreen(nextNav: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Textfields()
+            Button(onClick = { nextNav() }) {
+                Text("Opslaan")
+
+            }
         }
 
 
     }
+}
+
+fun onClick() {
+    TODO("Not yet implemented")
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,6 +129,7 @@ fun Textfields() {
         label = { Text("Chauffeur") },
         modifier = Modifier.padding(bottom = 5.dp)
     )
+
 
 }
 
