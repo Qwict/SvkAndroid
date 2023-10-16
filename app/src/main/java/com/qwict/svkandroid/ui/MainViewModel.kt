@@ -13,6 +13,8 @@ import com.qwict.svkandroid.api.IUserApi
 import com.qwict.svkandroid.data.SvkAndroidUiState
 import com.qwict.svkandroid.dto.User
 import com.qwict.svkandroid.helper.RetrofitSingleton
+import com.qwict.svkandroid.helper.clearEncryptedPreferences
+import com.qwict.svkandroid.helper.saveEncryptedPreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,6 +59,8 @@ class MainViewModel : ViewModel() {
                     )
                     Log.i("MainViewModel", jwt)
                     userIsAuthenticated = true
+//                    Not sure if this is needed (because this also happens in MainActivity onPause)
+                    saveEncryptedPreference("token", user.token, context)
                     success = true
                 } else {
                     Log.e("MainViewModel", "Failed to Login there was a response")
@@ -74,6 +78,7 @@ class MainViewModel : ViewModel() {
     fun logout() {
         userIsAuthenticated = false
         user = User()
+        clearEncryptedPreferences("token", context)
     }
 
     fun setContext(activityContext: Context) {

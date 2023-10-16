@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.qwict.svkandroid.helper.getTokenFromSharedPrefs
+import com.qwict.svkandroid.helper.saveEncryptedPreference
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
@@ -29,5 +31,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getTokenFromSharedPrefs(mainViewModel, applicationContext)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveEncryptedPreference("token", mainViewModel.user.token, applicationContext)
     }
 }
