@@ -18,7 +18,7 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
     ),
     Edit(
         route = "Edit",
-        title = R.string.app_name,
+        title = R.string.title_edit_screen,
     ),
     Photo(
         route = "Photo",
