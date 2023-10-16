@@ -16,10 +16,6 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        TODO: This will crash the application, see what goes wrong here
-//        val healthService = HealthService()
-//        var version = healthService.getHealth()
-//        Log.i("MainActivity", "onCreate: $version")
         super.onCreate(savedInstanceState)
         mainViewModel.setContext(this)
         setContent {
