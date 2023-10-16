@@ -32,16 +32,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.theme.SVKTextfield
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(nextNav: () -> Unit) {
+
+    val str = stringResource(R.string.title_edit_screen, "654481519849")
+
 
     Scaffold(
         floatingActionButton = {
