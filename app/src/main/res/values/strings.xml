@@ -5,6 +5,7 @@
     <string name="title_loading_screen">Loading</string>
     <string name="title_overview_screen">Overview</string>
     <string name="title_barcode_scanner_screen">Scan barcode</string>
+    <string name="title_edit_screen">Edit screen</string>
     <string name="title_uploading_screen">Uploading</string>
     <string name="title_information_screen">Information</string>
 
