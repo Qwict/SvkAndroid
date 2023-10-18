@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.qwict.svkandroid.helper.getTokenFromSharedPrefs
+import com.qwict.svkandroid.helper.saveEncryptedPreference
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
@@ -16,10 +18,6 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        TODO: This will crash the application, see what goes wrong here
-//        val healthService = HealthService()
-//        var version = healthService.getHealth()
-//        Log.i("MainActivity", "onCreate: $version")
         super.onCreate(savedInstanceState)
         mainViewModel.setContext(this)
         setContent {
@@ -33,5 +31,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getTokenFromSharedPrefs(mainViewModel, applicationContext)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveEncryptedPreference("token", mainViewModel.user.token, applicationContext)
     }
 }

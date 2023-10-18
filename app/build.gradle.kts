@@ -107,10 +107,13 @@ dependencies {
     // Using Jackson for JSON parsing (because of tutorial, and I don't like GSON)
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
 
-    // required for Auth0
+    // required for Auth0 (might remove later)
 //    implementation("com.auth0.android:auth0:2.0.0")
     implementation("com.auth0.android:auth0:+")
     implementation("com.auth0.android:jwtdecode:+")
     // maybe for image loading in the future
     implementation("io.coil-kt:coil-compose:+")
+
+    // using this to store the token in the keystore
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }
