@@ -19,7 +19,6 @@ fun ScanScreen(nextNav: () -> Unit) {
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         Text(text = "Scan Screen", color = MaterialTheme.colorScheme.onSurface)
         Button(onClick = { nextNav() }) {
             Text(text = "Scan")

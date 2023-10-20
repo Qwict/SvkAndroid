@@ -36,26 +36,6 @@ fun SvkAndroidAppbar(
     modifier: Modifier = Modifier,
     onLogOutClicked: () -> Unit = {},
 ) {
-//    val healthService = HealthService()
-//    val health = healthService.getHealth()
-
-//    First implementation to do api call, not yet working for me... Joris
-//    val call = HealthService().healthApi.getHealth()
-//    var version = ""
-//    call.enqueue(object : Callback<HealthDto> {
-//        override fun onResponse(call: Call<HealthDto>, response: Response<HealthDto>) {
-//            if (response.isSuccessful) {
-//                version = response.body()?.version.toString()
-//            } else {
-//                version = "Server is offline"
-//            }
-//        }
-//
-//        override fun onFailure(call: Call<HealthDto>, t: Throwable) {
-//            version = "Server had internal error on getting version"
-//        }
-//    })
-
     CenterAlignedTopAppBar(
         title = { Text(stringResource(currentScreen.title)) }, // Version here
         colors = TopAppBarDefaults.mediumTopAppBarColors(
@@ -65,7 +45,7 @@ fun SvkAndroidAppbar(
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
-                IconButton(onClick = navigateUp,  colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
+                IconButton(onClick = navigateUp, colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Return",
@@ -75,8 +55,11 @@ fun SvkAndroidAppbar(
         },
 //        TODO: Should see in mockup what we want here... (this is the top right icon)
         actions = {
-            if (currentScreen.route != Navigations.Login.route) {
-                IconButton(onClick = { onLogOutClicked() }, colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
+            if (currentScreen.route != Navigations.Authenticate.route) {
+                IconButton(
+                    onClick = { onLogOutClicked() },
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
+                ) {
                     Icon(
                         imageVector = Icons.Filled.ExitToApp,
                         contentDescription = "The Account screen",
@@ -85,7 +68,6 @@ fun SvkAndroidAppbar(
             } else {
             }
         },
-
     )
 }
 
@@ -99,7 +81,7 @@ fun SvkAndroidApp(
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
     val currentScreen = Navigations.valueOf(
-        backStackEntry?.destination?.route ?: Navigations.Login.name,
+        backStackEntry?.destination?.route ?: Navigations.Authenticate.name,
     )
 
     Scaffold(
@@ -109,8 +91,9 @@ fun SvkAndroidApp(
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 onLogOutClicked = {
-                    navController.navigate(Navigations.Login.route) {
+                    navController.navigate(Navigations.Authenticate.route) {
                         popUpTo(Navigations.Scan.route) { inclusive = true }
+                        viewModel.logout()
                     }
                 },
             )

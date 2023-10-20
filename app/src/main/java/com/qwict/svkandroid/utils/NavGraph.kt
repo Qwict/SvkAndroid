@@ -7,24 +7,18 @@ import androidx.navigation.compose.composable
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.screens.EditScreen
-import com.qwict.svkandroid.ui.screens.LoginScreen
 import com.qwict.svkandroid.ui.screens.PhotoScreen
 import com.qwict.svkandroid.ui.screens.ScanScreen
 import com.qwict.svkandroid.ui.screens.UploadScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
-    NavHost(navController = navController, startDestination = Navigations.Start.route) {
-        composable(Navigations.Start.route) {
+    NavHost(navController = navController, startDestination = getStartDestination(viewModel)) {
+        composable(Navigations.Authenticate.route) {
             AuthenticationScreen(
                 viewModel = viewModel,
-                userAuthNav = {
+                userAuthenticatedNav = {
                     navController.navigate(Navigations.Scan.route) {
-                        popUpTo(Navigations.Start.route) { inclusive = true }
-                    }
-                },
-                loginNav = {
-                    navController.navigate(Navigations.Login.route) {
                         popUpTo(Navigations.Start.route) { inclusive = true }
                     }
                 },
@@ -32,13 +26,6 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
         }
         composable(Navigations.Scan.route) {
             ScanScreen(nextNav = { navController.navigate(Navigations.Edit.route) })
-        }
-        composable(Navigations.Login.route) {
-            LoginScreen(viewModel = viewModel, onLoginButtonClicked = {
-                navController.navigate(Navigations.Scan.route) {
-                    popUpTo(Navigations.Login.route) { inclusive = true }
-                }
-            })
         }
         composable(Navigations.Edit.route) {
             EditScreen { navController.navigate(Navigations.Photo.route) }
@@ -53,5 +40,13 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 }
             }
         }
+    }
+}
+
+private fun getStartDestination(viewModel: MainViewModel): String {
+    return if (viewModel.userIsAuthenticated) {
+        Navigations.Scan.route
+    } else {
+        Navigations.Authenticate.route
     }
 }

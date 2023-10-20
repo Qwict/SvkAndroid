@@ -1,20 +1,31 @@
 package com.qwict.svkandroid.helper
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.util.Base64
+import android.util.Log
+import com.qwict.svkandroid.ui.MainViewModel
 
-// Feeling good, might use later
-@RequiresApi(Build.VERSION_CODES.O)
 fun decodeToken(jwt: String): String {
-    val parts = jwt.split(".")
+    val (header, payload, signature) = jwt.split(".")
     return try {
-        val charset = charset("UTF-8")
-        val header = String(Base64.getUrlDecoder().decode(parts[0].toByteArray(charset)), charset)
-        val payload = String(Base64.getUrlDecoder().decode(parts[1].toByteArray(charset)), charset)
-        "$header"
-        "$payload"
+        android.util.Base64.decode(header, android.util.Base64.DEFAULT).decodeToString()
+        android.util.Base64.decode(payload, android.util.Base64.DEFAULT).decodeToString()
+//        TODO: will have to check signature later, possibly with a public key that is added to the app...
     } catch (e: Exception) {
         "Error parsing JWT: $e"
     }
+}
+
+fun tokenIsValid(mainViewModel: MainViewModel): Boolean {
+    if (mainViewModel.user.token != "") {
+        val decodedToken = decodeToken(mainViewModel.user.token)
+        Log.i("MainActivity", "decoded token: $decodedToken")
+
+        val tokenExpiration = decodedToken.substringAfter("exp\":").substringBefore(",")
+        val currentTime = System.currentTimeMillis() / 1000
+        if (tokenExpiration.toLong() < currentTime) {
+            mainViewModel.user.token = "expired"
+            Log.i("MainActivity", "token expired")
+            return false
+        }
+    }
+    return true
 }

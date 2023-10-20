@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SVKTextfield(
 
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     // This box just wraps the background and the OutlinedTextField
     Box {
@@ -24,8 +24,8 @@ fun SVKTextfield(
                 .background(
                     color = MaterialTheme.colorScheme.background,
                     // rounded corner to match with the OutlinedTextField
-                    shape = RoundedCornerShape(4.dp)
-                )
+                    shape = RoundedCornerShape(4.dp),
+                ),
         )
         // OutlineTextField will be the content...
         content()

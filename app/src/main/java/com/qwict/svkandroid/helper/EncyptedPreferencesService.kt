@@ -16,17 +16,20 @@ fun getTokenFromSharedPrefs(mainViewModel: MainViewModel, applicationContext: Co
     val sharedPreferences = getSharedPreferences(applicationContext)
     val token = sharedPreferences.getString("token", "")
 
-    if (token != null && !token.equals("")) {
-        Log.i("MainActivity", "onResume: token was found")
-        mainViewModel.user = User(
-            jwt = token,
-        )
-        // TODO: might have to check here if token still good
-        mainViewModel.userIsAuthenticated = true
+    if (token != null && token != "") {
+        if (tokenIsValid(mainViewModel)) {
+            Log.i("MainActivity", "onResume: token was found")
+            mainViewModel.user = User(
+                jwt = token,
+            )
+            mainViewModel.userIsAuthenticated = true
+        } else {
+            Log.i("MainActivity", "onResume: token was found but is invalid")
+            mainViewModel.logout()
+        }
     } else {
-        Log.i("MainActivity", "onResume: token is null")
-        mainViewModel.userIsAuthenticated = false
-        mainViewModel.user = User()
+        Log.i("MainActivity", "onResume: token is null or empty")
+        mainViewModel.logout()
     }
 }
 

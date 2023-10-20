@@ -107,6 +107,11 @@ dependencies {
     // Using Jackson for JSON parsing (because of tutorial, and I don't like GSON)
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
 
+    // Users for all JsonObjects...
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
     // required for Auth0 (might remove later)
 //    implementation("com.auth0.android:auth0:2.0.0")
     implementation("com.auth0.android:auth0:+")
