@@ -80,9 +80,8 @@ fun SvkAndroidApp(
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
-    val currentScreen = Navigations.valueOf(
-        backStackEntry?.destination?.route ?: Navigations.Authenticate.name,
-    )
+    val currentScreen = Navigations.values().find { it.route == backStackEntry?.destination?.route }
+        ?: Navigations.Authenticate
 
     Scaffold(
         topBar = {

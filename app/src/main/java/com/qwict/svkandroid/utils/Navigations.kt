@@ -12,6 +12,7 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         route = "Start",
         title = R.string.initial_title,
     ),
+
     Scan(
         route = "Scan",
         title = R.string.app_name,

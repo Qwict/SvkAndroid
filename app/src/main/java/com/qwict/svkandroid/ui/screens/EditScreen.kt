@@ -35,7 +35,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditScreen(nextNav: () -> Unit) {
+fun EditScreen(barcodeValue: String?, nextNav: () -> Unit) {
     val str = stringResource(R.string.title_edit_screen, "654481519849")
 
     Scaffold(

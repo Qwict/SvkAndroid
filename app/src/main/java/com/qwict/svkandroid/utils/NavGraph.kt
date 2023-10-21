@@ -2,8 +2,10 @@ package com.qwict.svkandroid.utils
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.screens.EditScreen
@@ -25,10 +27,18 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
             )
         }
         composable(Navigations.Scan.route) {
-            ScanScreen(nextNav = { navController.navigate(Navigations.Edit.route) })
+            ScanScreen { navController.navigate(Navigations.Edit.route.plus("/$it")) }
         }
-        composable(Navigations.Edit.route) {
-            EditScreen { navController.navigate(Navigations.Photo.route) }
+        composable(
+            route = Navigations.Edit.route.plus("/{barcode_value}"),
+            arguments = listOf(
+                navArgument("barcode_value") {
+                    type =
+                        NavType.StringType
+                },
+            ),
+        ) {
+            EditScreen(it.arguments?.getString("barcode_value")) { navController.navigate(Navigations.Photo.route) }
         }
         composable(Navigations.Photo.route) {
             PhotoScreen { navController.navigate(Navigations.Upload.route) }
