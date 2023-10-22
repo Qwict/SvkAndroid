@@ -19,7 +19,11 @@ fun tokenIsValid(mainViewModel: MainViewModel): Boolean {
         val decodedToken = decodeToken(mainViewModel.user.token)
         Log.i("MainActivity", "decoded token: $decodedToken")
 
-        val tokenExpiration = decodedToken.substringAfter("exp\":").substringBefore(",")
+        val tokenExpiration = decodedToken
+            .substringAfter("exp\":")
+            .substringBefore(",")
+//            if exp is in the end of the decoded token the before , will not work, so we need to remove the last }
+            .replace("}", "")
         val currentTime = System.currentTimeMillis() / 1000
         if (tokenExpiration.toLong() < currentTime) {
             mainViewModel.user.token = "expired"
