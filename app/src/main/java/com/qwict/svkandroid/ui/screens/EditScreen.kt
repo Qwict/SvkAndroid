@@ -6,12 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -39,13 +35,13 @@ fun EditScreen(barcodeValue: String?, nextNav: () -> Unit) {
     val str = stringResource(R.string.title_edit_screen, "654481519849")
 
     Scaffold(
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { onClick() },
-                icon = { Icon(Icons.Filled.Add, "Voeg foto toe button") },
-                text = { Text(text = "Voeg foto toe") },
-            )
-        },
+//        floatingActionButton = {
+//            ExtendedFloatingActionButton(
+//                onClick = { onClick() },
+//                icon = { Icon(Icons.Filled.Add, "Voeg foto toe button") },
+//                text = { Text(text = "Voeg foto toe") },
+//            )
+//        },
         topBar = {
             TopAppBar(
                 title = {

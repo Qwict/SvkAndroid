@@ -29,4 +29,12 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         route = "Upload",
         title = R.string.app_name,
     ),
+    RouteEdit(
+        route = "RouteEdit",
+        title = R.string.app_name,
+    ),
+    RouteSelect(
+        route = "Route",
+        title = R.string.app_name,
+    ),
 }
