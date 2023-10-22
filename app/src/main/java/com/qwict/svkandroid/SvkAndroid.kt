@@ -1,5 +1,7 @@
 package com.qwict.svkandroid
 
+import android.app.Application
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,6 +28,25 @@ import androidx.navigation.compose.rememberNavController
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.utils.NavGraph
 import com.qwict.svkandroid.utils.Navigations
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+
+class SvkAndroidApplication : Application() {
+    //    lateinit var userSettings: UserSettings
+    private lateinit var appScope: CoroutineScope
+
+    override fun onCreate() {
+        super.onCreate()
+//        userSettings = UserSettings(dataStore)
+        appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        appContext = applicationContext
+    }
+
+    companion object {
+        lateinit var appContext: Context
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -57,7 +57,7 @@ class MainViewModel : ViewModel() {
                     )
                     userIsAuthenticated = true
 //                    Not sure if this is needed (because this also happens in MainActivity onPause)
-                    saveEncryptedPreference("token", user.token, context)
+                    saveEncryptedPreference("token", user.token)
                     success = true
                 } else {
                     Log.e("MainViewModel", "Failed to Login")
@@ -74,7 +74,7 @@ class MainViewModel : ViewModel() {
     fun logout() {
         userIsAuthenticated = false
         user = User()
-        clearEncryptedPreferences("token", context)
+        clearEncryptedPreferences("token")
     }
 
     fun setContext(activityContext: Context) {

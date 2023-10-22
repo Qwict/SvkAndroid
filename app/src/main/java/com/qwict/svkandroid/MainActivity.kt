@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel.setContext(this)
-        getTokenFromSharedPrefs(mainViewModel, applicationContext)
+        getTokenFromSharedPrefs(mainViewModel)
         setContent {
             // A surface container using the 'background' color from the theme
             SvkAndroidTheme {
@@ -36,11 +36,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        getTokenFromSharedPrefs(mainViewModel, applicationContext)
+        getTokenFromSharedPrefs(mainViewModel)
     }
 
     override fun onPause() {
         super.onPause()
-        saveEncryptedPreference("token", mainViewModel.user.token, applicationContext)
+        saveEncryptedPreference("token", mainViewModel.user.token)
     }
 }
