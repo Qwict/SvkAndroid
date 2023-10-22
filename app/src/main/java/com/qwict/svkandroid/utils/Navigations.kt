@@ -12,6 +12,7 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         route = "Start",
         title = R.string.initial_title,
     ),
+
     Scan(
         route = "Scan",
         title = R.string.app_name,
@@ -26,6 +27,14 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
     ),
     Upload(
         route = "Upload",
+        title = R.string.app_name,
+    ),
+    RouteEdit(
+        route = "RouteEdit",
+        title = R.string.app_name,
+    ),
+    RouteSelect(
+        route = "Route",
         title = R.string.app_name,
     ),
 }
