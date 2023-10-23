@@ -27,11 +27,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.qwict.svkandroid.R
+import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit) {
+fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,12 +69,12 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit) {
             }
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(5) {
+            items(viewModel.laadBonnen.size) { laadbon ->
                 ListItem(
-                    headlineText = { Text(text = "Laadbon") },
+                    headlineText = { Text(text = "BarcodeNr") },
                     supportingText = {
                         Text(
-                            text = "1507$it",
+                            text = "1507$laadbon",
                             style = MaterialTheme.typography.labelSmall,
                         )
                     },
@@ -97,7 +98,7 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit) {
 @Composable
 fun RouteEditScreenPreview() {
     SvkAndroidTheme(darkTheme = false) {
-        RouteEditScreen(nextNav = {}, photoNav = {})
+        RouteEditScreen(nextNav = {}, photoNav = {}, viewModel = MainViewModel())
     }
 }
 
@@ -105,6 +106,6 @@ fun RouteEditScreenPreview() {
 @Composable
 fun RouteEditDarkScreenPreview() {
     SvkAndroidTheme(darkTheme = true) {
-        RouteEditScreen(nextNav = {}, photoNav = {})
+        RouteEditScreen(nextNav = {}, photoNav = {}, viewModel = MainViewModel())
     }
 }

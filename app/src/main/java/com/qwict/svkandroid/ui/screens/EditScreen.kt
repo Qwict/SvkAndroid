@@ -21,16 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.qwict.svkandroid.R
+import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.theme.SVKTextfield
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditScreen(barcodeValue: String?, nextNav: () -> Unit) {
-    val str = stringResource(R.string.title_edit_screen, "654481519849")
-
+fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {
     Scaffold(
 //        floatingActionButton = {
 //            ExtendedFloatingActionButton(
@@ -42,7 +39,7 @@ fun EditScreen(barcodeValue: String?, nextNav: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Laadbon 654481519849")
+                    Text(text = viewModel.currentBarcode.value)
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -63,8 +60,11 @@ fun EditScreen(barcodeValue: String?, nextNav: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Textfields()
-            Button(onClick = { nextNav() }) {
-                Text("Opslaan")
+            Button(onClick = {
+                nextNav()
+                viewModel.laadBonnen.add(viewModel.currentBarcode.value)
+            }) {
+                Text("Save laadbon")
             }
         }
     }

@@ -30,11 +30,15 @@ class MainViewModel : ViewModel() {
     var user by mutableStateOf(User())
     val snackbarHostState = SnackbarHostState()
 
+    val currentBarcode = mutableStateOf("")
+
     val email = mutableStateOf(TextFieldValue())
     val password = mutableStateOf(TextFieldValue())
 
     var appJustLaunched by mutableStateOf(true)
     var userIsAuthenticated by mutableStateOf(false)
+
+    var laadBonnen = mutableListOf<String>()
 
     private val TAG = "MainViewModel"
     private lateinit var context: Context
@@ -60,12 +64,12 @@ class MainViewModel : ViewModel() {
                     saveEncryptedPreference("token", user.token)
                     success = true
                 } else {
-                    Log.e("MainViewModel", "Failed to Login")
+                    Log.e("MainViewModel", "Failed to Login: ${response.errorBody()}")
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.e("MainViewModel", "Failed to Login")
+                Log.e("MainViewModel", "Failed to Login: ${t.message}")
             }
         })
         return success

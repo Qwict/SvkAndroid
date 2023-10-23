@@ -38,11 +38,11 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(
             route = Navigations.RouteEdit.route,
         ) {
-            RouteEditScreen({ navController.navigate(Navigations.Scan.route) }, { navController.navigate(Navigations.Photo.route) })
+            RouteEditScreen({ navController.navigate(Navigations.Scan.route) }, { navController.navigate(Navigations.Photo.route)}, viewModel)
         }
 
         composable(Navigations.Scan.route) {
-            ScanScreen { navController.navigate(Navigations.Edit.route.plus("/$it")) }
+            ScanScreen(viewModel) { navController.navigate(Navigations.Edit.route.plus("/$it")) }
         }
         composable(
             route = Navigations.Edit.route.plus("/{barcode_value}"),
@@ -53,11 +53,11 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
                 },
             ),
         ) {
-            EditScreen(it.arguments?.getString("barcode_value")) {
+            EditScreen({
                 navController.navigate(Navigations.RouteEdit.route) {
                     popUpTo(Navigations.RouteEdit.route) { inclusive = true }
                 }
-            }
+            }, viewModel)
         }
         composable(Navigations.Photo.route) {
             PhotoScreen { navController.navigate(Navigations.Upload.route) }
