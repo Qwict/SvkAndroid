@@ -8,10 +8,6 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         route = "Authenticate",
         title = R.string.logged_out_title,
     ),
-    Start(
-        route = "Start",
-        title = R.string.initial_title,
-    ),
 
     Scan(
         route = "Scan",
