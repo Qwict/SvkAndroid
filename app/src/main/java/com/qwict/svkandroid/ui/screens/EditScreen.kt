@@ -46,7 +46,7 @@ fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {
             )
         },
 
-        ) { values ->
+    ) { values ->
 
         Column(
             modifier = Modifier
@@ -69,7 +69,6 @@ fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {
 }
 
 fun onClick() {
-
     Log.i("EditScreen", "Add button pressed: ")
 }
 

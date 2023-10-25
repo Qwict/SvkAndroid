@@ -35,7 +35,7 @@ fun getTokenFromSharedPrefs(mainViewModel: MainViewModel) {
 
 fun getPreference(key: String): String {
     val sharedPreferences = getSharedPreferences()
-    return sharedPreferences.getString("token", "") ?: ""
+    return sharedPreferences.getString(key, "") ?: ""
 }
 
 fun saveEncryptedPreference(key: String, preference: String) {

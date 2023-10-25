@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,14 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Button
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,7 +33,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,7 +47,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -84,14 +75,13 @@ enum class Identifier {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainViewModel) {
-
     var multiFloatingState by remember {
         mutableStateOf(MultiFloatingState.Collapsed)
     }
     val items = listOf(
 
         MinFabItem(
-            icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
+            icon = ImageBitmap.imageResource(id = R.drawable.barcodebitmap),
             label = "Camera",
             identifier = Identifier.CameraFab.name,
         ),
@@ -105,19 +95,20 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
             label = "Add Load",
             identifier = Identifier.AddLoadFab.name,
 
-            ),
+        ),
 
-
-        )
-    Scaffold(floatingActionButton = {
-        MultiFloatingButton(
-            multiFloatingState = multiFloatingState, onMultiFabStateChange = {
-                multiFloatingState = it
-            }, items = items, nextNav
-        )
-
-
-    }
+    )
+    Scaffold(
+        floatingActionButton = {
+            MultiFloatingButton(
+                multiFloatingState = multiFloatingState,
+                onMultiFabStateChange = {
+                    multiFloatingState = it
+                },
+                items = items,
+                nextNav,
+            )
+        },
 
     ) { values ->
         Column(
@@ -132,7 +123,6 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineSmall,
             )
-
 
             Row {
                 LazyRow(userScrollEnabled = true) {
@@ -189,62 +179,54 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
                         )
                     }
                 }
-
             }
         }
     }
-
 }
-
 
 @Composable
 fun MultiFloatingButton(
     multiFloatingState: MultiFloatingState,
     onMultiFabStateChange: (MultiFloatingState) -> Unit,
     items: List<MinFabItem>,
-    nextNav: () -> Unit
+    nextNav: () -> Unit,
 ) {
     val transition = updateTransition(targetState = multiFloatingState, label = "transition")
     val rotate by transition.animateFloat(label = "rotate") {
         if (it == MultiFloatingState.Expanded) 315f else 0f
-
     }
     val fabScale by transition.animateFloat(label = "Fabscale") {
         if (it == MultiFloatingState.Expanded) 36f else 0f
     }
 
-    val alpha by transition.animateFloat(label = "alpha",
-        transitionSpec = { tween(durationMillis = 200) }) {
-
+    val alpha by transition.animateFloat(
+        label = "alpha",
+        transitionSpec = { tween(durationMillis = 200) },
+    ) {
         if (it == MultiFloatingState.Expanded) 1f else 0f
     }
-    val textShadow by transition.animateDp(label = "textShadow",
-        transitionSpec = { tween(durationMillis = 200) }) {
-
+    val textShadow by transition.animateDp(
+        label = "textShadow",
+        transitionSpec = { tween(durationMillis = 200) },
+    ) {
         if (it == MultiFloatingState.Expanded) 2.dp else 0.dp
     }
 
-
     Column(horizontalAlignment = Alignment.End) {
-
         if (transition.currentState == MultiFloatingState.Expanded) {
             items.forEach {
-
                 MinFab(item = it, onMinFabItemClick = { minFabItem ->
                     when (minFabItem.identifier) {
                         Identifier.CameraFab.name -> {
-                            //TODO START CAMERA
+                            // TODO START CAMERA
                         }
 
                         Identifier.AddLoadFab.name -> {
                             nextNav()
                         }
                     }
-
                 }, alpha = alpha, textShadow = textShadow, fabScale = fabScale)
                 Spacer(modifier = Modifier.size(24.dp))
-
-
             }
         }
         FloatingActionButton(
@@ -254,49 +236,51 @@ fun MultiFloatingButton(
                         MultiFloatingState.Collapsed
                     } else {
                         MultiFloatingState.Expanded
-                    }
+                    },
                 )
-
-
             },
 
-            ) {
+        ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
-                modifier = Modifier.rotate(rotate)
+                modifier = Modifier.rotate(rotate),
             )
         }
     }
-
 }
 
 @Composable
 fun MinFab(
-    item: MinFabItem, alpha: Float,
+    item: MinFabItem,
+    alpha: Float,
     textShadow: Dp,
     fabScale: Float,
     showLabel: Boolean = true,
     onMinFabItemClick: (MinFabItem) -> Unit,
 
-
-    ) {
+) {
     val buttonColor = MaterialTheme.colorScheme.primary
     val shadow = Color.Black.copy(.5f)
     Row {
         if (showLabel) {
             Text(
-                text = item.label, color = MaterialTheme.colorScheme.primary, fontSize = 16.sp,
+                text = item.label,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 16.sp,
 
-                fontWeight = FontWeight.Bold, modifier = Modifier
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
                     .alpha(
                         animateFloatAsState(
-                            targetValue = alpha, animationSpec = tween(50), label = ""
-                        ).value
+                            targetValue = alpha,
+                            animationSpec = tween(50),
+                            label = "",
+                        ).value,
                     )
                     .shadow(textShadow)
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
 
             )
             Spacer(modifier = Modifier.size(16.dp))
@@ -315,8 +299,8 @@ fun MinFab(
                         radius = 20.dp,
                         color = MaterialTheme.colorScheme.onSurface,
 
-                        ),
-                )
+                    ),
+                ),
         ) {
 //            drawCircle(
 //                color = shadow, radius = fabScale, center = Offset(
@@ -330,14 +314,16 @@ fun MinFab(
 //
 //                )
             drawImage(
-                image = item.icon, topLeft = Offset(
-                    center.x - (item.icon.width / 2), center.y - (item.icon.width / 2)
-                ), alpha = alpha
+                image = item.icon,
+                topLeft = Offset(
+                    center.x - (item.icon.width / 2),
+                    center.y - (item.icon.width / 2),
+                ),
+                alpha = alpha,
             )
         }
     }
 }
-
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
