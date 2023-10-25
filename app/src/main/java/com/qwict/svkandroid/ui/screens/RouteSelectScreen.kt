@@ -23,6 +23,8 @@ import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteScreen(nextNav: () -> Unit) {
+
+
     var text by remember {
         mutableStateOf("R250")
     }

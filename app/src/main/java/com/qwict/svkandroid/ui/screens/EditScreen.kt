@@ -28,14 +28,12 @@ import com.qwict.svkandroid.ui.theme.SVKTextfield
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {
+    var mExpanded by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
-//        floatingActionButton = {
-//            ExtendedFloatingActionButton(
-//                onClick = { onClick() },
-//                icon = { Icon(Icons.Filled.Add, "Voeg foto toe button") },
-//                text = { Text(text = "Voeg foto toe") },
-//            )
-//        },
+
         topBar = {
             TopAppBar(
                 title = {
@@ -48,7 +46,7 @@ fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {
             )
         },
 
-    ) { values ->
+        ) { values ->
 
         Column(
             modifier = Modifier
@@ -71,6 +69,7 @@ fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {
 }
 
 fun onClick() {
+
     Log.i("EditScreen", "Add button pressed: ")
 }
 
