@@ -11,10 +11,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import com.qwict.svkandroid.api.Api
+import com.qwict.svkandroid.common.AuthenticationSingleton
+import com.qwict.svkandroid.common.AuthenticationSingleton.validateUser
 import com.qwict.svkandroid.data.SvkAndroidUiState
+import com.qwict.svkandroid.data.saveEncryptedPreference
 import com.qwict.svkandroid.dto.User
-import com.qwict.svkandroid.helper.clearEncryptedPreferences
-import com.qwict.svkandroid.helper.saveEncryptedPreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,7 +37,6 @@ class MainViewModel : ViewModel() {
     val password = mutableStateOf(TextFieldValue())
 
     var appJustLaunched by mutableStateOf(true)
-    var userIsAuthenticated by mutableStateOf(false)
 
     var laadBonnen = mutableListOf<String>()
 
@@ -59,9 +59,11 @@ class MainViewModel : ViewModel() {
                     user = User(
                         response.body()!!["token"].toString(),
                     )
-                    userIsAuthenticated = true
 //                    Not sure if this is needed (because this also happens in MainActivity onPause)
+                    // Save the token
                     saveEncryptedPreference("token", user.token)
+                    // validate the user with this token, (will put the isUserAuthenticated to true)
+                    validateUser()
                     success = true
                 } else {
                     Log.e("MainViewModel", "Failed to Login: ${response.errorBody()}")
@@ -76,9 +78,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun logout() {
-        userIsAuthenticated = false
-        user = User()
-        clearEncryptedPreferences("token")
+        AuthenticationSingleton.logout()
     }
 
     fun setContext(activityContext: Context) {

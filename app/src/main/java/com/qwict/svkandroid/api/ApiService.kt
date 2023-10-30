@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.qwict.svkandroid.common.Constants.BASE_URL
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import okhttp3.MediaType.Companion.toMediaType
@@ -19,9 +20,6 @@ interface ApiService {
 
     // TODO: here should be the interceptor at work... (not bearerToken: ...) (everywhere were a token is used)
 }
-
-private const val BASE_URL =
-    "http://10.0.2.2:9010/v1/"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(

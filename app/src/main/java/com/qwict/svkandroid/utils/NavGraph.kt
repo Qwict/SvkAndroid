@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.screens.EditScreen
@@ -38,7 +39,7 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(
             route = Navigations.RouteEdit.route,
         ) {
-            RouteEditScreen({ navController.navigate(Navigations.Scan.route) }, { navController.navigate(Navigations.Photo.route)}, viewModel)
+            RouteEditScreen({ navController.navigate(Navigations.Scan.route) }, { navController.navigate(Navigations.Photo.route) }, viewModel)
         }
 
         composable(Navigations.Scan.route) {
@@ -73,7 +74,7 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
 }
 
 private fun getStartDestination(viewModel: MainViewModel): String {
-    return if (viewModel.userIsAuthenticated) {
+    return if (isUserAuthenticated) {
         Navigations.RouteSelect.route
     } else {
         Navigations.Authenticate.route

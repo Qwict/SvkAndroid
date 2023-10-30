@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
+import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.theme.SVKTextfield
 import kotlinx.coroutines.launch
@@ -45,7 +46,7 @@ fun AuthenticationScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            val title = if (viewModel.userIsAuthenticated) {
+            val title = if (isUserAuthenticated) {
                 stringResource(R.string.logged_in_title)
             } else {
                 if (viewModel.appJustLaunched) {
@@ -58,7 +59,7 @@ fun AuthenticationScreen(
                 text = title,
             )
 
-            if (viewModel.userIsAuthenticated) {
+            if (isUserAuthenticated) {
                 UserInfoRow(
                     label = stringResource(R.string.email_label),
                     value = viewModel.user.email,
@@ -73,7 +74,7 @@ fun AuthenticationScreen(
 
             val buttonText: String
             val onClickAction: () -> Unit
-            if (viewModel.userIsAuthenticated) {
+            if (isUserAuthenticated) {
                 buttonText = stringResource(R.string.log_out_button)
                 onClickAction = {
                     viewModel.logout()
