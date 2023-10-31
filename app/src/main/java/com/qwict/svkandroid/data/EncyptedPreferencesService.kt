@@ -17,12 +17,12 @@ fun getEncryptedPreference(key: String): String {
 fun saveEncryptedPreference(key: String, preference: String) {
     getSharedPreferences().edit().putString(key, preference).apply()
     // TODO remove in production
-    Log.i("MainActivity", "onResume: $key was saved to preference file as: '$preference'")
+    Log.d("EncryptedPreference", "EncryptedPreference saved: [ $key : $preference ]")
 }
 
 fun removeEncryptedPreference(key: String) {
-    val sharedPreferences = getSharedPreferences()
-    sharedPreferences.edit().clear().apply()
+    getSharedPreferences().edit().remove(key).apply()
+    Log.d("EncryptedPreference", "EncryptedPreference removed: [ $key ]")
 }
 
 private fun getSharedPreferences(): SharedPreferences {
