@@ -24,6 +24,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -201,33 +203,39 @@ fun MultiFloatingButton(
 
     val alpha by transition.animateFloat(
         label = "alpha",
-        transitionSpec = { tween(durationMillis = 200) },
+        transitionSpec = { tween(durationMillis = 300) },
     ) {
         if (it == MultiFloatingState.Expanded) 1f else 0f
     }
     val textShadow by transition.animateDp(
         label = "textShadow",
-        transitionSpec = { tween(durationMillis = 200) },
+        transitionSpec = { tween(durationMillis = 300) },
     ) {
-        if (it == MultiFloatingState.Expanded) 2.dp else 0.dp
+        if (it == MultiFloatingState.Expanded) 0.2.dp else 0.dp
     }
 
     Column(horizontalAlignment = Alignment.End) {
         if (transition.currentState == MultiFloatingState.Expanded) {
-            items.forEach {
-                MinFab(item = it, onMinFabItemClick = { minFabItem ->
-                    when (minFabItem.identifier) {
-                        Identifier.CameraFab.name -> {
-                            // TODO START CAMERA
-                        }
+//            Card(
+//                modifier = Modifier.width(170.dp),
+//                elevation = CardDefaults.cardElevation(8.dp),
+//
+//            ) {
+                items.forEach {
+                    MinFab(item = it, onMinFabItemClick = { minFabItem ->
+                        when (minFabItem.identifier) {
+                            Identifier.CameraFab.name -> {
+                                // TODO START CAMERA
+                            }
 
-                        Identifier.AddLoadFab.name -> {
-                            nextNav()
+                            Identifier.AddLoadFab.name -> {
+                                nextNav()
+                            }
                         }
-                    }
-                }, alpha = alpha, textShadow = textShadow, fabScale = fabScale)
-                Spacer(modifier = Modifier.size(24.dp))
-            }
+                    }, alpha = alpha, textShadow = textShadow, fabScale = fabScale)
+                    Spacer(modifier = Modifier.size(24.dp))
+                }
+//            }
         }
         FloatingActionButton(
             onClick = {
@@ -275,12 +283,12 @@ fun MinFab(
                     .alpha(
                         animateFloatAsState(
                             targetValue = alpha,
-                            animationSpec = tween(50),
+                            animationSpec = tween(500),
                             label = "",
                         ).value,
                     )
                     .shadow(textShadow)
-                    .background(MaterialTheme.colorScheme.surface)
+
                     .padding(start = 8.dp, end = 8.dp),
 
             )
@@ -289,7 +297,7 @@ fun MinFab(
 
         Canvas(
             modifier = Modifier
-                .size(42.dp)
+                .size(32.dp)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     onClick = {
