@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.qwict.svkandroid"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.qwict.svkandroid"

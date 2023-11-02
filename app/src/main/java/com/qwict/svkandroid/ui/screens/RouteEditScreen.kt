@@ -267,7 +267,8 @@ fun MinFab(
             Text(
                 text = item.label,
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 16.sp,
+
+                fontSize = 24.sp,
 
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -280,7 +281,7 @@ fun MinFab(
                     )
                     .shadow(textShadow)
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                    .padding(start = 8.dp, end = 8.dp),
 
             )
             Spacer(modifier = Modifier.size(16.dp))
@@ -288,7 +289,7 @@ fun MinFab(
 
         Canvas(
             modifier = Modifier
-                .size(32.dp)
+                .size(42.dp)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     onClick = {

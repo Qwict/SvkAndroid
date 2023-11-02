@@ -1,22 +1,33 @@
 package com.qwict.svkandroid.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -29,7 +40,6 @@ import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.MainViewModel
-import com.qwict.svkandroid.ui.theme.SVKTextfield
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,10 +47,15 @@ fun AuthenticationScreen(
     modifier: Modifier = Modifier,
     userAuthenticatedNav: () -> Unit,
     viewModel: MainViewModel,
-) {
-    Column() {
-        val scope = rememberCoroutineScope()
 
+) {
+    val scope = rememberCoroutineScope()
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.8f),
+        contentAlignment = Alignment.Center,
+    ) {
         Column(
             modifier = Modifier.padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,6 +72,7 @@ fun AuthenticationScreen(
             }
             Title(
                 text = title,
+
             )
 
             if (isUserAuthenticated) {
@@ -69,6 +85,8 @@ fun AuthenticationScreen(
                 //                description = viewModel.user.name,
                 //            )
             } else {
+
+
                 LoginInputFields(viewModel)
             }
 
@@ -96,6 +114,7 @@ fun AuthenticationScreen(
                             )
                         }
                     }
+
                     userAuthenticatedNav()
                 }
             }
@@ -178,28 +197,49 @@ fun LogButton(
 fun LoginInputFields(
     viewModel: MainViewModel,
 ) {
+    val scope = rememberCoroutineScope()
+    var state by remember { viewModel.loginState }
+    val context = LocalContext.current
     Column(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = Alignment.CenterVertically),
     ) {
-        SVKTextfield {
-            OutlinedTextField(
-                value = viewModel.email.value,
-                onValueChange = { viewModel.email.value = it },
-                label = { Text("Email") },
-                singleLine = true,
-            )
-        }
-        SVKTextfield {
-            OutlinedTextField(
-                value = viewModel.password.value,
-                onValueChange = { viewModel.password.value = it },
-                label = { Text("Password") },
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            )
-        }
+        OutlinedTextField(
+            value = state.email,
+            onValueChange = { viewModel.updateLoginState(email = it) },
+            label = { Text("Email") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Email,
+            ),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Email,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            },
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = state.password,
+            onValueChange = { viewModel.updateLoginState(password = it) },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Password,
+            ),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            },
+        )
     }
 }

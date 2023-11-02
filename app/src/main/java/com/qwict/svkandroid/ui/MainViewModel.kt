@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import com.qwict.svkandroid.api.Api
 import com.qwict.svkandroid.common.AuthenticationSingleton
 import com.qwict.svkandroid.common.AuthenticationSingleton.validateUser
+import com.qwict.svkandroid.data.LoginState
 import com.qwict.svkandroid.data.SvkAndroidUiState
 import com.qwict.svkandroid.data.saveEncryptedPreference
 import com.qwict.svkandroid.dto.User
@@ -32,7 +33,8 @@ class MainViewModel : ViewModel() {
     val snackbarHostState = SnackbarHostState()
 
     val currentBarcode = mutableStateOf("")
-
+    var loginState = mutableStateOf(LoginState())
+        private set
     val email = mutableStateOf(TextFieldValue())
     val password = mutableStateOf(TextFieldValue())
 
@@ -49,8 +51,7 @@ class MainViewModel : ViewModel() {
             put("email", email.value.text)
             put("password", password.value.text)
         }
-        Api.service.login(body).enqueue(object :
-            retrofit2.Callback<JsonObject> {
+        Api.service.login(body).enqueue(object : retrofit2.Callback<JsonObject> {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -83,5 +84,17 @@ class MainViewModel : ViewModel() {
 
     fun setContext(activityContext: Context) {
         context = activityContext
+    }
+
+    fun updateLoginState(
+        email: String? = null,
+        password: String? = null,
+    ) {
+        email?.let {
+            loginState.value = loginState.value.copy(email = it)
+        }
+        password?.let {
+            loginState.value = loginState.value.copy(password = it)
+        }
     }
 }

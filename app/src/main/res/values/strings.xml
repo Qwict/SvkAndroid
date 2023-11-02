@@ -30,7 +30,7 @@
     -->
 
     <!-- Title -->
-    <string name="initial_title">Welcome to the app!</string>
+    <string name="initial_title">Sign in</string>
     <string name="logged_in_title">You\'re logged in.</string>
     <string name="logged_out_title">You\'re logged out.</string>
 
@@ -60,7 +60,7 @@
 
 
     <!-- Strings for login screen -->
-    <string name="log_in_button">Log In</string>
+    <string name="log_in_button">Login</string>
     <string name="log_out_button">Log Out</string>
     <string name="name_label">Name</string>
     <string name="email_label">Email</string>
