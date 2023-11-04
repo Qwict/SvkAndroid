@@ -68,6 +68,7 @@
     <string name="permission">Permission</string>
     <string name="btn_scan_barcode">Scan barcode</string>
     <string name="btn_enter_manually">Enter Manually</string>
+    <string name="camera_permission">Camera permission</string>
 
 
 </resources>

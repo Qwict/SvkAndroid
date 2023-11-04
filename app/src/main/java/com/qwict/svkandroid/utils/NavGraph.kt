@@ -10,6 +10,7 @@ import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.screens.EditScreen
+import com.qwict.svkandroid.ui.screens.PermissionScreen
 import com.qwict.svkandroid.ui.screens.PhotoScreen
 import com.qwict.svkandroid.ui.screens.RouteEditScreen
 import com.qwict.svkandroid.ui.screens.RouteScreen
@@ -23,17 +24,25 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
             AuthenticationScreen(
                 viewModel = viewModel,
                 userAuthenticatedNav = {
-                    navController.navigate(Navigations.RouteSelect.route) {
+                    navController.navigate(Navigations.Permission.route) {
                         popUpTo(Navigations.Authenticate.route) { inclusive = true }
                     }
                 },
             )
         }
 
-        composable(route = Navigations.RouteSelect.route) {
-            RouteScreen(nextNav = {
-                navController.navigate(Navigations.RouteEdit.route)
+        composable(route = Navigations.Permission.route) {
+            PermissionScreen(nextNav = {
+                navController.navigate(Navigations.RouteSelect.route) {
+                    popUpTo(Navigations.Authenticate.route) { inclusive = true }
+                }
             })
+        }
+
+        composable(route = Navigations.RouteSelect.route) {
+            RouteScreen(viewModel) {
+                navController.navigate(Navigations.RouteEdit.route)
+            }
         }
 
         composable(

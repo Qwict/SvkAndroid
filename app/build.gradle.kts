@@ -123,4 +123,6 @@ dependencies {
 
     // using this to store the token in the keystore
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
 }

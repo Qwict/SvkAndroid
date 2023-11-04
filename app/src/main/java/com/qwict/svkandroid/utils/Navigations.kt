@@ -9,6 +9,11 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         title = R.string.logged_out_title,
     ),
 
+    Permission(
+        route = "Permission",
+        title = R.string.camera_permission,
+    ),
+
     Scan(
         route = "Scan",
         title = R.string.app_name,

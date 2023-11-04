@@ -1,7 +1,5 @@
 package com.qwict.svkandroid.ui.screens
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,9 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.MainViewModel
 import kotlinx.coroutines.launch
@@ -31,7 +26,9 @@ import kotlinx.coroutines.launch
 fun ScanScreen(viewModel: MainViewModel, nextNav: () -> Unit) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val scanner = BarcodeScanner(context) { ->
+
+    val scanner = BarcodeScanner(context, BarcodeFormat.ITF) { barcode ->
+        viewModel.currentBarcode.value = barcode
         nextNav()
     }
 
@@ -45,7 +42,7 @@ fun ScanScreen(viewModel: MainViewModel, nextNav: () -> Unit) {
         Button(
             onClick = {
                 scope.launch {
-                    scanner.startScan(viewModel = viewModel)
+                    scanner.startScan()
                 }
             },
             modifier = Modifier
@@ -60,43 +57,9 @@ fun ScanScreen(viewModel: MainViewModel, nextNav: () -> Unit) {
             modifier = Modifier
                 .width(200.dp)
                 .height(50.dp),
-
         ) {
             Text(text = stringResource(R.string.btn_enter_manually), fontSize = 20.sp)
         }
         Spacer(modifier = Modifier.height(20.dp))
-    }
-}
-
-private class BarcodeScanner(appContext: Context, val nextNav: () -> Unit) {
-
-    private val options = GmsBarcodeScannerOptions.Builder()
-        .setBarcodeFormats(
-            Barcode.FORMAT_ITF,
-        ).enableAutoZoom()
-        .build()
-
-    private val scanner = GmsBarcodeScanning.getClient(appContext, options)
-
-    fun startScan(viewModel: MainViewModel) {
-        scanner.startScan()
-            .addOnSuccessListener { barcode ->
-                // Task completed successfully
-                if (barcode.rawValue != null) {
-                    viewModel.currentBarcode.value = barcode.rawValue!!
-                    Log.i("BarcodeScanner", "Barcode: ${viewModel.currentBarcode.value}")
-                    nextNav()
-                } else {
-                    Log.e("BarcodeScanner", "Barcode is null")
-//                    TODO: add a snackbar
-                }
-                nextNav()
-            }
-            .addOnCanceledListener {
-                // Task canceled
-            }
-            .addOnFailureListener {
-                // Task failed with an exception
-            }
     }
 }

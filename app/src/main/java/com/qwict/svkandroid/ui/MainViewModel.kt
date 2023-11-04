@@ -33,6 +33,7 @@ class MainViewModel : ViewModel() {
     val snackbarHostState = SnackbarHostState()
 
     val currentBarcode = mutableStateOf("")
+    val currentQrcode = mutableStateOf("")
     var loginState = mutableStateOf(LoginState())
         private set
     val email = mutableStateOf(TextFieldValue())
