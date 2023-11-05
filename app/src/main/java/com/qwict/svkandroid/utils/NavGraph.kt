@@ -40,16 +40,10 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel = viewMo
         }
 
         composable(Navigations.Scan.route) {
-            ScanScreen(viewModel) { navController.navigate(Navigations.Edit.route.plus("/$it")) }
+            ScanScreen(viewModel) { navController.navigate(Navigations.Edit.route) }
         }
         composable(
-            route = Navigations.Edit.route.plus("/{barcode_value}"),
-            arguments = listOf(
-                navArgument("barcode_value") {
-                    type =
-                        NavType.StringType
-                },
-            ),
+            route = Navigations.Edit.route,
         ) {
             EditScreen({
                 navController.navigate(Navigations.RouteEdit.route) {
