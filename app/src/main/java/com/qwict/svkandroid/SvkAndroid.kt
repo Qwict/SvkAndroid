@@ -17,15 +17,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.qwict.svkandroid.ui.MainViewModel
+import com.qwict.svkandroid.ui.components.Loading
+import com.qwict.svkandroid.ui.screens.AuthenticationScreen
+import com.qwict.svkandroid.ui.viewModels.AuthState
+import com.qwict.svkandroid.ui.viewModels.AuthViewModel
 import com.qwict.svkandroid.utils.NavGraph
 import com.qwict.svkandroid.utils.Navigations
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +60,12 @@ fun SvkAndroidAppbar(
     onLogOutClicked: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(stringResource(currentScreen.title)) }, // Version here
+        title = {
+            Text(
+                stringResource(currentScreen.title),
+                style = MaterialTheme.typography.headlineMedium,
+            )
+        }, // Version here
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -66,7 +73,10 @@ fun SvkAndroidAppbar(
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
-                IconButton(onClick = navigateUp, colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary)) {
+                IconButton(
+                    onClick = navigateUp,
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
+                ) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Return",
@@ -92,36 +102,44 @@ fun SvkAndroidAppbar(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SvkAndroidApp(
-    viewModel: MainViewModel = viewModel(),
+    viewModel: AuthViewModel = viewModel(),
+) {
+    when (viewModel.authState) {
+        is AuthState.LoggedIn -> AppView()
+        is AuthState.Idle -> AuthView(viewModel = viewModel)
+        is AuthState.Loading -> Loading()
+        is AuthState.Error -> AuthView((viewModel.authState as AuthState.Error).message, viewModel = viewModel)
+    }
+}
+
+@Composable
+fun AuthView(message: String = "", viewModel: AuthViewModel) {
+    AuthenticationScreen(viewModel = viewModel)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppView(
     navController: NavHostController = rememberNavController(),
 ) {
-    // Get current back stack entry
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    // Get the name of the current screen
-    val currentScreen = Navigations.values().find { it.route == backStackEntry?.destination?.route }
-        ?: Navigations.Authenticate
-
     Scaffold(
         topBar = {
             SvkAndroidAppbar(
-                currentScreen = currentScreen,
+                currentScreen = Navigations.Permission,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 onLogOutClicked = {
                     navController.navigate(Navigations.Authenticate.route) {
                         popUpTo(Navigations.Scan.route) { inclusive = true }
-                        viewModel.logout()
                     }
                 },
             )
         },
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavGraph(navController = navController, viewModel = viewModel)
+            NavGraph(navController = navController)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.utils
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -8,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.MainViewModel
-import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.screens.EditScreen
 import com.qwict.svkandroid.ui.screens.PermissionScreen
 import com.qwict.svkandroid.ui.screens.PhotoScreen
@@ -18,19 +18,8 @@ import com.qwict.svkandroid.ui.screens.ScanScreen
 import com.qwict.svkandroid.ui.screens.UploadScreen
 
 @Composable
-fun NavGraph(navController: NavHostController, viewModel: MainViewModel) {
+fun NavGraph(navController: NavHostController, viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     NavHost(navController = navController, startDestination = getStartDestination(viewModel)) {
-        composable(Navigations.Authenticate.route) {
-            AuthenticationScreen(
-                viewModel = viewModel,
-                userAuthenticatedNav = {
-                    navController.navigate(Navigations.Permission.route) {
-                        popUpTo(Navigations.Authenticate.route) { inclusive = true }
-                    }
-                },
-            )
-        }
-
         composable(route = Navigations.Permission.route) {
             PermissionScreen(nextNav = {
                 navController.navigate(Navigations.RouteSelect.route) {

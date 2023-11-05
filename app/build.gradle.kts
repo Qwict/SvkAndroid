@@ -114,8 +114,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
+
     // required for Auth0 (might remove later)
-//    implementation("com.auth0.android:auth0:2.0.0")
     implementation("com.auth0.android:auth0:+")
     implementation("com.auth0.android:jwtdecode:+")
     // maybe for image loading in the future
