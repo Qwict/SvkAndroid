@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,5 +31,9 @@ class MainViewModel : ViewModel() {
 
     fun setContext(activityContext: Context) {
         context = activityContext
+    }
+
+    init {
+        Log.d(TAG, "init: MainViewModel")
     }
 }

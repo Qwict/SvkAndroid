@@ -24,11 +24,18 @@ sealed interface AuthState {
 
 class AuthViewModel : ViewModel() {
 
-
     var authState by mutableStateOf<AuthState>(AuthState.Idle)
         private set
     var loginCredentials by mutableStateOf(LoginState())
         private set
+
+    init {
+        authState = if (AuthenticationSingleton.isUserAuthenticated) {
+            AuthState.LoggedIn
+        } else {
+            AuthState.Idle
+        }
+    }
 
     fun login() {
         viewModelScope.launch {

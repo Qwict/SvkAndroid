@@ -73,17 +73,18 @@ dependencies {
 
 //    -- pasted by joris
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
 //    Why does this throw an error?
 //    implementation("androidx.annotation:annotation-jvm:1.7.0")
-    implementation("androidx.annotation:annotation:1.5.0")
+    implementation("androidx.annotation:annotation:1.7.0")
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
     implementation("com.google.mlkit:barcode-scanning-common:17.0.0")
     testImplementation("junit:junit:4.13.2")
@@ -95,11 +96,12 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Added for navigation
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
     // Required for GIF support
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("io.coil-kt:coil-gif:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-gif:2.5.0")
 
     // Retrofit for backend API calls
     val retrofit_version = "2.9.0"
@@ -111,15 +113,11 @@ dependencies {
 
     // Users for all JsonObjects...
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-
-    // required for Auth0 (might remove later)
-    implementation("com.auth0.android:auth0:+")
-    implementation("com.auth0.android:jwtdecode:+")
     // maybe for image loading in the future
-    implementation("io.coil-kt:coil-compose:+")
+    implementation("io.coil-kt:coil-compose:")
 
     // using this to store the token in the keystore
     implementation("androidx.security:security-crypto:1.1.0-alpha06")

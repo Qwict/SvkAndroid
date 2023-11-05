@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,25 +44,35 @@ fun PermissionScreen(nextNav: () -> Unit) {
             nextNav() // next screen
             navigated = true
         }
+
         else -> {
             LaunchedEffect(Unit) {
                 state.launchPermissionRequest()
             }
 
             Box(
-                Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+                Modifier.fillMaxSize(),
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Spacer(Modifier.height(8.dp))
-                    Column(horizontalAlignment = Alignment.Start) {
-                        Text("Camera permission required", style = MaterialTheme.typography.titleSmall)
-                        Spacer(Modifier.height(4.dp))
-                        Text("This is required in order for the app to take pictures")
-                    }
+//                    Column(horizontalAlignment = Alignment.Start) {
+                    Text(
+                        "Camera permission required",
+                        style = MaterialTheme.typography.headlineLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "This is required in order for the app to take pictures",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+//                    }
                 }
 
                 // Button is placed below the text elements

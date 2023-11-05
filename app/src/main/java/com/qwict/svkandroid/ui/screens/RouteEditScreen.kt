@@ -1,5 +1,6 @@
 package com.qwict.svkandroid.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -7,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,8 +25,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,6 +33,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,12 +52,14 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.MainViewModel
+import com.qwict.svkandroid.ui.theme.SVKTextfield
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
 enum class MultiFloatingState {
@@ -77,6 +79,14 @@ enum class Identifier {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainViewModel) {
+    var nummerplaat by remember {
+        mutableStateOf("")
+    }
+
+    var chauffeur by remember {
+        mutableStateOf("")
+    }
+
     var multiFloatingState by remember {
         mutableStateOf(MultiFloatingState.Collapsed)
     }
@@ -116,16 +126,34 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(values),
-            verticalArrangement = Arrangement.SpaceEvenly,
+                .padding(values).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = "Route Edit",
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.headlineLarge,
             )
+            Spacer(modifier = Modifier.size(32.dp))
+            SVKTextfield {
+                OutlinedTextField(
+                    value = nummerplaat,
+                    onValueChange = { nummerplaat = it },
+                    label = { Text("Nummerplaat") },
+                    modifier = Modifier.padding(bottom = 5.dp),
+                )
+            }
 
+            SVKTextfield {
+                OutlinedTextField(
+                    value = chauffeur,
+                    onValueChange = { chauffeur = it },
+                    label = { Text("Chauffeur") },
+                    modifier = Modifier.padding(bottom = 5.dp),
+                )
+            }
+            Spacer(modifier = Modifier.size(32.dp))
             Row {
                 LazyRow(userScrollEnabled = true) {
                     items(5) {
@@ -134,8 +162,8 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(8.dp)
-                                .width(100.dp)
-                                .height(100.dp),
+                                .width(128.dp)
+                                .height(128.dp),
                         )
                     }
                     item {
@@ -154,13 +182,21 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
                     }
                 }
             }
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+            Spacer(modifier = Modifier.size(32.dp))
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            ) {
                 if (viewModel.laadBonnen.size == 0) {
                     item {
                         Text(
+                            modifier = Modifier.fillMaxWidth(),
                             text = "Geen laadbonnen",
                             color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = MaterialTheme.typography.headlineMedium,
+                            textAlign = TextAlign.Center,
                         )
                     }
                 } else {
@@ -221,20 +257,20 @@ fun MultiFloatingButton(
 //                elevation = CardDefaults.cardElevation(8.dp),
 //
 //            ) {
-                items.forEach {
-                    MinFab(item = it, onMinFabItemClick = { minFabItem ->
-                        when (minFabItem.identifier) {
-                            Identifier.CameraFab.name -> {
-                                // TODO START CAMERA
-                            }
-
-                            Identifier.AddLoadFab.name -> {
-                                nextNav()
-                            }
+            items.forEach {
+                MinFab(item = it, onMinFabItemClick = { minFabItem ->
+                    when (minFabItem.identifier) {
+                        Identifier.CameraFab.name -> {
+                            // TODO START CAMERA
                         }
-                    }, alpha = alpha, textShadow = textShadow, fabScale = fabScale)
-                    Spacer(modifier = Modifier.size(24.dp))
-                }
+
+                        Identifier.AddLoadFab.name -> {
+                            nextNav()
+                        }
+                    }
+                }, alpha = alpha, textShadow = textShadow, fabScale = fabScale)
+                Spacer(modifier = Modifier.size(24.dp))
+            }
 //            }
         }
         FloatingActionButton(
@@ -258,6 +294,7 @@ fun MultiFloatingButton(
     }
 }
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun MinFab(
     item: MinFabItem,
@@ -288,7 +325,6 @@ fun MinFab(
                         ).value,
                     )
                     .shadow(textShadow)
-
                     .padding(start = 8.dp, end = 8.dp),
 
             )
