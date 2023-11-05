@@ -69,6 +69,7 @@
     <string name="btn_scan_barcode">Scan barcode</string>
     <string name="btn_enter_manually">Enter Manually</string>
     <string name="camera_permission">Camera permission</string>
+    <string name="title_photo_screen">Take Photo</string>
 
 
 </resources>
