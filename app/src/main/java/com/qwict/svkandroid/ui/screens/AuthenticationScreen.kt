@@ -22,8 +22,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.ui.MainViewModel
@@ -32,6 +35,7 @@ import com.qwict.svkandroid.ui.viewModels.AuthViewModel
 @Composable
 fun AuthenticationScreen(
     viewModel: AuthViewModel,
+    message: String,
 ) {
     Box(
         modifier = Modifier
@@ -48,10 +52,18 @@ fun AuthenticationScreen(
                 text = "Sign in",
                 style = MaterialTheme.typography.displayMedium,
             )
+
             LoginInputFields(viewModel)
+            Text(
+                text = message,
+                color = Color.Red,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp)
+            )
             LogButton(
                 text = "Login",
-                onClick = { viewModel.login()},
+                onClick = { viewModel.login() },
             )
         }
     }

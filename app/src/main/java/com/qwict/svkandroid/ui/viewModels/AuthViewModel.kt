@@ -24,6 +24,7 @@ sealed interface AuthState {
 
 class AuthViewModel : ViewModel() {
 
+
     var authState by mutableStateOf<AuthState>(AuthState.Idle)
         private set
     var loginCredentials by mutableStateOf(LoginState())
@@ -53,31 +54,6 @@ class AuthViewModel : ViewModel() {
                 AuthState.Error(e.localizedMessage ?: "Unknown error")
             }
         }
-
-//        Api.service.login(body).enqueue(object : retrofit2.Callback<JsonObject> {
-//            @RequiresApi(Build.VERSION_CODES.O)
-//            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-//                if (response.isSuccessful) {
-//                    Log.i("MainViewModel", "Logged in")
-// //                    user.token = json.getString("token")
-//                    user = User(
-//                        response.body()!!["token"].toString(),
-//                    )
-// //                    Not sure if this is needed (because this also happens in MainActivity onPause)
-//                    // Save the token
-//                    saveEncryptedPreference("token", user.token)
-//                    // validate the user with this token, (will put the isUserAuthenticated to true)
-//                    AuthenticationSingleton.validateUser()
-//                    success = true
-//                } else {
-//                    Log.e("MainViewModel", "Failed to Login: ${response.errorBody()}")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-//                Log.e("MainViewModel", "Failed to Login: ${t.message}")
-//            }
-//        }
     }
 
     fun logout() {

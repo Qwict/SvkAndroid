@@ -28,56 +28,30 @@ import com.qwict.svkandroid.ui.theme.SVKTextfield
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {
-    var mExpanded by remember {
-        mutableStateOf(false)
-    }
-
-    Scaffold(
-
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = viewModel.currentBarcode.value)
-                },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-            )
-        },
-
-    ) { values ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.75f)
-                .padding(values)
-                .padding(top = 60.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Textfields()
-            Button(onClick = {
-                nextNav()
-                viewModel.laadBonnen.add(viewModel.currentBarcode.value)
-            }) {
-                Text("Save laadbon")
-            }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.75f)
+            .padding(top = 60.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Textfields()
+        Button(onClick = {
+            nextNav()
+            viewModel.laadBonnen.add(viewModel.currentBarcode.value)
+        }) {
+            Text("Save laadbon")
         }
     }
-}
 
-fun onClick() {
-    Log.i("EditScreen", "Add button pressed: ")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Textfields() {
     var laadbonNummer by remember { mutableStateOf("654481519849") }
-    var nummerplaat by remember { mutableStateOf("") }
-    var chauffeur by remember { mutableStateOf("") }
+
 
 //    Image(
 //        painter = rememberAsyncImagePainter(
@@ -96,24 +70,25 @@ fun Textfields() {
             onValueChange = { laadbonNummer = it },
             label = { Text("Laadnummer") },
             modifier = Modifier.padding(bottom = 5.dp),
+            singleLine = true,
         )
     }
 
-    SVKTextfield {
-        OutlinedTextField(
-            value = nummerplaat,
-            onValueChange = { nummerplaat = it },
-            label = { Text("Nummerplaat") },
-            modifier = Modifier.padding(bottom = 5.dp),
-        )
-    }
-
-    SVKTextfield {
-        OutlinedTextField(
-            value = chauffeur,
-            onValueChange = { chauffeur = it },
-            label = { Text("Chauffeur") },
-            modifier = Modifier.padding(bottom = 5.dp),
-        )
-    }
+//    SVKTextfield {
+//        OutlinedTextField(
+//            value = nummerplaat,
+//            onValueChange = { nummerplaat = it },
+//            label = { Text("Nummerplaat") },
+//            modifier = Modifier.padding(bottom = 5.dp),
+//        )
+//    }
+//
+//    SVKTextfield {
+//        OutlinedTextField(
+//            value = chauffeur,
+//            onValueChange = { chauffeur = it },
+//            label = { Text("Chauffeur") },
+//            modifier = Modifier.padding(bottom = 5.dp),
+//        )
+//    }
 }

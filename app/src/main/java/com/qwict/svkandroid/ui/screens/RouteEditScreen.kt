@@ -83,7 +83,7 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
     val items = listOf(
 
         MinFabItem(
-            icon = ImageBitmap.imageResource(id = R.drawable.barcodebitmap),
+            icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
             label = "Camera",
             identifier = Identifier.CameraFab.name,
         ),

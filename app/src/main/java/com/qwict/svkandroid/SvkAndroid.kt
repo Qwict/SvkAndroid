@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.qwict.svkandroid.ui.components.Loading
+import com.qwict.svkandroid.ui.components.SvkAndroidAppbar
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.viewModels.AuthState
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
@@ -50,64 +51,12 @@ class SvkAndroidApplication : Application() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SvkAndroidAppbar(
-    currentScreen: Navigations,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier,
-    onLogOutClicked: () -> Unit = {},
-) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                stringResource(currentScreen.title),
-                style = MaterialTheme.typography.headlineMedium,
-            )
-        }, // Version here
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
-        modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(
-                    onClick = navigateUp,
-                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Return",
-                    )
-                }
-            }
-        },
-//        TODO: Should see in mockup what we want here... (this is the top right icon)
-        actions = {
-            if (currentScreen.route != Navigations.Authenticate.route) {
-                IconButton(
-                    onClick = { onLogOutClicked() },
-                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ExitToApp,
-                        contentDescription = "The Account screen",
-                    )
-                }
-            } else {
-            }
-        },
-    )
-}
-
 @Composable
 fun SvkAndroidApp(
     viewModel: AuthViewModel = viewModel(),
 ) {
     when (viewModel.authState) {
-        is AuthState.LoggedIn -> AppView()
+        is AuthState.LoggedIn -> AppView(viewModel = viewModel)
         is AuthState.Idle -> AuthView(viewModel = viewModel)
         is AuthState.Loading -> Loading()
         is AuthState.Error -> AuthView((viewModel.authState as AuthState.Error).message, viewModel = viewModel)
@@ -116,13 +65,13 @@ fun SvkAndroidApp(
 
 @Composable
 fun AuthView(message: String = "", viewModel: AuthViewModel) {
-    AuthenticationScreen(viewModel = viewModel)
+    AuthenticationScreen(viewModel = viewModel, message = message)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppView(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberNavController(), viewModel: AuthViewModel
 ) {
     Scaffold(
         topBar = {
@@ -131,9 +80,7 @@ fun AppView(
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 onLogOutClicked = {
-                    navController.navigate(Navigations.Authenticate.route) {
-                        popUpTo(Navigations.Scan.route) { inclusive = true }
-                    }
+                    viewModel.logout()
                 },
             )
         },
