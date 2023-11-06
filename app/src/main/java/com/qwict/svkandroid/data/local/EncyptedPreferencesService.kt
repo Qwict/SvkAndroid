@@ -1,4 +1,4 @@
-package com.qwict.svkandroid.data
+package com.qwict.svkandroid.data.local
 
 import android.content.SharedPreferences
 import android.util.Log

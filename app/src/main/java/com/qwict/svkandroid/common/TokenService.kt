@@ -2,7 +2,7 @@ package com.qwict.svkandroid.common
 
 import android.util.Log
 import com.auth0.android.jwt.JWT
-import com.qwict.svkandroid.data.saveEncryptedPreference
+import com.qwict.svkandroid.data.local.saveEncryptedPreference
 
 fun getDecodedPayload(token: String): DecodedHeader {
     val jwt = JWT(token)

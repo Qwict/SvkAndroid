@@ -1,8 +1,8 @@
-package com.qwict.svkandroid.dto
+package com.qwict.svkandroid.data.remote.dto
 
 import android.graphics.Picture
 
-data class User(val jwt: String? = null) {
+data class UserDto(val jwt: String? = null) {
 
     private val TAG = "User"
 

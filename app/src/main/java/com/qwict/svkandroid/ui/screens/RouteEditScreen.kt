@@ -58,9 +58,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
-import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.theme.SVKTextfield
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
+import com.qwict.svkandroid.ui.viewModels.MainViewModel
 
 enum class MultiFloatingState {
     Expanded, Collapsed

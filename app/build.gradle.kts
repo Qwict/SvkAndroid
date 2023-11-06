@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
+    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
 }
 
 android {
@@ -41,9 +43,10 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -107,9 +110,9 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.5.0")
 
     // Retrofit for backend API calls
-    val retrofit_version = "2.9.0"
-    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Using Jackson for JSON parsing (because of tutorial, and I don't like GSON)
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
@@ -118,6 +121,23 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    // Use for hilt
+    implementation("com.google.dagger:hilt-android:2.48.1")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.48.1")
+
+    // For instrumentation tests
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.48.1")
+    androidTestAnnotationProcessor("com.google.dagger:hilt-compiler:2.48.1")
+
+    // For local unit tests
+    testImplementation("com.google.dagger:hilt-android-testing:2.48.1")
+    testAnnotationProcessor("com.google.dagger:hilt-compiler:2.48.1")
+
+    implementation("com.google.dagger:hilt-android:2.48.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.48.1")
+    kapt("androidx.hilt:hilt-compiler:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     // maybe for image loading in the future
     implementation("io.coil-kt:coil-compose:")

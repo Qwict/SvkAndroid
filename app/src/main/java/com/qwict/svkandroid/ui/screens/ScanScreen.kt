@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
-import com.qwict.svkandroid.ui.MainViewModel
+import com.qwict.svkandroid.ui.viewModels.MainViewModel
 import kotlinx.coroutines.launch
 
 @Composable

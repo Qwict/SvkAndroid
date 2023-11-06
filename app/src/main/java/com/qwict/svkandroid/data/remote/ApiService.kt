@@ -1,4 +1,4 @@
-package com.qwict.svkandroid.api
+package com.qwict.svkandroid.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.qwict.svkandroid.common.Constants.BASE_URL
@@ -20,7 +20,6 @@ interface ApiService {
 
 private val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType())).build()
-
 
 object Api {
     val service: ApiService = retrofit.create(ApiService::class.java)

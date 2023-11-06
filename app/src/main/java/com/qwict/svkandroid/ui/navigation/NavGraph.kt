@@ -1,13 +1,10 @@
-package com.qwict.svkandroid.utils
+package com.qwict.svkandroid.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.screens.EditScreen
 import com.qwict.svkandroid.ui.screens.PermissionScreen
 import com.qwict.svkandroid.ui.screens.PhotoScreen
@@ -15,9 +12,10 @@ import com.qwict.svkandroid.ui.screens.RouteEditScreen
 import com.qwict.svkandroid.ui.screens.RouteScreen
 import com.qwict.svkandroid.ui.screens.ScanScreen
 import com.qwict.svkandroid.ui.screens.UploadScreen
+import com.qwict.svkandroid.ui.viewModels.MainViewModel
 
 @Composable
-fun NavGraph(navController: NavHostController, viewModel: MainViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun NavGraph(navController: NavHostController, viewModel: MainViewModel = hiltViewModel()) {
     NavHost(navController = navController, startDestination = Navigations.Permission.route) {
         composable(route = Navigations.Permission.route) {
             PermissionScreen(nextNav = {
@@ -36,7 +34,11 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel = viewMo
         composable(
             route = Navigations.RouteEdit.route,
         ) {
-            RouteEditScreen({ navController.navigate(Navigations.Scan.route) }, { navController.navigate(Navigations.Photo.route) }, viewModel)
+            RouteEditScreen({ navController.navigate(Navigations.Scan.route) }, {
+                navController.navigate(
+                    Navigations.Photo.route,
+                )
+            }, viewModel)
         }
 
         composable(Navigations.Scan.route) {

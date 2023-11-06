@@ -29,7 +29,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
 
 @Composable
@@ -59,7 +58,7 @@ fun AuthenticationScreen(
                 color = Color.Red,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp),
             )
             LogButton(
                 text = "Login",

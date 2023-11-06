@@ -1,4 +1,4 @@
-package com.qwict.svkandroid.ui
+package com.qwict.svkandroid.ui.viewModels
 
 import android.content.Context
 import android.util.Log
@@ -7,8 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.qwict.svkandroid.data.SvkAndroidUiState
-import com.qwict.svkandroid.dto.User
+import com.qwict.svkandroid.data.remote.dto.UserDto
+import com.qwict.svkandroid.ui.viewModels.states.SvkAndroidUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.asStateFlow
 class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SvkAndroidUiState())
     val uiState: StateFlow<SvkAndroidUiState> = _uiState.asStateFlow()
-    var user by mutableStateOf(User())
+
+    var user by mutableStateOf(UserDto())
     val snackbarHostState = SnackbarHostState()
 
     val currentBarcode = mutableStateOf("")

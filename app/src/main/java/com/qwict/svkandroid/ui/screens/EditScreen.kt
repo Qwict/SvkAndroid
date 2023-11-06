@@ -17,8 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.qwict.svkandroid.ui.MainViewModel
 import com.qwict.svkandroid.ui.theme.SVKTextfield
+import com.qwict.svkandroid.ui.viewModels.MainViewModel
 
 @Composable
 fun EditScreen(nextNav: () -> Unit, viewModel: MainViewModel) {

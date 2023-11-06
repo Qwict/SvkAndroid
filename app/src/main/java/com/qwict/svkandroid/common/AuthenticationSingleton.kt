@@ -4,14 +4,14 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.qwict.svkandroid.data.getEncryptedPreference
-import com.qwict.svkandroid.data.removeEncryptedPreference
-import com.qwict.svkandroid.dto.User
+import com.qwict.svkandroid.data.local.getEncryptedPreference
+import com.qwict.svkandroid.data.local.removeEncryptedPreference
+import com.qwict.svkandroid.data.remote.dto.UserDto
 
 object AuthenticationSingleton {
     var isUserAuthenticated by mutableStateOf(false)
         private set
-    var user by mutableStateOf(User())
+    var user by mutableStateOf(UserDto())
         private set
 
     fun validateUser() {

@@ -3,6 +3,7 @@ package com.qwict.svkandroid.ui.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -12,9 +13,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.qwict.svkandroid.utils.Navigations
+import com.qwict.svkandroid.ui.navigation.Navigations
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +28,8 @@ fun SvkAndroidAppbar(
     modifier: Modifier = Modifier,
     onLogOutClicked: () -> Unit = {},
 ) {
+    val openAlertDialog = remember { mutableStateOf(false) }
+
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -54,7 +59,7 @@ fun SvkAndroidAppbar(
         actions = {
             if (currentScreen.route != Navigations.Authenticate.route) {
                 IconButton(
-                    onClick = { onLogOutClicked() },
+                    onClick = { openAlertDialog.value = true },
                     colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
                 ) {
                     Icon(
@@ -65,5 +70,21 @@ fun SvkAndroidAppbar(
             } else {
             }
         },
+
     )
+
+    when {
+        openAlertDialog.value -> {
+            AlertDialog(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirmation = {
+                    onLogOutClicked()
+                    openAlertDialog.value = false
+                },
+                dialogTitle = "Log out?",
+                dialogText = "Are you sure you want to log out, Any unsaved data will be lost.",
+                icon = Icons.Default.Info,
+            )
+        }
+    }
 }

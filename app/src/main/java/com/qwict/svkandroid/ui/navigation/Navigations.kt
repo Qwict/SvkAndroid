@@ -1,4 +1,4 @@
-package com.qwict.svkandroid.utils
+package com.qwict.svkandroid.ui.navigation
 
 import androidx.annotation.StringRes
 import com.qwict.svkandroid.R

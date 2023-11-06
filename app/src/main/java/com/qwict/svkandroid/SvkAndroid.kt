@@ -9,25 +9,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.qwict.svkandroid.ui.components.Loading
 import com.qwict.svkandroid.ui.components.SvkAndroidAppbar
+import com.qwict.svkandroid.ui.navigation.NavGraph
+import com.qwict.svkandroid.ui.navigation.Navigations
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.viewModels.AuthState
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
-import com.qwict.svkandroid.utils.NavGraph
-import com.qwict.svkandroid.utils.Navigations
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+@HiltAndroidApp
 class SvkAndroidApplication : Application() {
     //    lateinit var userSettings: UserSettings
     private lateinit var appScope: CoroutineScope
-
     override fun onCreate() {
         super.onCreate()
 //        userSettings = UserSettings(dataStore)
@@ -42,7 +43,7 @@ class SvkAndroidApplication : Application() {
 
 @Composable
 fun SvkAndroidApp(
-    viewModel: AuthViewModel = viewModel(),
+    viewModel: AuthViewModel = hiltViewModel(),
 ) {
     when (viewModel.authState) {
         is AuthState.LoggedIn -> AppView(viewModel = viewModel)
