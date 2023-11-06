@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -264,7 +265,7 @@ fun MultiFloatingButton(
 
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = MaterialTheme.colorScheme.onTertiary,
                 ),
                 modifier = Modifier.alpha(
                     animateFloatAsState(
@@ -273,8 +274,7 @@ fun MultiFloatingButton(
                         label = "",
                     ).value,
                 )
-                    .width(170.dp)
-                    .background(Color.White),
+                    .width(170.dp),
                 elevation = CardDefaults.cardElevation(8.dp),
             ) {
                 items.forEach {
