@@ -7,13 +7,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +28,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -42,8 +39,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +49,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -64,10 +60,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.theme.SVKTextfield
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 import com.qwict.svkandroid.ui.viewModels.MainViewModel
+import com.qwict.svkandroid.ui.viewModels.TransportViewModel
 
 enum class MultiFloatingState {
     Expanded, Collapsed
@@ -83,9 +81,14 @@ enum class Identifier {
     CameraFab, AddLoadFab
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainViewModel) {
+fun RouteEditScreen(
+    nextNav: () -> Unit,
+    photoNav: () -> Unit,
+    viewModel: MainViewModel,
+    transportViewModel: TransportViewModel = hiltViewModel(),
+) {
     var nummerplaat by remember {
         mutableStateOf("")
     }
@@ -97,8 +100,10 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
     var multiFloatingState by remember {
         mutableStateOf(MultiFloatingState.Collapsed)
     }
-    val items = listOf(
 
+    val transportState = transportViewModel.state.collectAsState()
+
+    val items = listOf(
         MinFabItem(
             icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
             label = "Camera",
@@ -110,19 +115,23 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
             label = "Add Load",
             identifier = Identifier.AddLoadFab.name,
 
-            ),
+        ),
 
-        )
+    )
     Scaffold(
         floatingActionButton = {
             MultiFloatingButton(
-                multiFloatingState = multiFloatingState, onMultiFabStateChange = {
+                multiFloatingState = multiFloatingState,
+                onMultiFabStateChange = {
                     multiFloatingState = it
-                }, items = items, nextNav, photoNav
+                },
+                items = items,
+                nextNav,
+                photoNav,
             )
         },
 
-        ) { values ->
+    ) { values ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -156,23 +165,38 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
             }
             Spacer(modifier = Modifier.size(32.dp))
 
+//            Box {
+//                HorizontalPager(pageCount = pageCount, state = pagerState) { page ->
+//                    CarouselItem(itemList[page])
+//                }
+//
+//                DotIndicators(
+//                    pageCount = pageCount,
+//                    pagerState = pagerState,
+//                    modifier = Modifier.align(Alignment.BottomCenter),
+//                )
+//            }
+
             LazyRow(
                 userScrollEnabled = true,
 
-                ) {
-                items(5) {
+            ) {
+                items(3) { item ->
                     Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        painter = painterResource(id = transportState.value.images[item]),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(8.dp)
-                            .width(128.dp)
-                            .height(128.dp),
+                            .width(300.dp)
+                            .height(200.dp),
                     )
                 }
                 item {
                     IconButton(
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .width(300.dp)
+                            .height(200.dp),
                         onClick = { photoNav() },
                         colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                     ) {
@@ -184,9 +208,7 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
                         )
                     }
                 }
-
             }
-
 
             Spacer(modifier = Modifier.size(32.dp))
 
@@ -259,27 +281,28 @@ fun MultiFloatingButton(
     }
 
     Column(
-        horizontalAlignment = Alignment.End
+        horizontalAlignment = Alignment.End,
     ) {
         if (transition.currentState == MultiFloatingState.Expanded) {
-
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.onTertiary,
                 ),
-                modifier = Modifier.alpha(
-                    animateFloatAsState(
-                        targetValue = alpha,
-                        animationSpec = tween(100),
-                        label = "",
-                    ).value,
-                )
+                modifier = Modifier
+                    .alpha(
+                        animateFloatAsState(
+                            targetValue = alpha,
+                            animationSpec = tween(100),
+                            label = "",
+                        ).value,
+                    )
                     .width(170.dp),
                 elevation = CardDefaults.cardElevation(8.dp),
             ) {
                 items.forEach {
                     MinFab(
-                        item = it, onMinFabItemClick = { minFabItem ->
+                        item = it,
+                        onMinFabItemClick = { minFabItem ->
                             when (minFabItem.identifier) {
                                 Identifier.CameraFab.name -> {
                                     // TODO: Start Camera
@@ -290,7 +313,10 @@ fun MultiFloatingButton(
                                     nextNav()
                                 }
                             }
-                        }, alpha = alpha, textShadow = textShadow, fabScale = fabScale
+                        },
+                        alpha = alpha,
+                        textShadow = textShadow,
+                        fabScale = fabScale,
                     )
                     Spacer(modifier = Modifier.size(12.dp))
                 }
@@ -303,7 +329,7 @@ fun MultiFloatingButton(
                     MultiFloatingState.Collapsed
                 } else {
                     MultiFloatingState.Expanded
-                }
+                },
             )
         }) {
             Icon(
@@ -312,9 +338,7 @@ fun MultiFloatingButton(
                 modifier = Modifier.rotate(rotate),
             )
         }
-
     }
-
 }
 
 @SuppressLint("UnrememberedMutableInteractionSource")
@@ -327,16 +351,20 @@ fun MinFab(
     showLabel: Boolean = true,
     onMinFabItemClick: (MinFabItem) -> Unit,
 
-    ) {
+) {
     val buttonColor = MaterialTheme.colorScheme.primary
     val shadow = Color.Black.copy(.5f)
-    Row(Modifier.padding(8.dp).alpha(
-        animateFloatAsState(
-            targetValue = alpha,
-            animationSpec = tween(100),
-            label = "",
-        ).value,
-    )) {
+    Row(
+        Modifier
+            .padding(8.dp)
+            .alpha(
+                animateFloatAsState(
+                    targetValue = alpha,
+                    animationSpec = tween(100),
+                    label = "",
+                ).value,
+            ),
+    ) {
         if (showLabel) {
             Text(
                 text = item.label,
@@ -353,10 +381,9 @@ fun MinFab(
                             label = "",
                         ).value,
                     )
-
                     .fillMaxWidth(0.8f),
 
-                )
+            )
             Spacer(modifier = Modifier.size(4.dp))
         }
 
@@ -373,7 +400,7 @@ fun MinFab(
                         radius = 20.dp,
                         color = MaterialTheme.colorScheme.onSurface,
 
-                        ),
+                    ),
                 ),
         ) {
 //            drawCircle(

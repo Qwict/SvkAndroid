@@ -9,11 +9,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.qwict.svkandroid.data.remote.dto.UserDto
 import com.qwict.svkandroid.ui.viewModels.states.SvkAndroidUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(SvkAndroidUiState())
     val uiState: StateFlow<SvkAndroidUiState> = _uiState.asStateFlow()
 

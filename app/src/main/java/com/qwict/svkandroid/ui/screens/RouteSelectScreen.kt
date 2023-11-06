@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RouteScreen(viewModel: MainViewModel, nextNav: () -> Unit) {
     var text by remember {
-        mutableStateOf("R250")
+        mutableStateOf("")
     }
     Column(
         modifier = Modifier
