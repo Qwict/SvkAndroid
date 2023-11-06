@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -245,13 +246,13 @@ fun MultiFloatingButton(
 
     val alpha by transition.animateFloat(
         label = "alpha",
-        transitionSpec = { tween(durationMillis = 300) },
+        transitionSpec = { tween(durationMillis = 100) },
     ) {
         if (it == MultiFloatingState.Expanded) 1f else 0f
     }
     val textShadow by transition.animateDp(
         label = "textShadow",
-        transitionSpec = { tween(durationMillis = 300) },
+        transitionSpec = { tween(durationMillis = 100) },
     ) {
         if (it == MultiFloatingState.Expanded) 0.2.dp else 0.dp
     }
@@ -260,8 +261,20 @@ fun MultiFloatingButton(
         horizontalAlignment = Alignment.End
     ) {
         if (transition.currentState == MultiFloatingState.Expanded) {
+
             Card(
-                modifier = Modifier.width(170.dp).background(Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                modifier = Modifier.alpha(
+                    animateFloatAsState(
+                        targetValue = alpha,
+                        animationSpec = tween(100),
+                        label = "",
+                    ).value,
+                )
+                    .width(170.dp)
+                    .background(Color.White),
                 elevation = CardDefaults.cardElevation(8.dp),
             ) {
                 items.forEach {
@@ -299,6 +312,7 @@ fun MultiFloatingButton(
                 modifier = Modifier.rotate(rotate),
             )
         }
+
     }
 
 }
@@ -316,7 +330,13 @@ fun MinFab(
     ) {
     val buttonColor = MaterialTheme.colorScheme.primary
     val shadow = Color.Black.copy(.5f)
-    Row(Modifier.padding(8.dp)) {
+    Row(Modifier.padding(8.dp).alpha(
+        animateFloatAsState(
+            targetValue = alpha,
+            animationSpec = tween(100),
+            label = "",
+        ).value,
+    )) {
         if (showLabel) {
             Text(
                 text = item.label,
@@ -329,7 +349,7 @@ fun MinFab(
                     .alpha(
                         animateFloatAsState(
                             targetValue = alpha,
-                            animationSpec = tween(300),
+                            animationSpec = tween(100),
                             label = "",
                         ).value,
                     )
