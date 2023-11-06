@@ -8,7 +8,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -36,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,36 +102,30 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
             label = "Camera",
             identifier = Identifier.CameraFab.name,
         ),
-//        MinFabItem(
-//            icon = ImageBitmap.imageResource(id = R.drawable.barcodebitmap),
-//            label = "Scan barcode",
-//            identifier = "CameraFab",
-//        ),
+
         MinFabItem(
             icon = ImageBitmap.imageResource(id = R.drawable.addbitmap),
             label = "Add Load",
             identifier = Identifier.AddLoadFab.name,
 
-        ),
+            ),
 
-    )
+        )
     Scaffold(
         floatingActionButton = {
             MultiFloatingButton(
-                multiFloatingState = multiFloatingState,
-                onMultiFabStateChange = {
+                multiFloatingState = multiFloatingState, onMultiFabStateChange = {
                     multiFloatingState = it
-                },
-                items = items,
-                nextNav,
+                }, items = items, nextNav, photoNav
             )
         },
 
-    ) { values ->
+        ) { values ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(values).padding(16.dp),
+                .padding(values)
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -154,40 +153,46 @@ fun RouteEditScreen(nextNav: () -> Unit, photoNav: () -> Unit, viewModel: MainVi
                 )
             }
             Spacer(modifier = Modifier.size(32.dp))
-            Row {
-                LazyRow(userScrollEnabled = true) {
-                    items(5) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_background),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .width(128.dp)
-                                .height(128.dp),
+
+            LazyRow(
+                userScrollEnabled = true,
+
+                ) {
+                items(5) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .width(128.dp)
+                            .height(128.dp),
+                    )
+                }
+                item {
+                    IconButton(
+                        modifier = Modifier.padding(8.dp),
+                        onClick = { photoNav() },
+                        colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                    ) {
+                        Icon(
+
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add photo",
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                    item {
-                        IconButton(
-                            modifier = Modifier.padding(8.dp),
-                            onClick = { photoNav() },
-                            colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                        ) {
-                            Icon(
-
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = "Add photo",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        }
-                    }
                 }
+
             }
+
 
             Spacer(modifier = Modifier.size(32.dp))
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
             ) {
                 if (viewModel.laadBonnen.size == 0) {
                     item {
@@ -228,6 +233,7 @@ fun MultiFloatingButton(
     onMultiFabStateChange: (MultiFloatingState) -> Unit,
     items: List<MinFabItem>,
     nextNav: () -> Unit,
+    photoNav: () -> Unit,
 ) {
     val transition = updateTransition(targetState = multiFloatingState, label = "transition")
     val rotate by transition.animateFloat(label = "rotate") {
@@ -250,41 +256,43 @@ fun MultiFloatingButton(
         if (it == MultiFloatingState.Expanded) 0.2.dp else 0.dp
     }
 
-    Column(horizontalAlignment = Alignment.End) {
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
         if (transition.currentState == MultiFloatingState.Expanded) {
-//            Card(
-//                modifier = Modifier.width(170.dp),
-//                elevation = CardDefaults.cardElevation(8.dp),
-//
-//            ) {
-            items.forEach {
-                MinFab(item = it, onMinFabItemClick = { minFabItem ->
-                    when (minFabItem.identifier) {
-                        Identifier.CameraFab.name -> {
-                            // TODO START CAMERA
-                        }
+            Card(
+                modifier = Modifier.width(170.dp).background(Color.White),
+                elevation = CardDefaults.cardElevation(8.dp),
+            ) {
+                items.forEach {
+                    MinFab(
+                        item = it, onMinFabItemClick = { minFabItem ->
+                            when (minFabItem.identifier) {
+                                Identifier.CameraFab.name -> {
+                                    // TODO: Start Camera
+                                    photoNav()
+                                }
 
-                        Identifier.AddLoadFab.name -> {
-                            nextNav()
-                        }
-                    }
-                }, alpha = alpha, textShadow = textShadow, fabScale = fabScale)
-                Spacer(modifier = Modifier.size(24.dp))
+                                Identifier.AddLoadFab.name -> {
+                                    nextNav()
+                                }
+                            }
+                        }, alpha = alpha, textShadow = textShadow, fabScale = fabScale
+                    )
+                    Spacer(modifier = Modifier.size(12.dp))
+                }
             }
-//            }
         }
-        FloatingActionButton(
-            onClick = {
-                onMultiFabStateChange(
-                    if (transition.currentState == MultiFloatingState.Expanded) {
-                        MultiFloatingState.Collapsed
-                    } else {
-                        MultiFloatingState.Expanded
-                    },
-                )
-            },
 
-        ) {
+        FloatingActionButton(onClick = {
+            onMultiFabStateChange(
+                if (transition.currentState == MultiFloatingState.Expanded) {
+                    MultiFloatingState.Collapsed
+                } else {
+                    MultiFloatingState.Expanded
+                }
+            )
+        }) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
@@ -292,6 +300,7 @@ fun MultiFloatingButton(
             )
         }
     }
+
 }
 
 @SuppressLint("UnrememberedMutableInteractionSource")
@@ -304,10 +313,10 @@ fun MinFab(
     showLabel: Boolean = true,
     onMinFabItemClick: (MinFabItem) -> Unit,
 
-) {
+    ) {
     val buttonColor = MaterialTheme.colorScheme.primary
     val shadow = Color.Black.copy(.5f)
-    Row {
+    Row(Modifier.padding(8.dp)) {
         if (showLabel) {
             Text(
                 text = item.label,
@@ -320,20 +329,20 @@ fun MinFab(
                     .alpha(
                         animateFloatAsState(
                             targetValue = alpha,
-                            animationSpec = tween(500),
+                            animationSpec = tween(300),
                             label = "",
                         ).value,
                     )
-                    .shadow(textShadow)
-                    .padding(start = 8.dp, end = 8.dp),
 
-            )
-            Spacer(modifier = Modifier.size(16.dp))
+                    .fillMaxWidth(0.8f),
+
+                )
+            Spacer(modifier = Modifier.size(4.dp))
         }
 
         Canvas(
             modifier = Modifier
-                .size(32.dp)
+                .size(16.dp)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     onClick = {
@@ -344,7 +353,7 @@ fun MinFab(
                         radius = 20.dp,
                         color = MaterialTheme.colorScheme.onSurface,
 
-                    ),
+                        ),
                 ),
         ) {
 //            drawCircle(

@@ -98,6 +98,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+
+
     // Added for decoding tokens
     implementation("com.auth0.android:jwtdecode:2.0.2")
 
