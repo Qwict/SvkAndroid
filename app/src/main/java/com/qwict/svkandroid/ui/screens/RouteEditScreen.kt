@@ -201,7 +201,7 @@ fun RouteEditScreen(
                         colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                     ) {
                         Icon(
-
+                            modifier = Modifier.size(64.dp),
                             imageVector = Icons.Filled.Add,
                             contentDescription = "Add photo",
                             tint = MaterialTheme.colorScheme.onPrimary,
