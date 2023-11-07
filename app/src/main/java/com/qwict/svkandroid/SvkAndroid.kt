@@ -13,13 +13,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.qwict.svkandroid.data.local.RoomContainer
+import com.qwict.svkandroid.data.local.RoomContainerImpl
 import com.qwict.svkandroid.ui.components.Loading
 import com.qwict.svkandroid.ui.components.SvkAndroidAppbar
 import com.qwict.svkandroid.ui.navigation.NavGraph
 import com.qwict.svkandroid.ui.navigation.Navigations
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
-import com.qwict.svkandroid.ui.viewModels.AuthState
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
+import com.qwict.svkandroid.ui.viewModels.states.AuthState
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,12 +29,12 @@ import kotlinx.coroutines.SupervisorJob
 
 @HiltAndroidApp
 class SvkAndroidApplication : Application() {
-    //    lateinit var userSettings: UserSettings
     private lateinit var appScope: CoroutineScope
+    private lateinit var container: RoomContainer
     override fun onCreate() {
         super.onCreate()
-//        userSettings = UserSettings(dataStore)
         appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        container = RoomContainerImpl(this, appScope)
         appContext = applicationContext
     }
 
@@ -45,17 +47,16 @@ class SvkAndroidApplication : Application() {
 fun SvkAndroidApp(
     viewModel: AuthViewModel = hiltViewModel(),
 ) {
-    when (viewModel.authState) {
+    when (viewModel.authUiState.value.authState) {
         is AuthState.LoggedIn -> AppView(viewModel = viewModel)
         is AuthState.Idle -> AuthView(viewModel = viewModel)
         is AuthState.Loading -> Loading()
-        is AuthState.Error -> AuthView((viewModel.authState as AuthState.Error).message, viewModel = viewModel)
     }
 }
 
 @Composable
 fun AuthView(message: String = "", viewModel: AuthViewModel) {
-    AuthenticationScreen(viewModel = viewModel, message = message)
+    AuthenticationScreen(authViewModel = viewModel, message = message)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -2,8 +2,9 @@ package com.qwict.svkandroid.di
 
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Constants.BASE_URL
-import com.qwict.svkandroid.data.local.LocalDataContainerImpl
-import com.qwict.svkandroid.data.remote.ApiService
+import com.qwict.svkandroid.data.local.RoomContainer
+import com.qwict.svkandroid.data.local.RoomContainerImpl
+import com.qwict.svkandroid.data.remote.RetrofitApiService
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.data.repository.SvkRepositoryImpl
 import dagger.Module
@@ -23,28 +24,29 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApi(): ApiService {
+    fun provideRetrofitApiService(): RetrofitApiService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+            .create(RetrofitApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRoomContainer(): RoomContainer {
+        return RoomContainerImpl(
+            SvkAndroidApplication.appContext,
+            CoroutineScope(SupervisorJob() + Dispatchers.Main),
+        )
     }
 
     @Provides
     @Singleton
     fun provideRepository(
-        api: ApiService,
+        api: RetrofitApiService,
+        roomContainer: RoomContainer,
     ): SvkRepository {
-        return SvkRepositoryImpl(api)
-    }
-
-    @Provides
-    @Singleton
-    fun provideAppContainer(): LocalDataContainerImpl {
-        return LocalDataContainerImpl(
-            SvkAndroidApplication.appContext,
-            CoroutineScope(SupervisorJob() + Dispatchers.Main),
-        )
+        return SvkRepositoryImpl(api, roomContainer)
     }
 }

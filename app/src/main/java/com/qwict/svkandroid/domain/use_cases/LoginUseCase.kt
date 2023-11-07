@@ -1,7 +1,10 @@
 package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.util.Log
+import com.qwict.svkandroid.common.AuthenticationSingleton
 import com.qwict.svkandroid.common.Resource
+import com.qwict.svkandroid.data.local.saveEncryptedPreference
+import com.qwict.svkandroid.data.local.schema.asDomainModel
 import com.qwict.svkandroid.data.remote.dto.LoginDto
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.model.User
@@ -23,8 +26,21 @@ class LoginUseCase @Inject constructor(
             emit(Resource.Loading())
             val authenticatedUser = repo.login(LoginDto(email = email, password = password))
             if (authenticatedUser.validated) {
-                // Insert user in local database here
-//                emit(Resource.Success(InsertLocalUserUseCase(container)(authenticatedUser)))
+                // Shared Preferences Part, not sure if this should also be in the repository layer...
+                // but if so there will be a lot of businiss logic in repository layer;
+                // which only serves for repository pattern. I believe
+                saveEncryptedPreference("token", authenticatedUser.token)
+
+                // Singleton Part
+                AuthenticationSingleton.validateUser()
+
+                if (AuthenticationSingleton.isUserAuthenticated) {
+                    emit(Resource.Success(repo.getLocalUserByEmail(authenticatedUser.user.email).asDomainModel()))
+                } else {
+                    emit(Resource.Error("Something went wrong while validating your information on your device."))
+                }
+            } else {
+                emit(Resource.Error("Something went wrong while validating your information on the server."))
             }
         } catch (e: HttpException) {
             Log.e("LoginUseCase", "invoke: ${e.code()}", e)

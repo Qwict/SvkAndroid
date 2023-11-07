@@ -33,7 +33,7 @@ import com.qwict.svkandroid.ui.viewModels.AuthViewModel
 
 @Composable
 fun AuthenticationScreen(
-    viewModel: AuthViewModel,
+    authViewModel: AuthViewModel,
     message: String,
 ) {
     Box(
@@ -52,9 +52,9 @@ fun AuthenticationScreen(
                 style = MaterialTheme.typography.displayMedium,
             )
 
-            LoginInputFields(viewModel)
+            LoginInputFields(authViewModel)
             Text(
-                text = message,
+                text = authViewModel.authUiState.value.error,
                 color = Color.Red,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -62,7 +62,7 @@ fun AuthenticationScreen(
             )
             LogButton(
                 text = "Login",
-                onClick = { viewModel.login() },
+                onClick = { authViewModel.login() },
             )
         }
     }
@@ -80,7 +80,7 @@ fun LoginInputFields(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         OutlinedTextField(
-            value = viewModel.loginCredentials.email,
+            value = viewModel.loginCredentialsUiState.email,
             onValueChange = { viewModel.updateLoginState(email = it) },
             label = { Text("Email") },
             singleLine = true,
@@ -99,7 +99,7 @@ fun LoginInputFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = viewModel.loginCredentials.password,
+            value = viewModel.loginCredentialsUiState.password,
             onValueChange = { viewModel.updateLoginState(password = it) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),

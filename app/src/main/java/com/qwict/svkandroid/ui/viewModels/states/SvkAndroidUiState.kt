@@ -5,7 +5,7 @@ import com.qwict.svkandroid.data.remote.dto.UserDto
 data class SvkAndroidUiState(
     var user: UserDto = UserDto(),
 )
-data class LoginState(
+data class LoginUiState(
     var email: String = "",
     var password: String = "",
 )

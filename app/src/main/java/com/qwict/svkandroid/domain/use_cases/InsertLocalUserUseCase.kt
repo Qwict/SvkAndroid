@@ -28,8 +28,9 @@ class InsertLocalUserUseCase(
 
         var user = User(
             email = authenticatedUser.user.email,
-            id = authenticatedUser.user.id,
-            name = "",
+            firstName = authenticatedUser.user.firstName,
+            lastName = authenticatedUser.user.lastName,
+            role = "forklift_driver", // authenticatedUser.user.role,
         )
 //        var user = databaseUserWithImages.toUser()
 //        Log.d("InsertLocalUserUseCase", "user: ${user.email}")

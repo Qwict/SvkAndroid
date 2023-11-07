@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.qwict.svkandroid.data.remote.dto.UserDto
+import com.qwict.svkandroid.common.Constants.EMPTY_USER
 import com.qwict.svkandroid.ui.viewModels.states.SvkAndroidUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(SvkAndroidUiState())
     val uiState: StateFlow<SvkAndroidUiState> = _uiState.asStateFlow()
 
-    var user by mutableStateOf(UserDto())
+    var user by mutableStateOf(EMPTY_USER)
     val snackbarHostState = SnackbarHostState()
 
     val currentBarcode = mutableStateOf("")

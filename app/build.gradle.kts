@@ -3,6 +3,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
 }
 
 android {
@@ -90,6 +91,7 @@ dependencies {
     implementation("androidx.annotation:annotation:1.7.0")
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
     implementation("com.google.mlkit:barcode-scanning-common:17.0.0")
+    implementation("androidx.camera:camera-core:1.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -97,8 +99,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-
 
     // Added for decoding tokens
     implementation("com.auth0.android:jwtdecode:2.0.2")
@@ -127,6 +127,11 @@ dependencies {
     // Use for hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
     annotationProcessor("com.google.dagger:hilt-compiler:2.48.1")
+
+    // For room: local database
+    implementation("androidx.room:room-runtime:2.6.0")
+    ksp("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
 
     // For instrumentation tests
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.48.1")
