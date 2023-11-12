@@ -1,10 +1,8 @@
 package com.qwict.svkandroid.data.repository
 
-import android.util.Log
 import com.qwict.svkandroid.data.local.RoomContainer
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.remote.RetrofitApiService
-import com.qwict.svkandroid.data.remote.dto.AuthenticatedUserDto
 import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto
 import com.qwict.svkandroid.data.remote.dto.TransportDto
@@ -23,14 +21,16 @@ class SvkRepositoryImpl @Inject constructor(
         throw NotImplementedError()
     }
 
-    override suspend fun login(body: LoginDto): AuthenticatedUserDto {
+    override suspend fun login(loginDto: LoginDto): UserDto {
         // call api and get user
-        val authenticatedUserDto = svkApi.login(body)
-        // save user to database (repository pattern applied here)
-        Log.d("SvkRepositoryImpl", "login: ${authenticatedUserDto.user}")
-        roomContainer.userDatabase.insert(authenticatedUserDto.user.asRoomEntity())
+        val userDto = svkApi.login(loginDto)
+        if (userDto.validated) {
+            // save user to database (repository pattern applied here)
+            roomContainer.userDatabase.insert(userDto.asRoomEntity())
+        }
+
         // return user dto to domain layer
-        return authenticatedUserDto
+        return userDto
     }
 
     override suspend fun insertLocalUser(user: UserDto) {
@@ -41,7 +41,7 @@ class SvkRepositoryImpl @Inject constructor(
         return roomContainer.userDatabase.getUserByEmail(email)
     }
 
-    override suspend fun authenticate(token: String): AuthenticatedUserDto {
+    override suspend fun authenticate(token: String): UserDto {
 //        return api.authenticate(token)
         throw NotImplementedError()
     }

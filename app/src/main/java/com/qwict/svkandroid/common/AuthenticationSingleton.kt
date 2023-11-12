@@ -19,7 +19,7 @@ object AuthenticationSingleton {
         val token = getEncryptedPreference("token")
         if (token != null && token != "") {
             if (tokenIsValid(token)) {
-                val decodedHeader = getDecodedHeader(token)
+                val decodedHeader = getDecodedPayload(token)
                 // Might want to save user here to in the future...
                 user = User(
                     email = decodedHeader.email,

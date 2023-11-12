@@ -49,4 +49,10 @@ object AppModule {
     ): SvkRepository {
         return SvkRepositoryImpl(api, roomContainer)
     }
+
+//    @Provides
+//    @Singleton
+//    fun provideAuthenticationSingleton(): AuthenticationSingleton {
+//        return AuthenticationSingleton()
+//    }
 }

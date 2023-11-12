@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 @Database(
     entities = [TransportRoomEntity::class, CargoRoomEntity::class, UserRoomEntity::class, ImageRoomEntity::class],
     // change this to version+1 when you change the schema
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 @TypeConverters(DateConverter::class)

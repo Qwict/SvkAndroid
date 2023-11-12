@@ -4,7 +4,7 @@ import android.util.Log
 import com.auth0.android.jwt.JWT
 import com.qwict.svkandroid.data.local.saveEncryptedPreference
 
-fun getDecodedPayload(token: String): DecodedHeader {
+fun getDecodedHeader(token: String): DecodedHeader {
     val jwt = JWT(token)
     try {
         return DecodedHeader(
@@ -16,13 +16,13 @@ fun getDecodedPayload(token: String): DecodedHeader {
     }
 }
 
-fun getDecodedHeader(token: String): DecodedPayload {
+fun getDecodedPayload(token: String): DecodedPayload {
     val jwt = JWT(token)
     try {
         return DecodedPayload(
-//            userId = jwt.getClaim("userId").asInt()!!,
-//            role = jwt.getClaim("role").asString()!!,
             email = jwt.getClaim("email").asString()!!,
+            role = jwt.getClaim("role").asString()!!,
+            userId = jwt.getClaim("userId").asInt()!!,
             iat = jwt.getClaim("iat").asInt()!!,
             exp = jwt.getClaim("exp").asInt()!!,
         )
@@ -33,7 +33,7 @@ fun getDecodedHeader(token: String): DecodedPayload {
 
 fun tokenIsValid(token: String): Boolean {
     if (token != "") {
-        val decodedToken = getDecodedHeader(token)
+        val decodedToken = getDecodedPayload(token)
         Log.i("MainActivity", "decoded token: $decodedToken")
         val tokenExpiration = decodedToken.exp
         val currentTime = System.currentTimeMillis() / 1000

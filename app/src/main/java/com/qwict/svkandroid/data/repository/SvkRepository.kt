@@ -1,7 +1,6 @@
 package com.qwict.svkandroid.data.repository
 
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
-import com.qwict.svkandroid.data.remote.dto.AuthenticatedUserDto
 import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto
 import com.qwict.svkandroid.data.remote.dto.TransportDto
@@ -15,7 +14,7 @@ interface SvkRepository {
     /**
      * @return The AuthenticatedUserDto that represents the user that was registered
      */
-    suspend fun login(body: LoginDto): AuthenticatedUserDto
+    suspend fun login(body: LoginDto): UserDto
 
     suspend fun insertLocalUser(user: UserDto)
     suspend fun getLocalUserByEmail(email: String): UserRoomEntity
@@ -24,7 +23,7 @@ interface SvkRepository {
      * @return The AuthenticatedUserDto that represents the user that was authenticated,
      * Different from login, because the AuthenticatedUserDto is updated with the token.
      */
-    suspend fun authenticate(token: String): AuthenticatedUserDto
+    suspend fun authenticate(token: String): UserDto
 
     /**
      * @return The UUID of the image

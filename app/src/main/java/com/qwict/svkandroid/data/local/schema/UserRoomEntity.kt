@@ -27,6 +27,8 @@ data class UserRoomEntity(
     val lastName: String = "",
     @ColumnInfo(name = "role")
     val role: String = "",
+    @ColumnInfo(name = "remote_id")
+    val remoteId: Long = 0,
 )
 
 // TODO: Doesn't work?

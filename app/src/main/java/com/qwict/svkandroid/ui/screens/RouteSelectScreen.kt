@@ -29,7 +29,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RouteScreen(viewModel: MainViewModel, nextNav: () -> Unit) {
+fun RouteScreen(
+    viewModel: MainViewModel,
+    nextNav: () -> Unit,
+) {
     var text by remember {
         mutableStateOf("")
     }
@@ -50,6 +53,7 @@ fun RouteScreen(viewModel: MainViewModel, nextNav: () -> Unit) {
             onValueChange = { text = it },
             label = { Text("Route") },
             singleLine = true,
+//            isError = viewModel.isEmpty(),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.LocalShipping,
