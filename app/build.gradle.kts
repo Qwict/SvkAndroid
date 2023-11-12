@@ -100,6 +100,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+
     // Added for decoding tokens
     implementation("com.auth0.android:jwtdecode:2.0.2")
 
@@ -148,6 +149,7 @@ dependencies {
 
     // maybe for image loading in the future
     implementation("io.coil-kt:coil-compose:")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
     // using this to store the token in the keystore
     implementation("androidx.security:security-crypto:1.1.0-alpha06")

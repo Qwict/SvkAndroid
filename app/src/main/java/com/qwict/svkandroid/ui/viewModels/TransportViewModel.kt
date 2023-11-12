@@ -1,5 +1,10 @@
 package com.qwict.svkandroid.ui.viewModels
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
@@ -12,7 +17,25 @@ import javax.inject.Inject
 @HiltViewModel
 class TransportViewModel @Inject constructor() : ViewModel() {
     private val _state = MutableStateFlow(TransportUiState())
+    var showDialogState by mutableStateOf(false)
+        private set
+    var selectedImage by mutableStateOf(0)
+        private set
+
     val state: StateFlow<TransportUiState> = _state.asStateFlow()
+
+    //TODO change to real data
+    val images = mutableListOf(
+        R.drawable.transport_two,
+        R.drawable.transport_three,
+        R.drawable.transport_four,
+    )
+
+    fun toggleShowDialogState(imageIndex: Int) {
+        selectedImage = imageIndex
+        showDialogState = !showDialogState
+    }
+
 
     init {
         _state.value = TransportUiState(
