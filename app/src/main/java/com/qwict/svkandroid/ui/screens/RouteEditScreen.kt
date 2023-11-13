@@ -122,165 +122,174 @@ fun RouteEditScreen(
     val transportState = transportViewModel.state.collectAsState()
 
 
-    when {
-        transportViewModel.showDialogState -> {
-            (ImageDialog(
-                onDismissRequest = {
-                    transportViewModel.toggleShowDialogState(
-                        0
-                    )
-                },
+//    when {
+//        transportViewModel.showDialogState -> {
+//            (ImageDialog(
+//                onDismissRequest = {
+//                    transportViewModel.toggleShowDialogState(
+//                        0
+//                    )
+//                },
+//
+//                imageUrl = transportViewModel.selectedImage,
+//            ))
+//        }
+//    }
 
-                imageUrl = transportViewModel.selectedImage,
-            ))
-        }
-
-        else -> {
-            val items = listOf(
-                MinFabItem(
-                    icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
-                    label = "Camera",
-                    identifier = Identifier.CameraFab.name,
-                ),
-
-                MinFabItem(
-                    icon = ImageBitmap.imageResource(id = R.drawable.addbitmap),
-                    label = "Add Load",
-                    identifier = Identifier.AddLoadFab.name,
-
-                    ),
-
+    if (transportViewModel.showDialogState) {
+        ImageDialog(
+            onDismissRequest = {
+                transportViewModel.toggleShowDialogState(
+                    0
                 )
+            },
 
-            Scaffold(
-                floatingActionButton = {
-                    MultiFloatingButton(
-                        multiFloatingState = multiFloatingState,
-                        onMultiFabStateChange = {
-                            multiFloatingState = it
-                        },
-                        items = items,
-                        nextNav,
-                        photoNav,
-                    )
+            imageUrl = transportViewModel.selectedImage,
+        )
+    }
+    val items = listOf(
+        MinFabItem(
+            icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
+            label = "Camera",
+            identifier = Identifier.CameraFab.name,
+        ),
+
+        MinFabItem(
+            icon = ImageBitmap.imageResource(id = R.drawable.addbitmap),
+            label = "Add Load",
+            identifier = Identifier.AddLoadFab.name,
+
+            ),
+
+        )
+
+    Scaffold(
+        floatingActionButton = {
+            MultiFloatingButton(
+                multiFloatingState = multiFloatingState,
+                onMultiFabStateChange = {
+                    multiFloatingState = it
                 },
+                items = items,
+                nextNav,
+                photoNav,
+            )
+        },
 
-                ) { values ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(values)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+        ) { values ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(values)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "Route Edit",
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineLarge,
+            )
+            Spacer(modifier = Modifier.size(32.dp))
+            SVKTextfield {
+                OutlinedTextField(
+                    value = nummerplaat,
+                    onValueChange = { nummerplaat = it },
+                    label = { Text("Nummerplaat") },
+                    modifier = Modifier.padding(bottom = 5.dp),
+                )
+            }
+
+            SVKTextfield {
+                OutlinedTextField(
+                    value = chauffeur,
+                    onValueChange = { chauffeur = it },
+                    label = { Text("Chauffeur") },
+                    modifier = Modifier.padding(bottom = 5.dp),
+                )
+            }
+            Spacer(modifier = Modifier.size(32.dp))
+            LazyRow(
+                userScrollEnabled = true,
+
                 ) {
-                    Text(
-                        text = "Route Edit",
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.headlineLarge,
-                    )
-                    Spacer(modifier = Modifier.size(32.dp))
-                    SVKTextfield {
-                        OutlinedTextField(
-                            value = nummerplaat,
-                            onValueChange = { nummerplaat = it },
-                            label = { Text("Nummerplaat") },
-                            modifier = Modifier.padding(bottom = 5.dp),
-                        )
-                    }
-
-                    SVKTextfield {
-                        OutlinedTextField(
-                            value = chauffeur,
-                            onValueChange = { chauffeur = it },
-                            label = { Text("Chauffeur") },
-                            modifier = Modifier.padding(bottom = 5.dp),
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(32.dp))
-                    LazyRow(
-                        userScrollEnabled = true,
-
-                        ) {
-                        items(3) { item ->
-                            Image(
-                                painter = painterResource(id = transportState.value.images[item]),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .width(300.dp)
-                                    .height(200.dp)
-                                    .clickable {
-                                        transportViewModel.toggleShowDialogState(
-                                            transportState.value.images[item]
-                                        )
-                                    },
-
-                                )
-
-                        }
-                        item {
-                            IconButton(
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .width(300.dp)
-                                    .height(200.dp),
-                                onClick = { photoNav() },
-                                colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(64.dp),
-                                    imageVector = Icons.Filled.Add,
-                                    contentDescription = "Add photo",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.size(32.dp))
-
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                items(3) { item ->
+                    Image(
+                        painter = painterResource(id = transportState.value.images[item]),
+                        contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
+                            .padding(8.dp)
+                            .width(300.dp)
+                            .height(200.dp)
+                            .clickable {
+                                transportViewModel.toggleShowDialogState(
+                                    transportState.value.images[item]
+                                )
+                            },
+
+                        )
+
+                }
+                item {
+                    IconButton(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .width(300.dp)
+                            .height(200.dp),
+                        onClick = { photoNav() },
+                        colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                     ) {
-                        if (viewModel.laadBonnen.size == 0) {
-                            item {
+                        Icon(
+                            modifier = Modifier.size(64.dp),
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add photo",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.size(32.dp))
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+            ) {
+                if (viewModel.laadBonnen.size == 0) {
+                    item {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Geen laadbonnen",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.headlineMedium,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                } else {
+                    items(viewModel.laadBonnen.size) { laadbon ->
+                        ListItem(
+                            headlineText = { Text(text = "BarcodeNr") },
+                            supportingText = {
                                 Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = "Geen laadbonnen",
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    textAlign = TextAlign.Center,
+                                    text = "1507$laadbon",
+                                    style = MaterialTheme.typography.labelSmall,
                                 )
-                            }
-                        } else {
-                            items(viewModel.laadBonnen.size) { laadbon ->
-                                ListItem(
-                                    headlineText = { Text(text = "BarcodeNr") },
-                                    supportingText = {
-                                        Text(
-                                            text = "1507$laadbon",
-                                            style = MaterialTheme.typography.labelSmall,
-                                        )
-                                    },
-                                    colors = ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                        headlineColor = MaterialTheme.colorScheme.onPrimary,
-                                        supportingColor = MaterialTheme.colorScheme.onPrimary,
-                                    ),
-                                )
-                            }
-                        }
+                            },
+                            colors = ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                headlineColor = MaterialTheme.colorScheme.onPrimary,
+                                supportingColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                        )
                     }
                 }
             }
         }
-
     }
 }
+
 
 @Composable
 fun MultiFloatingButton(

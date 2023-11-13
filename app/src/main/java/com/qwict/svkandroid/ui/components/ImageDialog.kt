@@ -1,4 +1,5 @@
 import android.annotation.SuppressLint
+import android.provider.CalendarContract.Colors
 import androidx.camera.core.ZoomState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -64,30 +67,23 @@ fun ImageDialog(
         onDismissRequest = { onDismissRequest() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.8f)
-
-        ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface),
-
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.8f),
+                                Color.Black
+                            )
+                        )
+                    )
+                    .fillMaxSize()
                 ) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-
-                        .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            shape = RoundedCornerShape(8.dp)
-                        )
+
                 ) {
                     ZoomableImage(imageUrl)
                 }
@@ -103,7 +99,7 @@ fun ImageDialog(
                     Text("Dismiss")
                 }
             }
-        }
+
     }
 }
 
@@ -128,7 +124,7 @@ fun ZoomableImage(model: Any, contentDescription: String? = null) {
             .graphicsLayer(
                 scaleX = zoom, scaleY = zoom, rotationZ = angle
             )
-            .padding(2.dp)
+            .fillMaxSize()
             .pointerInput(Unit) {
                 detectTransformGestures(onGesture = { _, pan, gestureZoom, _ ->
                     zoom = (zoom * gestureZoom).coerceIn(1F..4F)
@@ -150,6 +146,6 @@ fun ZoomableImage(model: Any, contentDescription: String? = null) {
                         offsetY = 0F
                     }
                 })
-            }
-            .fillMaxSize())
+            })
+
 }
