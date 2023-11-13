@@ -29,6 +29,10 @@
     =============
     -->
 
+    <!-- Navigation Graph Routes -->
+    <string name="authentication_route">Authenticate</string>
+    <string name="main_route">Main</string>
+
     <!-- Title -->
     <string name="initial_title">Sign in</string>
     <string name="logged_in_title">You\'re logged in.</string>

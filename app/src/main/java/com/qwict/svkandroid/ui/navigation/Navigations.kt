@@ -4,11 +4,19 @@ import androidx.annotation.StringRes
 import com.qwict.svkandroid.R
 
 enum class Navigations(val route: String, @StringRes val title: Int) {
+    Authentication(
+        route = "Authentication",
+        title = R.string.authentication_route,
+    ),
     Authenticate(
         route = "Authenticate",
         title = R.string.logged_out_title,
     ),
 
+    Main(
+        route = "Main",
+        title = R.string.main_route,
+    ),
     Permission(
         route = "Permission",
         title = R.string.camera_permission,

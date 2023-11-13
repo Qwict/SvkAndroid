@@ -29,41 +29,52 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.qwict.svkandroid.ui.components.Loading
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
+import com.qwict.svkandroid.ui.viewModels.AuthenticationFormEvent
+import com.qwict.svkandroid.ui.viewModels.states.AuthUiState
+import com.qwict.svkandroid.ui.viewModels.states.LoginUiState
 
 @Composable
 fun AuthenticationScreen(
+    onUpdateLoginState: (AuthenticationFormEvent) -> Unit,
+    login: () -> Unit,
     authViewModel: AuthViewModel,
-    message: String,
+    loginUiState: LoginUiState,
+    authUiState: AuthUiState,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.8f),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+    if (authUiState.isLoading) {
+        Loading()
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.8f),
+            contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = "Sign in",
-                style = MaterialTheme.typography.displayMedium,
-            )
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = "Sign in",
+                    style = MaterialTheme.typography.displayMedium,
+                )
 
-            LoginInputFields(authViewModel)
-            Text(
-                text = authViewModel.authUiState.value.error,
-                color = Color.Red,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp),
-            )
-            LogButton(
-                text = "Login",
-                onClick = { authViewModel.login() },
-            )
+                LoginInputFields(loginUiState = loginUiState, onUpdateLoginState = onUpdateLoginState)
+                Text(
+                    text = authUiState.error,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                LogButton(
+                    text = "Login",
+                    onClick = { login() },
+                )
+            }
         }
     }
 }
@@ -71,7 +82,8 @@ fun AuthenticationScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginInputFields(
-    viewModel: AuthViewModel,
+    loginUiState: LoginUiState,
+    onUpdateLoginState: (AuthenticationFormEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -80,8 +92,10 @@ fun LoginInputFields(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         OutlinedTextField(
-            value = viewModel.loginCredentialsUiState.email,
-            onValueChange = { viewModel.updateLoginState(email = it) },
+//            value = viewModel.loginCredentialsUiState.email,
+            value = loginUiState.email,
+//            onValueChange = { viewModel.updateLoginState(email = it) },
+            onValueChange = { onUpdateLoginState(AuthenticationFormEvent.EmailChanged(it)) },
             label = { Text("Email") },
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
@@ -99,8 +113,10 @@ fun LoginInputFields(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = viewModel.loginCredentialsUiState.password,
-            onValueChange = { viewModel.updateLoginState(password = it) },
+//            value = viewModel.loginCredentialsUiState.password,
+            value = loginUiState.password,
+//            onValueChange = { viewModel.updateLoginState(password = it) },
+            onValueChange = { onUpdateLoginState(AuthenticationFormEvent.PasswordChanged(it)) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(

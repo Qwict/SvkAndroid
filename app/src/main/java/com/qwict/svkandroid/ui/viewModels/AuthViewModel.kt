@@ -1,7 +1,6 @@
 package com.qwict.svkandroid.ui.viewModels
 
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,21 +21,23 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
-    var loginCredentialsUiState by mutableStateOf(LoginUiState())
+    var loginUiState by mutableStateOf(LoginUiState())
+        private set
+    var authUiState by mutableStateOf(AuthUiState())
         private set
 
-    private var _authUiState = mutableStateOf(AuthUiState())
-    val authUiState: State<AuthUiState> = _authUiState
+//    private var _authUiState = mutableStateOf(AuthUiState())
+//    val authUiState: State<AuthUiState> = _authUiState
 
     init {
         if (AuthenticationSingleton.isUserAuthenticated) {
-            _authUiState.value = AuthUiState(
+            authUiState = AuthUiState(
                 user = AuthenticationSingleton.user,
                 authState = AuthState.LoggedIn,
             )
         } else {
-            _authUiState.value = AuthUiState(
-                authState = AuthState.Idle,
+            authUiState = AuthUiState(
+                authState = AuthState.UnAuthenticated,
             )
         }
     }
@@ -68,22 +69,22 @@ class AuthViewModel @Inject constructor(
 //    }
 
     fun login() {
-        val email = loginCredentialsUiState.email
-        val password = loginCredentialsUiState.password
+        val email = loginUiState.email
+        val password = loginUiState.password
         Log.i("AuthViewModel", "loginUser: $email, $password")
         loginUseCase(email, password).onEach { result ->
 //          TODO: Future use cases "should" also be implemented in this way
             when (result) {
                 is Resource.Success -> {
-                    _authUiState.value = AuthUiState(user = result.data!!, authState = AuthState.LoggedIn)
+                    authUiState = AuthUiState(user = result.data!!, authState = AuthState.LoggedIn)
                 }
 
                 is Resource.Error -> {
-                    _authUiState.value = AuthUiState(error = result.message ?: "An unexpected error occurred", authState = AuthState.Idle)
+                    authUiState = AuthUiState(error = result.message ?: "An unexpected error occurred", authState = AuthState.UnAuthenticated)
                 }
 
                 is Resource.Loading -> {
-                    _authUiState.value = AuthUiState(authState = AuthState.Loading)
+                    authUiState = authUiState.copy(isLoading = true)
                 }
             }
         }.launchIn(viewModelScope)
@@ -92,11 +93,22 @@ class AuthViewModel @Inject constructor(
     fun logout() {
         AuthenticationSingleton.logout()
         // Will remember the email address on logout
-        loginCredentialsUiState = loginCredentialsUiState.copy(password = "")
+        loginUiState = loginUiState.copy(password = "")
         // Clear the authentication ui sate on logout
-        _authUiState.value = AuthUiState(
-            authState = AuthState.Idle,
+        authUiState = AuthUiState(
+            authState = AuthState.UnAuthenticated,
         )
+    }
+
+    fun onUpdateLoginState(event: AuthenticationFormEvent) {
+        when (event) {
+            is AuthenticationFormEvent.EmailChanged -> {
+                loginUiState = loginUiState.copy(email = event.email)
+            }
+            is AuthenticationFormEvent.PasswordChanged -> {
+                loginUiState = loginUiState.copy(password = event.password)
+            }
+        }
     }
 
     fun updateLoginState(
@@ -104,10 +116,15 @@ class AuthViewModel @Inject constructor(
         password: String? = null,
     ) {
         email?.let {
-            loginCredentialsUiState = loginCredentialsUiState.copy(email = it)
+            loginUiState = loginUiState.copy(email = it)
         }
         password?.let {
-            loginCredentialsUiState = loginCredentialsUiState.copy(password = it)
+            loginUiState = loginUiState.copy(password = it)
         }
     }
+}
+
+sealed class AuthenticationFormEvent {
+    data class EmailChanged(val email: String) : AuthenticationFormEvent()
+    data class PasswordChanged(val password: String) : AuthenticationFormEvent()
 }

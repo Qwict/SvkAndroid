@@ -15,13 +15,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.qwict.svkandroid.data.local.RoomContainer
 import com.qwict.svkandroid.data.local.RoomContainerImpl
-import com.qwict.svkandroid.ui.components.Loading
 import com.qwict.svkandroid.ui.components.SvkAndroidAppbar
 import com.qwict.svkandroid.ui.navigation.NavGraph
 import com.qwict.svkandroid.ui.navigation.Navigations
-import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
-import com.qwict.svkandroid.ui.viewModels.states.AuthState
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,33 +40,16 @@ class SvkAndroidApplication : Application() {
     }
 }
 
-@Composable
-fun SvkAndroidApp(
-    viewModel: AuthViewModel = hiltViewModel(),
-) {
-    when (viewModel.authUiState.value.authState) {
-        is AuthState.LoggedIn -> AppView(viewModel = viewModel)
-        is AuthState.Idle -> AuthView(viewModel = viewModel)
-        is AuthState.Loading -> Loading()
-    }
-}
-
-@Composable
-fun AuthView(message: String = "", viewModel: AuthViewModel) {
-    AuthenticationScreen(authViewModel = viewModel, message = message)
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppView(
+fun SvkAndroidApp(
     navController: NavHostController = rememberNavController(),
-    viewModel: AuthViewModel,
+    viewModel: AuthViewModel = hiltViewModel(),
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
     val currentScreen = Navigations.values().find { it.route == backStackEntry?.destination?.route }
         ?: Navigations.Permission
-
     Scaffold(
         topBar = {
             SvkAndroidAppbar(

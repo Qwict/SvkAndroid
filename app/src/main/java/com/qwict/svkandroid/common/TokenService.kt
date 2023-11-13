@@ -2,6 +2,7 @@ package com.qwict.svkandroid.common
 
 import android.util.Log
 import com.auth0.android.jwt.JWT
+import com.qwict.svkandroid.data.local.removeEncryptedPreference
 import com.qwict.svkandroid.data.local.saveEncryptedPreference
 
 fun getDecodedHeader(token: String): DecodedHeader {
@@ -27,6 +28,7 @@ fun getDecodedPayload(token: String): DecodedPayload {
             exp = jwt.getClaim("exp").asInt()!!,
         )
     } catch (e: NullPointerException) {
+        removeEncryptedPreference("token")
         throw IllegalArgumentException("JWT is not valid")
     }
 }
