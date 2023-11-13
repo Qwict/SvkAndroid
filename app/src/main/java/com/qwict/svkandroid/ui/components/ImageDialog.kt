@@ -55,14 +55,6 @@ fun ImageDialog(
     onDismissRequest: () -> Unit,
     imageUrl: Int,
 ) {
-    val angle by remember { mutableStateOf(0f) }
-    var zoom by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
-
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp.value
-    val screenHeight = configuration.screenHeightDp.dp.value
     Dialog(
         onDismissRequest = { onDismissRequest() },
         properties = DialogProperties(usePlatformDefaultWidth = false)

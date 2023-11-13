@@ -2,16 +2,13 @@ package com.qwict.svkandroid.ui.screens
 
 import ImageDialog
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,14 +18,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+
+
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,31 +59,25 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
+
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
+
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.theme.SVKTextfield
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 import com.qwict.svkandroid.ui.viewModels.MainViewModel
 import com.qwict.svkandroid.ui.viewModels.TransportViewModel
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.roundToInt
-import kotlin.math.sin
+
 
 enum class MultiFloatingState {
     Expanded, Collapsed
@@ -120,22 +117,6 @@ fun RouteEditScreen(
     }
 
     val transportState = transportViewModel.state.collectAsState()
-
-
-//    when {
-//        transportViewModel.showDialogState -> {
-//            (ImageDialog(
-//                onDismissRequest = {
-//                    transportViewModel.toggleShowDialogState(
-//                        0
-//                    )
-//                },
-//
-//                imageUrl = transportViewModel.selectedImage,
-//            ))
-//        }
-//    }
-
     if (transportViewModel.showDialogState) {
         ImageDialog(
             onDismissRequest = {
@@ -213,38 +194,67 @@ fun RouteEditScreen(
                 userScrollEnabled = true,
 
                 ) {
-                items(3) { item ->
-                    Image(
-                        painter = painterResource(id = transportState.value.images[item]),
-                        contentDescription = null,
+                itemsIndexed(transportViewModel.images) { index,image,   ->
+                    Box(
                         modifier = Modifier
-                            .padding(8.dp)
                             .width(300.dp)
                             .height(200.dp)
-                            .clickable {
-                                transportViewModel.toggleShowDialogState(
-                                    transportState.value.images[item]
-                                )
-                            },
+                    ) {
+                        // Load property image here
+                        Image(
+                            painter = painterResource(id = image),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(2.dp)
+                                .clickable {
+                                    transportViewModel.toggleShowDialogState(
+                                        image
+                                    )
+                                },
 
-                        )
+                            )
+                        IconButton(
+                            onClick = { transportViewModel.deleteImageOnIndex(index) },
+                            modifier = Modifier.align(Alignment.TopEnd),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(8.dp)
+                            )
+                        }
+                    }
 
                 }
                 item {
-                    IconButton(
+                    Box(
                         modifier = Modifier
-                            .padding(8.dp)
                             .width(300.dp)
-                            .height(200.dp),
-                        onClick = { photoNav() },
-                        colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                            .height(200.dp)
                     ) {
-                        Icon(
-                            modifier = Modifier.size(64.dp),
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add photo",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                        )
+                        IconButton(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxSize(),
+                            onClick = { photoNav() },
+                            colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(64.dp),
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Add photo",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
                     }
                 }
             }
@@ -303,22 +313,13 @@ fun MultiFloatingButton(
     val rotate by transition.animateFloat(label = "rotate") {
         if (it == MultiFloatingState.Expanded) 315f else 0f
     }
-    val fabScale by transition.animateFloat(label = "Fabscale") {
-        if (it == MultiFloatingState.Expanded) 36f else 0f
-    }
-
     val alpha by transition.animateFloat(
         label = "alpha",
         transitionSpec = { tween(durationMillis = 100) },
     ) {
         if (it == MultiFloatingState.Expanded) 1f else 0f
     }
-    val textShadow by transition.animateDp(
-        label = "textShadow",
-        transitionSpec = { tween(durationMillis = 100) },
-    ) {
-        if (it == MultiFloatingState.Expanded) 0.2.dp else 0.dp
-    }
+
 
     Column(
         horizontalAlignment = Alignment.End,
@@ -355,8 +356,6 @@ fun MultiFloatingButton(
                             }
                         },
                         alpha = alpha,
-                        textShadow = textShadow,
-                        fabScale = fabScale,
                     )
                     Spacer(modifier = Modifier.size(12.dp))
                 }
@@ -386,14 +385,10 @@ fun MultiFloatingButton(
 fun MinFab(
     item: MinFabItem,
     alpha: Float,
-    textShadow: Dp,
-    fabScale: Float,
     showLabel: Boolean = true,
     onMinFabItemClick: (MinFabItem) -> Unit,
 
     ) {
-    val buttonColor = MaterialTheme.colorScheme.primary
-    val shadow = Color.Black.copy(.5f)
     Row(
         Modifier
             .padding(8.dp)

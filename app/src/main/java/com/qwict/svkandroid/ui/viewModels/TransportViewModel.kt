@@ -25,11 +25,26 @@ class TransportViewModel @Inject constructor() : ViewModel() {
     val state: StateFlow<TransportUiState> = _state.asStateFlow()
 
     //TODO change to real data
-    val images = mutableListOf(
-        R.drawable.transport_two,
-        R.drawable.transport_three,
-        R.drawable.transport_four,
+    var images by mutableStateOf(
+        listOf(
+            R.drawable.transport_two,
+            R.drawable.transport_three,
+            R.drawable.transport_four,
+        )
     )
+
+    fun deleteImageOnIndex(imageIndex: Int) {
+        Log.i("TEST", "deleteImageOnIndex: ${imageIndex}")
+        if (imageIndex >= 0 && imageIndex < images.size) {
+            images = images.toMutableList().apply {
+                removeAt(imageIndex)
+            }
+            Log.i("TEST", "deleteImageOnIndex: ${images}")
+        } else {
+            // Handle index out of bounds, e.g., throw an exception or log an error
+            println("Invalid index: $imageIndex")
+        }
+    }
 
     fun toggleShowDialogState(imageIndex: Int) {
         selectedImage = imageIndex
