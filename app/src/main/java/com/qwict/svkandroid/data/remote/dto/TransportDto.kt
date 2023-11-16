@@ -1,5 +1,6 @@
 package com.qwict.svkandroid.data.remote.dto
 
+import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.squareup.moshi.JsonClass
 import java.util.Date
 import java.util.UUID

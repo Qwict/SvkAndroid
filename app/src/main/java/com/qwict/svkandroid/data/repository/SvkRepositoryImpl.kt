@@ -2,6 +2,7 @@ package com.qwict.svkandroid.data.repository
 
 import com.qwict.svkandroid.data.local.RoomContainer
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
+import com.qwict.svkandroid.data.local.schema.toTransport
 import com.qwict.svkandroid.data.remote.RetrofitApiService
 import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto
@@ -9,7 +10,10 @@ import com.qwict.svkandroid.data.remote.dto.TransportDto
 import com.qwict.svkandroid.data.remote.dto.UserDto
 import com.qwict.svkandroid.data.remote.dto.asRoomEntity
 import com.qwict.svkandroid.domain.model.Transport
+import com.qwict.svkandroid.domain.model.asRoomEntity
 import java.io.File
+import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
 
 class SvkRepositoryImpl @Inject constructor(
@@ -57,5 +61,9 @@ class SvkRepositoryImpl @Inject constructor(
 
     override suspend fun patchTransport(transport: Transport): TransportDto {
         throw NotImplementedError()
+    }
+
+    override suspend fun insertTransportObject(transport: Transport) {
+        roomContainer.transportDatabase.insert(transport.asRoomEntity())
     }
 }

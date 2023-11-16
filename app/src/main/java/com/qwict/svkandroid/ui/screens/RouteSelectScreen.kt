@@ -25,12 +25,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 import com.qwict.svkandroid.ui.viewModels.MainViewModel
+import com.qwict.svkandroid.ui.viewModels.TransportViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteScreen(
     viewModel: MainViewModel,
+    transportViewModel: TransportViewModel,
     nextNav: () -> Unit,
 ) {
     var text by remember {
@@ -62,37 +64,43 @@ fun RouteScreen(
                 )
             },
         )
-        Button(onClick = { nextNav() }) {
+        Button(onClick = {
+            val nr = text.toInt()
+            transportViewModel.selectRoute(nr)
+            nextNav()
+        }) {
             Text(text = "Select")
         }
         val scope = rememberCoroutineScope()
         val context = LocalContext.current
         val scanner = BarcodeScanner(context, BarcodeFormat.QR) { barcode ->
             viewModel.currentQrcode.value = barcode
+            //TODO -> value for scan in viewmodel
             nextNav()
         }
         Button(onClick = {
             scope.launch {
                 scanner.startScan()
             }
+            transportViewModel.selectRoute(text.toInt())
         }) {
             Text("Scan QR-code")
         }
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun RouteScreenPreview() {
-    SvkAndroidTheme(darkTheme = false) {
-        RouteScreen(MainViewModel(), {})
-    }
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun RouteScreenPreview() {
+//    SvkAndroidTheme(darkTheme = false) {
+//        RouteScreen(MainViewModel(), {})
+//    }
+//}
 
-@Preview(showSystemUi = true)
-@Composable
-fun RouteDarkScreenPreview() {
-    SvkAndroidTheme(darkTheme = true) {
-        RouteScreen(MainViewModel(), {})
-    }
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun RouteDarkScreenPreview() {
+//    SvkAndroidTheme(darkTheme = true) {
+//        RouteScreen(MainViewModel(), {})
+//    }
+//}

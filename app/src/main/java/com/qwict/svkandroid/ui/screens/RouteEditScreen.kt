@@ -77,6 +77,7 @@ import com.qwict.svkandroid.ui.theme.SVKTextfield
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 import com.qwict.svkandroid.ui.viewModels.MainViewModel
 import com.qwict.svkandroid.ui.viewModels.TransportViewModel
+import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 
 
 enum class MultiFloatingState {
@@ -100,9 +101,10 @@ fun RouteEditScreen(
     nextNav: () -> Unit,
     photoNav: () -> Unit,
     viewModel: MainViewModel,
-    transportViewModel: TransportViewModel = hiltViewModel(),
+    transportUiState: TransportUiState,
+    showDialogState : Boolean,
 ) {
-
+//    val number : String = routeNr
 
     var nummerplaat by remember {
         mutableStateOf("")
@@ -116,11 +118,10 @@ fun RouteEditScreen(
         mutableStateOf(MultiFloatingState.Collapsed)
     }
 
-    val transportState = transportViewModel.state.collectAsState()
-    if (transportViewModel.showDialogState) {
+    if (showDialogState) {
         ImageDialog(
             onDismissRequest = {
-                transportViewModel.toggleShowDialogState(
+                transportUiState(
                     0
                 )
             },
@@ -168,6 +169,11 @@ fun RouteEditScreen(
         ) {
             Text(
                 text = "Route Edit",
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineLarge,
+            )
+            Text(
+                text = transportUiState.routeNumber.toString(),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineLarge,
             )
@@ -452,7 +458,7 @@ fun MinFab(
 }
 
 
-@Preview(showSystemUi = true, showBackground = true)
+/*@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun RouteEditScreenPreview() {
     SvkAndroidTheme(darkTheme = false) {
@@ -466,4 +472,4 @@ fun RouteEditDarkScreenPreview() {
     SvkAndroidTheme(darkTheme = true) {
         RouteEditScreen(nextNav = {}, photoNav = {}, viewModel = MainViewModel())
     }
-}
+}*/

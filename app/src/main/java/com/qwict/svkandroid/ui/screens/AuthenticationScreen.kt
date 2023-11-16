@@ -39,7 +39,6 @@ import com.qwict.svkandroid.ui.viewModels.states.LoginUiState
 fun AuthenticationScreen(
     onUpdateLoginState: (AuthenticationFormEvent) -> Unit,
     login: () -> Unit,
-    authViewModel: AuthViewModel,
     loginUiState: LoginUiState,
     authUiState: AuthUiState,
 ) {

@@ -28,7 +28,6 @@ interface TransportDao {
 
     @Query("SELECT * FROM transport WHERE id = :id")
     fun getTransportById(id: Int): TransportRoomEntity
-
     // TODO: Figure out how to get this to work
 //    @Transaction
 //    @Query("SELECT * FROM transport")

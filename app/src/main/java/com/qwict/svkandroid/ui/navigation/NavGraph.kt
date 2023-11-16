@@ -1,15 +1,19 @@
 package com.qwict.svkandroid.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.screens.EditScreen
@@ -42,7 +46,6 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel = hiltVi
                 val authViewModel = it.sharedViewModel<AuthViewModel>(navController)
                 AuthenticationScreen(
                     onUpdateLoginState = { authViewModel.onUpdateLoginState(it) },
-                    authViewModel = authViewModel,
                     loginUiState = authViewModel.loginUiState,
                     login = { authViewModel.login() },
                     authUiState = authViewModel.authUiState,
@@ -63,21 +66,37 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel = hiltVi
                 })
             }
 
-            composable(route = Navigations.RouteSelect.route) {
+            composable(
+                route = Navigations.RouteSelect.route
+            ) {
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
-                RouteScreen(viewModel) {
+
+                RouteScreen(
+                    viewModel,
+                    transportViewModel,
+                ) {
+//                    navController.navigate(Navigations.RouteEdit.route + "/$it")
                     navController.navigate(Navigations.RouteEdit.route)
                 }
             }
             composable(
                 route = Navigations.RouteEdit.route,
+               /* arguments = listOf(
+                    navArgument("selectedRouteNr") {
+                        type = NavType.StringType
+                    }
+                )*/
             ) {
+//                val param = it.arguments?.getString("selectedRouteNr")
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
-                RouteEditScreen({ navController.navigate(Navigations.Scan.route) }, {
-                    navController.navigate(
-                        Navigations.Photo.route,
-                    )
-                }, viewModel)
+
+                RouteEditScreen(
+//                    param!!,
+                    { navController.navigate(Navigations.Scan.route) },
+                    { navController.navigate(Navigations.Photo.route)},
+                    viewModel,
+                    transportViewModel
+                )
             }
 
             composable(Navigations.Scan.route) {

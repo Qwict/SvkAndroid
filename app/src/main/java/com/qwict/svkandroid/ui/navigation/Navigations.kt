@@ -39,6 +39,7 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         title = R.string.title_uploading_screen,
     ),
     RouteEdit(
+//        route = "RouteEdit/{selectedRouteNr}",
         route = "RouteEdit",
         title = R.string.title_overview_screen,
     ),
