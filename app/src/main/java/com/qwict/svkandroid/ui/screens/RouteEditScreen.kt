@@ -27,7 +27,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +44,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,15 +60,13 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.qwict.svkandroid.R
+import com.qwict.svkandroid.ui.components.AddCargoNumberDialog
 import com.qwict.svkandroid.ui.theme.SVKTextfield
-import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
-import com.qwict.svkandroid.ui.viewModels.MainViewModel
-import com.qwict.svkandroid.ui.viewModels.TransportViewModel
+import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
+import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 
 enum class MultiFloatingState {
     Expanded, Collapsed
@@ -86,45 +85,42 @@ enum class Identifier {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteEditScreen(
-    nextNav: () -> Unit,
-    photoNav: () -> Unit,
-    viewModel: MainViewModel,
-    transportViewModel: TransportViewModel = hiltViewModel(),
+    onUpdateTransportState: (TransportChangeEvent) -> Unit,
+    transportUiState: TransportUiState,
+    showDialogState: Boolean,
+    selectedImage: Int,
+    deleteImageOnIndex: (Int) -> Unit,
+    toggleShowDialogState: (Int) -> Unit,
+    navigateToPhotoRoute: () -> Unit,
+    scanCargoNumber: () -> Unit,
+    isCargoNumberValidThenSave: () -> Boolean,
+    clearCargoNumberError: () -> Unit,
+    startEditingCargoNumber: () -> Unit,
+    stopEditingCargoNumber: () -> Unit,
 ) {
-    var nummerplaat by remember {
-        mutableStateOf("")
-    }
-
-    var chauffeur by remember {
-        mutableStateOf("")
-    }
-
     var multiFloatingState by remember {
         mutableStateOf(MultiFloatingState.Collapsed)
     }
 
-    val transportState = transportViewModel.state.collectAsState()
-    if (transportViewModel.showDialogState) {
-        ImageDialog(
-            onDismissRequest = {
-                transportViewModel.toggleShowDialogState(
-                    0,
-                )
-            },
+    val openAddCargoNumberDialog = remember { mutableStateOf(false) }
 
-            imageUrl = transportViewModel.selectedImage,
+//    val transportUiState = transportViewModel.state.collectAsState()
+    if (showDialogState) {
+        ImageDialog(
+            onDismissRequest = { toggleShowDialogState(0) },
+            imageUrl = selectedImage,
         )
     }
     val items = listOf(
         MinFabItem(
             icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
-            label = "Camera",
+            label = "Image",
             identifier = Identifier.CameraFab.name,
         ),
 
         MinFabItem(
             icon = ImageBitmap.imageResource(id = R.drawable.addbitmap),
-            label = "Add Load",
+            label = "Cargo",
             identifier = Identifier.AddLoadFab.name,
 
         ),
@@ -139,8 +135,8 @@ fun RouteEditScreen(
                     multiFloatingState = it
                 },
                 items = items,
-                nextNav,
-                photoNav,
+                navigateToPhotoRoute = navigateToPhotoRoute,
+                openAddCargoNumberDialog = { openAddCargoNumberDialog.value = true },
             )
         },
 
@@ -161,8 +157,10 @@ fun RouteEditScreen(
             Spacer(modifier = Modifier.size(32.dp))
             SVKTextfield {
                 OutlinedTextField(
-                    value = nummerplaat,
-                    onValueChange = { nummerplaat = it },
+                    value = transportUiState.licensePlate,
+                    onValueChange = {
+                        onUpdateTransportState(TransportChangeEvent.LicensePlateChanged(it))
+                    },
                     label = { Text("Nummerplaat") },
                     modifier = Modifier.padding(bottom = 5.dp),
                 )
@@ -170,8 +168,10 @@ fun RouteEditScreen(
 
             SVKTextfield {
                 OutlinedTextField(
-                    value = chauffeur,
-                    onValueChange = { chauffeur = it },
+                    value = transportUiState.driverName,
+                    onValueChange = {
+                        onUpdateTransportState(TransportChangeEvent.DriverChanged(it))
+                    },
                     label = { Text("Chauffeur") },
                     modifier = Modifier.padding(bottom = 5.dp),
                 )
@@ -181,7 +181,7 @@ fun RouteEditScreen(
                 userScrollEnabled = true,
 
             ) {
-                itemsIndexed(transportViewModel.images) { index, image ->
+                itemsIndexed(transportUiState.images) { index, image ->
                     Box(
                         modifier = Modifier
                             .width(300.dp)
@@ -196,14 +196,14 @@ fun RouteEditScreen(
                                 .fillMaxSize()
                                 .padding(2.dp)
                                 .clickable {
-                                    transportViewModel.toggleShowDialogState(
+                                    toggleShowDialogState(
                                         image,
                                     )
                                 },
 
                         )
                         IconButton(
-                            onClick = { transportViewModel.deleteImageOnIndex(index) },
+                            onClick = { deleteImageOnIndex(index) },
                             modifier = Modifier.align(Alignment.TopEnd),
                             colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -231,7 +231,7 @@ fun RouteEditScreen(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxSize(),
-                            onClick = { photoNav() },
+                            onClick = { navigateToPhotoRoute() },
                             colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                         ) {
                             Icon(
@@ -253,25 +253,50 @@ fun RouteEditScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
             ) {
-                if (viewModel.laadBonnen.size == 0) {
+                if (transportUiState.cargoNumbers.isEmpty()) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = "Geen laadbonnen",
+                            text = "No Cargo Numbers added yet",
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.headlineMedium,
                             textAlign = TextAlign.Center,
                         )
                     }
                 } else {
-                    items(viewModel.laadBonnen.size) { laadbon ->
+                    items(transportUiState.cargoNumbers.size) { index ->
                         ListItem(
-                            headlineText = { Text(text = "BarcodeNr") },
+                            headlineText = { Text(text = "Cargo number") },
                             supportingText = {
-                                Text(
-                                    text = "1507$laadbon",
-                                    style = MaterialTheme.typography.labelSmall,
-                                )
+                                Row {
+                                    Text(
+                                        text = transportUiState.cargoNumbers[index],
+                                        style = MaterialTheme.typography.labelSmall,
+                                    )
+                                    IconButton(
+                                        onClick = {
+                                            clearCargoNumberError()
+                                            startEditingCargoNumber()
+                                            onUpdateTransportState(
+                                                TransportChangeEvent.OriginalCargoNumberChanged(
+                                                    transportUiState.cargoNumbers[index],
+                                                ),
+                                            )
+                                            onUpdateTransportState(
+                                                TransportChangeEvent.CargoNumberChanged(
+                                                    transportUiState.cargoNumbers[index],
+                                                ),
+                                            )
+                                            openAddCargoNumberDialog.value = true
+                                        },
+                                        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Edit,
+                                            contentDescription = "The Account screen",
+                                        )
+                                    }
+                                }
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -282,6 +307,35 @@ fun RouteEditScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.size(32.dp))
+
+            Button(
+                onClick = { TODO() },
+            ) {
+                Text(
+                    text = "Finish Transport",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+            }
+        }
+    }
+
+    when {
+        openAddCargoNumberDialog.value -> {
+            AddCargoNumberDialog(
+                onDismissRequest = { openAddCargoNumberDialog.value = false },
+                onConfirmation = {
+                    openAddCargoNumberDialog.value = false
+                    println("Confirmation registered") // Add logic here to handle confirmation.
+                },
+                scanCargoNumber = { scanCargoNumber() },
+                transportUiState = transportUiState,
+                onUpdateTransportState = onUpdateTransportState,
+                isValidAndAddCargoNumber = { isCargoNumberValidThenSave() },
+                stopEditingCargoNumber = { stopEditingCargoNumber() },
+                clearCargoNumberError = { clearCargoNumberError() },
+            )
         }
     }
 }
@@ -291,8 +345,8 @@ fun MultiFloatingButton(
     multiFloatingState: MultiFloatingState,
     onMultiFabStateChange: (MultiFloatingState) -> Unit,
     items: List<MinFabItem>,
-    nextNav: () -> Unit,
-    photoNav: () -> Unit,
+    openAddCargoNumberDialog: () -> Unit,
+    navigateToPhotoRoute: () -> Unit,
 ) {
     val transition = updateTransition(targetState = multiFloatingState, label = "transition")
     val rotate by transition.animateFloat(label = "rotate") {
@@ -331,11 +385,12 @@ fun MultiFloatingButton(
                             when (minFabItem.identifier) {
                                 Identifier.CameraFab.name -> {
                                     // TODO: Start Camera
-                                    photoNav()
+                                    navigateToPhotoRoute()
                                 }
 
                                 Identifier.AddLoadFab.name -> {
-                                    nextNav()
+                                    openAddCargoNumberDialog()
+//                                    navigateToScanRoute()
                                 }
                             }
                         },
@@ -431,21 +486,5 @@ fun MinFab(
                 alpha = alpha,
             )
         }
-    }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun RouteEditScreenPreview() {
-    SvkAndroidTheme(darkTheme = false) {
-        RouteEditScreen(nextNav = {}, photoNav = {}, viewModel = MainViewModel())
-    }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun RouteEditDarkScreenPreview() {
-    SvkAndroidTheme(darkTheme = true) {
-        RouteEditScreen(nextNav = {}, photoNav = {}, viewModel = MainViewModel())
     }
 }

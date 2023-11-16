@@ -60,7 +60,12 @@ fun AuthenticationScreen(
                     style = MaterialTheme.typography.displayMedium,
                 )
 
-                LoginInputFields(loginUiState = loginUiState, onUpdateLoginState = onUpdateLoginState, authUiState = authUiState)
+                LoginInputFields(
+                    loginUiState = loginUiState,
+                    onUpdateLoginState = onUpdateLoginState,
+                    authUiState = authUiState,
+                )
+
                 Text(
                     text = authUiState.error,
                     color = Color.Red,

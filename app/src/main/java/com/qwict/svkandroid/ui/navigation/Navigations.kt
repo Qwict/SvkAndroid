@@ -21,14 +21,6 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         route = "Permission",
         title = R.string.camera_permission,
     ),
-    Scan(
-        route = "Scan",
-        title = R.string.title_barcode_scanner_screen,
-    ),
-    Edit(
-        route = "Edit",
-        title = R.string.title_edit_screen,
-    ),
     Photo(
         route = "Photo",
         title = R.string.title_photo_screen,

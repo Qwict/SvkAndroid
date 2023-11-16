@@ -103,6 +103,7 @@ class AuthViewModel @Inject constructor(
             is AuthenticationFormEvent.PasswordChanged -> {
                 loginUiState = loginUiState.copy(password = event.password)
             }
+            else -> {}
         }
     }
 }
