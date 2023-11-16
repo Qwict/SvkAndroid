@@ -56,6 +56,7 @@ fun SvkAndroidApp(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
+                isRouteSelectScreen = currentScreen == Navigations.RouteSelect,
                 onLogOutClicked = {
                     viewModel.logout()
                 },

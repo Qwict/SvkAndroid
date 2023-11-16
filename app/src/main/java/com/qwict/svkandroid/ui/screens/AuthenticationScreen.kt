@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.ui.components.Loading
-import com.qwict.svkandroid.ui.viewModels.AuthViewModel
 import com.qwict.svkandroid.ui.viewModels.AuthenticationFormEvent
 import com.qwict.svkandroid.ui.viewModels.states.AuthUiState
 import com.qwict.svkandroid.ui.viewModels.states.LoginUiState
@@ -39,7 +38,6 @@ import com.qwict.svkandroid.ui.viewModels.states.LoginUiState
 fun AuthenticationScreen(
     onUpdateLoginState: (AuthenticationFormEvent) -> Unit,
     login: () -> Unit,
-    authViewModel: AuthViewModel,
     loginUiState: LoginUiState,
     authUiState: AuthUiState,
 ) {
@@ -93,9 +91,7 @@ fun LoginInputFields(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         OutlinedTextField(
-//            value = viewModel.loginCredentialsUiState.email,
             value = loginUiState.email,
-//            onValueChange = { viewModel.updateLoginState(email = it) },
             onValueChange = { onUpdateLoginState(AuthenticationFormEvent.EmailChanged(it)) },
             label = { Text("Email") },
             singleLine = true,
@@ -121,9 +117,7 @@ fun LoginInputFields(
         }
 
         OutlinedTextField(
-//            value = viewModel.loginCredentialsUiState.password,
             value = loginUiState.password,
-//            onValueChange = { viewModel.updateLoginState(password = it) },
             onValueChange = { onUpdateLoginState(AuthenticationFormEvent.PasswordChanged(it)) },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),

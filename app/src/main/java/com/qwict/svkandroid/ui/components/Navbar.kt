@@ -25,6 +25,7 @@ fun SvkAndroidAppbar(
     currentScreen: Navigations,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    isRouteSelectScreen: Boolean = false,
     modifier: Modifier = Modifier,
     onLogOutClicked: () -> Unit = {},
 ) {
@@ -57,7 +58,7 @@ fun SvkAndroidAppbar(
         },
 //        TODO: Should see in mockup what we want here... (this is the top right icon)
         actions = {
-            if (currentScreen.route != Navigations.Authenticate.route) {
+            if (currentScreen.route != Navigations.Authenticate.route && isRouteSelectScreen) {
                 IconButton(
                     onClick = { openAlertDialog.value = true },
                     colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
@@ -67,7 +68,6 @@ fun SvkAndroidAppbar(
                         contentDescription = "The Account screen",
                     )
                 }
-            } else {
             }
         },
 

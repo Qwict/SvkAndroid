@@ -29,20 +29,19 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel = hiltVi
         navController = navController,
 //        startDestination = Navigations.Permission.route
         startDestination = if (isUserAuthenticated) {
-            Navigations.Main.route
+            Navigations.MainRoute.route
         } else {
-            Navigations.Authentication.route
+            Navigations.AuthenticationRoute.route
         },
     ) {
         navigation(
             startDestination = Navigations.Authenticate.route,
-            route = Navigations.Authentication.route,
+            route = Navigations.AuthenticationRoute.route,
         ) {
             composable(route = Navigations.Authenticate.route) {
                 val authViewModel = it.sharedViewModel<AuthViewModel>(navController)
                 AuthenticationScreen(
                     onUpdateLoginState = { authViewModel.onUpdateLoginState(it) },
-                    authViewModel = authViewModel,
                     loginUiState = authViewModel.loginUiState,
                     login = { authViewModel.login() },
                     authUiState = authViewModel.authUiState,
@@ -52,7 +51,7 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel = hiltVi
 
         navigation(
             startDestination = Navigations.Permission.route,
-            route = Navigations.Main.route,
+            route = Navigations.MainRoute.route,
         ) {
             composable(route = Navigations.Permission.route) {
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)

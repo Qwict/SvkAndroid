@@ -28,17 +28,14 @@ class AuthViewModel @Inject constructor(
     var authUiState by mutableStateOf(AuthUiState())
         private set
 
-//    private var _authUiState = mutableStateOf(AuthUiState())
-//    val authUiState: State<AuthUiState> = _authUiState
-
     init {
-        if (AuthenticationSingleton.isUserAuthenticated) {
-            authUiState = AuthUiState(
+        authUiState = if (AuthenticationSingleton.isUserAuthenticated) {
+            AuthUiState(
                 user = AuthenticationSingleton.user,
                 authState = AuthState.LoggedIn,
             )
         } else {
-            authUiState = AuthUiState(
+            AuthUiState(
                 authState = AuthState.UnAuthenticated,
             )
         }
@@ -106,18 +103,6 @@ class AuthViewModel @Inject constructor(
             is AuthenticationFormEvent.PasswordChanged -> {
                 loginUiState = loginUiState.copy(password = event.password)
             }
-        }
-    }
-
-    fun updateLoginState(
-        email: String? = null,
-        password: String? = null,
-    ) {
-        email?.let {
-            loginUiState = loginUiState.copy(email = it)
-        }
-        password?.let {
-            loginUiState = loginUiState.copy(password = it)
         }
     }
 }
