@@ -1,5 +1,6 @@
-package com.qwict.svkandroid.domain.use_cases
+package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
+import android.util.Log
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.model.Transport
@@ -10,25 +11,22 @@ import javax.inject.Inject
 
 class SelectRouteUseCase @Inject constructor(
     private val repo: SvkRepository,
-){
+) {
     operator fun invoke(
-        routeNumber: Int
-    ) : Flow<Resource<Int>> = flow {
+        routeNumber: String,
+    ): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-            if(routeNumber < 0){
-                emit(Resource.Error("The given number is not a proper transport number", routeNumber))
-            } else {
-                repo.insertTransportObject(
-                    Transport(
-                        routeNumber =  routeNumber,
-                        routeDate = Date()
-                    )
-                )
-                println("Inserted in local db")
-                emit(Resource.Success(routeNumber))
-            }
-        } catch (e : Exception) {
+            repo.insertTransportObject(
+                Transport(
+                    routeNumber = routeNumber,
+                    routeDate = Date(),
+                ),
+            )
+            Log.d("SelectRouteUseCase", "Saved transport ($routeNumber) locally")
+            emit(Resource.Success(routeNumber))
+        } catch (e: Exception) {
+            Log.e("SelectRouteUseCase", "Failed to save transport locally", e)
             emit(Resource.Error("Failed to save transport locally"))
         }
     }

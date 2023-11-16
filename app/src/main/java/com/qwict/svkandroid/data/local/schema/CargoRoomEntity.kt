@@ -21,7 +21,7 @@ data class CargoRoomEntity(
     val id: Int = 0,
 //    @ColumnInfo(name = "remote_id") var remoteId: Int = 0, // could be used somewhere ... maybe add it later?
     @ColumnInfo(name = "cargo_number")
-    val cargoNumber: Int = 0,
+    val cargoNumber: String = "",
     @ColumnInfo(name = "cargo_date")
     val cargoDate: Date = Date(),
 
@@ -33,7 +33,8 @@ data class CargoRoomEntity(
 )
 
 fun CargoRoomEntity.asDomainModel() = Cargo(
-    throw NotImplementedError(),
+    cargoNumber = cargoNumber,
+    loaderId = loaderId,
 )
 
 // Could insert seeds here to populate the database with some data

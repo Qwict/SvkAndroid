@@ -26,7 +26,7 @@ class LoginUseCase @Inject constructor(
         Log.i("LoginUseCase", "invoke: $email, $password")
         try {
             emit(Resource.Loading())
-            val userDto = repo.login(LoginDto(email = email, password = password))
+            val userDto = repo.login(loginDto = LoginDto(email = email, password = password))
             if (userDto.validated) {
                 // Shared Preferences Part, not sure if this should also be in the repository layer...
                 // but if so there will be a lot of businiss logic in repository layer;

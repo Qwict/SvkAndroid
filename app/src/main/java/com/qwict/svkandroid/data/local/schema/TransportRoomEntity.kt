@@ -21,12 +21,16 @@ data class TransportRoomEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 //    @ColumnInfo(name = "remote_id") var remoteId: Int = 0, // could be used somewhere ... maybe add it later?
     @ColumnInfo(name = "route_number")
-    val routeNumber: Int = 0,
+    val routeNumber: String,
     @ColumnInfo(name = "route_date")
     val routeDate: Date = Date(),
-    val driver: String = "",
+    val driver: String,
     @ColumnInfo(name = "license_plate")
-    val licensePlate: String = "",
+    val licensePlate: String,
+    @ColumnInfo(name = "is_synced")
+    val isSynced: Boolean = false,
+    @ColumnInfo(name = "is_active_flow")
+    val isActiveFlow: Boolean = true,
 )
 
 // TODO: Doesn't work?
@@ -62,11 +66,34 @@ data class TransportRoomEntityWithImages(
     val images: List<ImageRoomEntity>,
 )
 
-fun TransportRoomEntity.toTransport() = Transport(
+data class TransportRoomEntityWithCargosAndImages(
+    val transport: TransportRoomEntity,
+    val transportWithCargos: TransportRoomEntityWithCargos,
+    val transportWithImages: TransportRoomEntityWithImages,
+)
+
+fun TransportRoomEntity.asDomainModel() = Transport(
     routeNumber = routeNumber,
     routeDate = routeDate,
-    driver = driver,
+    driverName = driver,
     licensePlate = licensePlate,
+)
+
+fun TransportRoomEntityWithCargos.asDomainModel() = Transport(
+    routeNumber = transport.routeNumber,
+    routeDate = transport.routeDate,
+    driverName = transport.driver,
+    licensePlate = transport.licensePlate,
+    cargos = cargos.map { it.asDomainModel() },
+)
+
+fun TransportRoomEntityWithCargosAndImages.asDomainModel() = Transport(
+    routeNumber = transport.routeNumber,
+    routeDate = transport.routeDate,
+    driverName = transport.driver,
+    licensePlate = transport.licensePlate,
+    cargos = transportWithCargos.cargos.map { it.asDomainModel() },
+    images = transportWithImages.images.map { it.asDomainModel() },
 )
 
 // Could insert seeds here to populate the database with some data

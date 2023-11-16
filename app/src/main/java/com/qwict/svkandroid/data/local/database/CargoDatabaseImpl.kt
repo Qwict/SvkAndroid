@@ -12,6 +12,10 @@ class CargoDatabaseImpl(private val cargoDao: CargoDao) : CargoDatabase {
         return cargoDao.getCargoById(id)
     }
 
+    override suspend fun getCargosByTransportId(transportId: Int): List<CargoRoomEntity> {
+        return cargoDao.getCargosByTransportId(transportId)
+    }
+
     override suspend fun insert(cargo: CargoRoomEntity) {
         cargoDao.insert(cargo)
     }

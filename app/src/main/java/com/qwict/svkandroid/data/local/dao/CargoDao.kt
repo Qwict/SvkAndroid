@@ -29,6 +29,7 @@ interface CargoDao {
 
     @Query("SELECT * FROM cargo WHERE id = :id")
     fun getCargoById(id: Int): CargoRoomEntity
+
+    @Query("SELECT * FROM cargo WHERE transport_id = :transportId")
+    suspend fun getCargosByTransportId(transportId: Int): List<CargoRoomEntity>
 }
-
-

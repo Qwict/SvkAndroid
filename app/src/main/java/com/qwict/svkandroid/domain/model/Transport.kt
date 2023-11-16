@@ -1,24 +1,31 @@
 package com.qwict.svkandroid.domain.model
 
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
-import com.qwict.svkandroid.data.local.schema.UserRoomEntity
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithCargos
 import java.util.Date
-import java.util.UUID
 
 data class Transport(
-    val routeNumber: Int = 0,
+    val routeNumber: String = "",
     val routeDate: Date = Date(),
-    val driver: String = "",
+    val driverName: String = "",
     val licensePlate: String = "",
-    val imageUuids: List<UUID> = emptyList(),
     val loaderId: Int = 0,
+    val images: List<Image> = emptyList(),
     val cargos: List<Cargo> = emptyList(),
 )
 
 fun Transport.asRoomEntity(): TransportRoomEntity {
     return TransportRoomEntity(
         routeNumber = routeNumber,
-        routeDate = routeDate
+        routeDate = routeDate,
+        driver = driverName,
+        licensePlate = licensePlate,
     )
 }
 
+fun Transport.asRoomEntityWithCargos(): TransportRoomEntityWithCargos {
+    return TransportRoomEntityWithCargos(
+        transport = asRoomEntity(),
+        cargos = cargos.map { it.asRoomEntity() },
+    )
+}

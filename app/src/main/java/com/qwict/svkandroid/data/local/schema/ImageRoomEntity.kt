@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.qwict.svkandroid.domain.model.Image
+import java.util.UUID
 
 @Entity(
     tableName = "image",
@@ -19,7 +21,7 @@ data class ImageRoomEntity(
     val id: Int = 0,
     // The image UUID that will be used in the blob storage (file name)
     @ColumnInfo(name = "image_uuid")
-    val imageUuid: String = "",
+    val imageUuid: UUID = UUID.randomUUID(),
 
     // The user (loader) that took the picture
     @ColumnInfo(name = "user_id")
@@ -29,6 +31,14 @@ data class ImageRoomEntity(
     @ColumnInfo(name = "transport_id")
     val transportId: Int = 0,
 )
+
+fun ImageRoomEntity.asDomainModel(): Image {
+    return Image(
+        imageUuid = imageUuid,
+        userId = userId,
+        transportId = transportId,
+    )
+}
 
 // Could insert seeds here to populate the database with some data
 fun populateImages(): List<ImageRoomEntity> {

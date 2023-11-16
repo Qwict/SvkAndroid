@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 @Database(
     entities = [TransportRoomEntity::class, CargoRoomEntity::class, UserRoomEntity::class, ImageRoomEntity::class],
     // change this to version+1 when you change the schema
-    version = 2,
+    version = 5,
     exportSchema = false,
 )
 @TypeConverters(DateConverter::class)
@@ -67,7 +67,7 @@ abstract class SvkRoomDatabase : RoomDatabase() {
                     }
                 })
                     // Will destroy the database on schema change (uncomment this when error is thrown)
-                    .fallbackToDestructiveMigration()
+//                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }

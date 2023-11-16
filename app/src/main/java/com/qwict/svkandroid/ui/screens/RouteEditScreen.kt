@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.components.AddCargoNumberDialog
+import com.qwict.svkandroid.ui.components.AlertDialog
 import com.qwict.svkandroid.ui.theme.SVKTextfield
 import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
@@ -85,6 +87,8 @@ enum class Identifier {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteEditScreen(
+    finishTransport: () -> Unit,
+    navigateToRouteScreen: () -> Unit,
     onUpdateTransportState: (TransportChangeEvent) -> Unit,
     transportUiState: TransportUiState,
     showDialogState: Boolean,
@@ -103,6 +107,7 @@ fun RouteEditScreen(
     }
 
     val openAddCargoNumberDialog = remember { mutableStateOf(false) }
+    val openAlertDialog = remember { mutableStateOf(false) }
 
 //    val transportUiState = transportViewModel.state.collectAsState()
     if (showDialogState) {
@@ -150,12 +155,7 @@ fun RouteEditScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Route Edit",
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.headlineLarge,
-            )
-            Text(
-                text = transportUiState.routeNumber.toString(),
+                text = "Route Number: ${transportUiState.routeNumber}",
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineLarge,
             )
@@ -316,7 +316,9 @@ fun RouteEditScreen(
             Spacer(modifier = Modifier.size(32.dp))
 
             Button(
-                onClick = { TODO() },
+                onClick = {
+                    openAlertDialog.value = true
+                },
             ) {
                 Text(
                     text = "Finish Transport",
@@ -340,6 +342,22 @@ fun RouteEditScreen(
                 isValidAndAddCargoNumber = { isCargoNumberValidThenSave() },
                 stopEditingCargoNumber = { stopEditingCargoNumber() },
                 clearCargoNumberError = { clearCargoNumberError() },
+            )
+        }
+    }
+
+    when {
+        openAlertDialog.value -> {
+            AlertDialog(
+                onDismissRequest = { openAlertDialog.value = false },
+                dialogTitle = "Finish Transport",
+                dialogText = "Are you sure you want to finish this transport? This action cannot be undone.",
+                onConfirmation = {
+                    openAlertDialog.value = false
+                    finishTransport()
+                    navigateToRouteScreen()
+                },
+                icon = Icons.Default.Warning,
             )
         }
     }

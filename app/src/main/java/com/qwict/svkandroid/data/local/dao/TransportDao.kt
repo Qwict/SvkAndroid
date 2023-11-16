@@ -29,6 +29,10 @@ interface TransportDao {
     @Query("SELECT * FROM transport WHERE id = :id")
     fun getTransportById(id: Int): TransportRoomEntity
     // TODO: Figure out how to get this to work
+
+    @Query("SELECT * FROM transport WHERE is_active_flow = 1")
+    suspend fun getActiveTransport(): TransportRoomEntity
+
 //    @Transaction
 //    @Query("SELECT * FROM transport")
 //    fun getTransportWithCargosAndImages(): List<TransportRoomEntityWithCargosAndImages>

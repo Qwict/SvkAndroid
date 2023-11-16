@@ -14,7 +14,7 @@ interface SvkRepository {
     /**
      * @return The AuthenticatedUserDto that represents the user that was registered
      */
-    suspend fun login(body: LoginDto): UserDto
+    suspend fun login(loginDto: LoginDto): UserDto
 
     suspend fun insertLocalUser(user: UserDto)
     suspend fun getLocalUserByEmail(email: String): UserRoomEntity
@@ -42,5 +42,6 @@ interface SvkRepository {
      */
     suspend fun patchTransport(transport: Transport): TransportDto
 
-    suspend fun insertTransportObject(transport : Transport)
+    suspend fun insertTransportObject(transport: Transport)
+    suspend fun getActiveTransport(): Transport
 }

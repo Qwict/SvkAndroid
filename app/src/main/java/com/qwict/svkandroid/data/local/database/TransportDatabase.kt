@@ -1,7 +1,6 @@
 package com.qwict.svkandroid.data.local.database
 
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
-import com.qwict.svkandroid.domain.model.Transport
 import kotlinx.coroutines.flow.Flow
 
 interface TransportDatabase {
@@ -11,4 +10,5 @@ interface TransportDatabase {
     suspend fun insertAll(transports: List<TransportRoomEntity>)
     suspend fun update(transport: TransportRoomEntity)
     suspend fun delete(transport: TransportRoomEntity)
+    suspend fun getActiveTransport(): TransportRoomEntity
 }
