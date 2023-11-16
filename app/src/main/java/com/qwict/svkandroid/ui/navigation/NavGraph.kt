@@ -95,6 +95,8 @@ fun NavGraph(navController: NavHostController, viewModel: MainViewModel = hiltVi
                     { navController.navigate(Navigations.Scan.route) },
                     { navController.navigate(Navigations.Photo.route)},
                     viewModel,
+                    transportUiState = transportViewModel.transportUiState,
+                    showDialogState = transportViewModel.showDialogState,
                     transportViewModel
                 )
             }

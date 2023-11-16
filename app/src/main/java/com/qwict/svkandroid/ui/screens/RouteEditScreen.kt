@@ -103,6 +103,7 @@ fun RouteEditScreen(
     viewModel: MainViewModel,
     transportUiState: TransportUiState,
     showDialogState : Boolean,
+    transportViewModel : TransportViewModel
 ) {
 //    val number : String = routeNr
 
@@ -121,7 +122,7 @@ fun RouteEditScreen(
     if (showDialogState) {
         ImageDialog(
             onDismissRequest = {
-                transportUiState(
+                transportViewModel.transportUiState(
                     0
                 )
             },
