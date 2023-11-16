@@ -1,4 +1,4 @@
-package com.qwict.svkandroid.di
+package com.qwict.svkandroid.common.di
 
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Constants.BASE_URL
@@ -7,6 +7,7 @@ import com.qwict.svkandroid.data.local.RoomContainerImpl
 import com.qwict.svkandroid.data.remote.RetrofitApiService
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.data.repository.SvkRepositoryImpl
+import com.qwict.svkandroid.domain.validator.Validators
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,6 +49,12 @@ object AppModule {
         roomContainer: RoomContainer,
     ): SvkRepository {
         return SvkRepositoryImpl(api, roomContainer)
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidators(): Validators {
+        return Validators()
     }
 
 //    @Provides

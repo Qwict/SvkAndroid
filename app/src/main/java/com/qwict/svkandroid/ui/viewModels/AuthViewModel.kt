@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.qwict.svkandroid.common.AuthenticationSingleton
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.domain.use_cases.LoginUseCase
+import com.qwict.svkandroid.domain.validator.Validators
 import com.qwict.svkandroid.ui.viewModels.states.AuthState
 import com.qwict.svkandroid.ui.viewModels.states.AuthUiState
 import com.qwict.svkandroid.ui.viewModels.states.LoginUiState
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val validators: Validators,
 ) : ViewModel() {
     var loginUiState by mutableStateOf(LoginUiState())
         private set
@@ -42,52 +44,48 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-//    fun login() {
-//        viewModelScope.launch {
-//            val body = buildJsonObject {
-//                put("email", JsonPrimitive(loginCredentials.email))
-//                put("password", JsonPrimitive(loginCredentials.password))
-//            }
-//
-//            authState = AuthState.Loading
-//
-//            authState = try {
-//                val response = Api.service.login(body)
-//                if (response.isEmpty()) {
-//                    AuthState.Error("Login failed")
-//                } else {
-//                    var token = response["token"]!!.jsonPrimitive.content
-//                    saveEncryptedPreference("token", token)
-//                    AuthenticationSingleton.validateUser()
-//                    AuthState.LoggedIn
-//                }
-//            } catch (e: Exception) {
-//                Log.e("MainViewModel", "Failed to Login: ${e.message}")
-//                AuthState.Error(e.localizedMessage ?: "Unknown error")
-//            }
-//        }
-//    }
-
     fun login() {
         val email = loginUiState.email
         val password = loginUiState.password
         Log.i("AuthViewModel", "loginUser: $email, $password")
-        loginUseCase(email, password).onEach { result ->
+
+        val emailResult = validators.emailValidator(loginUiState.email)
+        val passwordResult = validators.passwordValidator(loginUiState.password)
+
+        Log.i("AuthViewModel", "loginUser: $emailResult, $passwordResult")
+        val hasErrors = listOf(
+            passwordResult,
+            emailResult,
+        ).any { !it.successful }
+
+        if (hasErrors) {
+            authUiState = authUiState.copy(
+                passwordError = passwordResult.errorMessage,
+                emailError = emailResult.errorMessage,
+            )
+            return
+        } else {
+            loginUseCase(email, password).onEach { result ->
 //          TODO: Future use cases "should" also be implemented in this way
-            when (result) {
-                is Resource.Success -> {
-                    authUiState = AuthUiState(user = result.data!!, authState = AuthState.LoggedIn)
-                }
+                when (result) {
+                    is Resource.Success -> {
+                        authUiState =
+                            AuthUiState(user = result.data!!, authState = AuthState.LoggedIn)
+                    }
 
-                is Resource.Error -> {
-                    authUiState = AuthUiState(error = result.message ?: "An unexpected error occurred", authState = AuthState.UnAuthenticated)
-                }
+                    is Resource.Error -> {
+                        authUiState = AuthUiState(
+                            error = result.message ?: "An unexpected error occurred",
+                            authState = AuthState.UnAuthenticated,
+                        )
+                    }
 
-                is Resource.Loading -> {
-                    authUiState = authUiState.copy(isLoading = true)
+                    is Resource.Loading -> {
+                        authUiState = authUiState.copy(isLoading = true)
+                    }
                 }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
 
     fun logout() {

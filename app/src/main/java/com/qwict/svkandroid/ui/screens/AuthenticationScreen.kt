@@ -62,7 +62,7 @@ fun AuthenticationScreen(
                     style = MaterialTheme.typography.displayMedium,
                 )
 
-                LoginInputFields(loginUiState = loginUiState, onUpdateLoginState = onUpdateLoginState)
+                LoginInputFields(loginUiState = loginUiState, onUpdateLoginState = onUpdateLoginState, authUiState = authUiState)
                 Text(
                     text = authUiState.error,
                     color = Color.Red,
@@ -84,6 +84,7 @@ fun AuthenticationScreen(
 fun LoginInputFields(
     loginUiState: LoginUiState,
     onUpdateLoginState: (AuthenticationFormEvent) -> Unit,
+    authUiState: AuthUiState,
 ) {
     Column(
         modifier = Modifier
@@ -109,8 +110,15 @@ fun LoginInputFields(
                 )
             },
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
+        if (authUiState.emailError.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = authUiState.emailError,
+                color = MaterialTheme.colorScheme.error,
+            )
+        } else {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
         OutlinedTextField(
 //            value = viewModel.loginCredentialsUiState.password,
@@ -130,6 +138,15 @@ fun LoginInputFields(
                 )
             },
         )
+        if (authUiState.passwordError.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = authUiState.passwordError,
+                color = MaterialTheme.colorScheme.error,
+            )
+        } else {
+            Spacer(modifier = Modifier.height(20.dp))
+        }
     }
 }
 
