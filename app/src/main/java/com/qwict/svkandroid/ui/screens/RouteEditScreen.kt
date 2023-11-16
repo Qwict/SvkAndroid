@@ -154,6 +154,11 @@ fun RouteEditScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineLarge,
             )
+            Text(
+                text = transportUiState.routeNumber.toString(),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineLarge,
+            )
             Spacer(modifier = Modifier.size(32.dp))
             SVKTextfield {
                 OutlinedTextField(

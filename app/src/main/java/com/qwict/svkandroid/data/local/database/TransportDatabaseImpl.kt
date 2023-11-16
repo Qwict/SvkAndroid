@@ -11,7 +11,8 @@ class TransportDatabaseImpl(private val transportDao: TransportDao) : TransportD
     override suspend fun getTransportById(id: Int): TransportRoomEntity {
         return transportDao.getTransportById(id)
     }
-    override suspend fun insert(transport: TransportRoomEntity) {
+
+    override suspend fun insert(transport: TransportRoomEntity)  {
         transportDao.insert(transport)
     }
 

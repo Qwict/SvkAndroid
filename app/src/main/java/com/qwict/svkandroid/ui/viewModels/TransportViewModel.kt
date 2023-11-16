@@ -9,8 +9,18 @@ import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.domain.validator.Validators
 import com.qwict.svkandroid.ui.screens.BarcodeFormat
 import com.qwict.svkandroid.ui.screens.BarcodeScanner
+import androidx.lifecycle.viewModelScope
+import com.qwict.svkandroid.R
+import com.qwict.svkandroid.common.Resource
+import com.qwict.svkandroid.domain.use_cases.SelectRouteUseCase
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,9 +30,17 @@ class TransportViewModel @Inject constructor(
     var transportUiState by mutableStateOf(TransportUiState())
         private set
 
+class TransportViewModel @Inject constructor(
+    private val selectRouteUseCase: SelectRouteUseCase,
+) : ViewModel() {
+    private val _state = MutableStateFlow(TransportUiState())
+
+    private var routeNumber by mutableStateOf(0)
     var showDialogState by mutableStateOf(false)
         private set
     var selectedImage by mutableStateOf(0)
+        private set
+    var transportUiState by mutableStateOf(TransportUiState())
         private set
 
     fun deleteImageOnIndex(imageIndex: Int) {
@@ -141,6 +159,44 @@ class TransportViewModel @Inject constructor(
 
     fun startEditingCargoNumber() {
         transportUiState = transportUiState.copy(isEditingCargoNumber = true)
+    fun selectRoute(
+        routeNr : Int
+    ) {
+        routeNumber = routeNr
+        Log.i("TransportViewModel", "select route : $routeNr")
+
+        selectRouteUseCase(routeNumber).onEach { result ->
+            when(result) {
+                is Resource.Success -> {
+                    transportUiState = TransportUiState(
+                        routeNumber = result.data!!
+                    )
+                    println("TransportUIState look like this : $transportUiState")
+                }
+
+                is Resource.Error -> {
+                    transportUiState = TransportUiState(
+                        error = result.message ?: "There was an error finding a rout with number: $routeNr"
+                    )
+                }
+
+                is Resource.Loading -> {
+                   transportUiState = transportUiState.copy(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    init {
+        _state.value = TransportUiState(
+            isLoading = false,
+            error = "",
+            images = mutableListOf(
+                R.drawable.transport_two,
+                R.drawable.transport_three,
+                R.drawable.transport_four,
+            ),
+        )
     }
 
     fun stopEditingCargoNumber() {

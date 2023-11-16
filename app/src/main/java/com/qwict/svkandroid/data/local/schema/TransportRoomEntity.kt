@@ -63,7 +63,10 @@ data class TransportRoomEntityWithImages(
 )
 
 fun TransportRoomEntity.toTransport() = Transport(
-    throw NotImplementedError(),
+    routeNumber = routeNumber,
+    routeDate = routeDate,
+    driver = driver,
+    licensePlate = licensePlate,
 )
 
 // Could insert seeds here to populate the database with some data

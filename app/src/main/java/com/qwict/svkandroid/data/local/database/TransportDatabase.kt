@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.data.local.database
 
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
+import com.qwict.svkandroid.domain.model.Transport
 import kotlinx.coroutines.flow.Flow
 
 interface TransportDatabase {

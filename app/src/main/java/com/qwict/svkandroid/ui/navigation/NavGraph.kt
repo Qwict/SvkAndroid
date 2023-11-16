@@ -1,15 +1,19 @@
 package com.qwict.svkandroid.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.screens.AuthenticationScreen
 import com.qwict.svkandroid.ui.screens.PermissionScreen

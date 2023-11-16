@@ -41,4 +41,6 @@ interface SvkRepository {
      * (a Duplicate entry exception was thrown) and the transport was patched instead.
      */
     suspend fun patchTransport(transport: Transport): TransportDto
+
+    suspend fun insertTransportObject(transport : Transport)
 }
