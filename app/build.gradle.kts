@@ -92,6 +92,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
     implementation("com.google.mlkit:barcode-scanning-common:17.0.0")
     implementation("androidx.camera:camera-core:1.3.0")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -99,7 +100,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
 
     // Added for decoding tokens
     implementation("com.auth0.android:jwtdecode:2.0.2")

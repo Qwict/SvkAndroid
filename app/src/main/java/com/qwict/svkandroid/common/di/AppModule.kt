@@ -48,7 +48,7 @@ object AppModule {
         api: RetrofitApiService,
         roomContainer: RoomContainer,
     ): SvkRepository {
-        return SvkRepositoryImpl(api, roomContainer)
+        return SvkRepositoryImpl(api, roomContainer, SvkAndroidApplication.appContext)
     }
 
     @Provides

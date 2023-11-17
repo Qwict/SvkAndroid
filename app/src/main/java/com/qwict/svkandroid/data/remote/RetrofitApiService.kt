@@ -2,7 +2,9 @@ package com.qwict.svkandroid.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.qwict.svkandroid.common.Constants.BASE_URL
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.remote.dto.LoginDto
+import com.qwict.svkandroid.data.remote.dto.TransportDto
 import com.qwict.svkandroid.data.remote.dto.UserDto
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -20,6 +22,9 @@ interface RetrofitApiService {
 
     @POST("v1/images/")
     suspend fun postImage(@Body image: MultipartBody.Part?): JsonObject
+
+    @POST("v1/transport/")
+    suspend fun postTransport(@Body transportEntity: TransportDto): JsonObject
 
     // TODO: here should be the interceptor at work... (not bearerToken: ...) (everywhere were a token is used)
 }

@@ -1,5 +1,11 @@
 package com.qwict.svkandroid.data.repository
 
+import android.content.Context
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.qwict.svkandroid.data.local.RoomContainer
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.local.schema.asDomainModel
@@ -11,12 +17,14 @@ import com.qwict.svkandroid.data.remote.dto.UserDto
 import com.qwict.svkandroid.data.remote.dto.asRoomEntity
 import com.qwict.svkandroid.domain.model.Transport
 import com.qwict.svkandroid.domain.model.asRoomEntity
+import com.qwict.svkandroid.tasks.SyncWorker
 import java.io.File
 import javax.inject.Inject
 
 class SvkRepositoryImpl @Inject constructor(
     private val svkApi: RetrofitApiService,
     private val roomContainer: RoomContainer,
+    private val ctx: Context,
 ) : SvkRepository {
     override suspend fun getHealth(): HealthDto {
 //        return api.getHealth()
@@ -70,7 +78,17 @@ class SvkRepositoryImpl @Inject constructor(
         // that returns the transport with the cargos (and images) attached
 
         val transportWithoutCargos = roomContainer.transportDatabase.getActiveTransport()
-        val cargos = roomContainer.cargoDatabase.getCargosByTransportId(transportWithoutCargos.id).map { it.asDomainModel() }
+        val cargos = roomContainer.cargoDatabase.getCargosByTransportId(transportWithoutCargos.id)
+            .map { it.asDomainModel() }
         return transportWithoutCargos.asDomainModel().copy(cargos = cargos)
+    }
+
+    override suspend fun syncTransports() {
+        val workRequest = OneTimeWorkRequest.Builder(SyncWorker::class.java).setConstraints(
+            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build(),
+        )
+            .build()
+        val workManager = WorkManager.getInstance(ctx)
+        workManager.enqueueUniqueWork("SYNC_TRANSPORTS", ExistingWorkPolicy.KEEP, workRequest)
     }
 }

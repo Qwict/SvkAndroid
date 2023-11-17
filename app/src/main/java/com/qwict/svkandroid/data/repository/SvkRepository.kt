@@ -44,4 +44,5 @@ interface SvkRepository {
 
     suspend fun insertTransportObject(transport: Transport)
     suspend fun getActiveTransport(): Transport
+    suspend fun syncTransports()
 }

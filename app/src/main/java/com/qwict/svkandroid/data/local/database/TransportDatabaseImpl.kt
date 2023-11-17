@@ -36,4 +36,8 @@ class TransportDatabaseImpl(private val transportDao: TransportDao) : TransportD
     override suspend fun getActiveTransport(): TransportRoomEntity {
         return transportDao.getActiveTransport()
     }
+
+    override suspend fun getTransportsToSync(): List<TransportRoomEntity> {
+        return transportDao.getTransportsToSync()
+    }
 }

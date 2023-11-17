@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Resource
+import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.use_cases.GetActiveTransportUseCase
 import com.qwict.svkandroid.domain.use_cases.SelectRouteUseCase
 import com.qwict.svkandroid.domain.validator.Validators
@@ -17,6 +18,7 @@ import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +26,7 @@ class TransportViewModel @Inject constructor(
     private val validators: Validators,
     private val selectRouteUseCase: SelectRouteUseCase,
     private val getActiveTransportUseCase: GetActiveTransportUseCase,
+    private val repository: SvkRepository,
 ) : ViewModel() {
     var transportUiState by mutableStateOf(TransportUiState())
         private set
@@ -210,7 +213,11 @@ class TransportViewModel @Inject constructor(
     }
 
     fun finishTransport() {
-        clearTransportState()
+        viewModelScope.launch {
+            clearTransportState()
+            repository.syncTransports()
+        }
+
         // TODO: Save the transport to the database (again) and set the is_active_flow to false
     }
 

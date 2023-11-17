@@ -11,4 +11,5 @@ interface TransportDatabase {
     suspend fun update(transport: TransportRoomEntity)
     suspend fun delete(transport: TransportRoomEntity)
     suspend fun getActiveTransport(): TransportRoomEntity
+    suspend fun getTransportsToSync(): List<TransportRoomEntity>
 }

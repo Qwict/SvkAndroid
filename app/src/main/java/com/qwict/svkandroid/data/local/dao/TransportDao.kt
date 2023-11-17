@@ -33,6 +33,8 @@ interface TransportDao {
     @Query("SELECT * FROM transport WHERE is_active_flow = 1")
     suspend fun getActiveTransport(): TransportRoomEntity
 
+    @Query("SELECT * FROM transport WHERE is_synced = 0")
+    suspend fun getTransportsToSync(): List<TransportRoomEntity>
 //    @Transaction
 //    @Query("SELECT * FROM transport")
 //    fun getTransportWithCargosAndImages(): List<TransportRoomEntityWithCargosAndImages>

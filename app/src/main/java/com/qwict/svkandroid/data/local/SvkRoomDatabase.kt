@@ -66,8 +66,8 @@ abstract class SvkRoomDatabase : RoomDatabase() {
                         }
                     }
                 })
-                    // Will destroy the database on schema change (uncomment this when error is thrown)
-//                    .fallbackToDestructiveMigration()
+//                     Will destroy the database on schema change (uncomment this when error is thrown)
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }
