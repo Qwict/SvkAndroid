@@ -7,7 +7,9 @@ data class TransportUiState(
     val routeNumberError: String = "",
 
     val licensePlate: String = "",
+    val licensePlateError: String = "",
     val driverName: String = "",
+    val driverNameError: String = "",
 
     val newCargoNumber: String = "",
     val originalCargoNumber: String = "",
