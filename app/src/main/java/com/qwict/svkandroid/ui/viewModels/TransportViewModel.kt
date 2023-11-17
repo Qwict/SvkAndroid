@@ -212,6 +212,17 @@ class TransportViewModel @Inject constructor(
         transportUiState = transportUiState.copy(isEditingCargoNumber = false)
     }
 
+    fun isTransportValid(): Boolean {
+        val driverNameResult = validators.validateNotEmptyText(transportUiState.driverName, "Driver Name")
+        val licensePlateResult = validators.validateNotEmptyText(transportUiState.licensePlate, "License Plate")
+        transportUiState = transportUiState.copy(
+            driverNameError = driverNameResult.errorMessage,
+            licensePlateError = licensePlateResult.errorMessage,
+        )
+
+        return driverNameResult.successful && licensePlateResult.successful
+    }
+
     fun finishTransport() {
         viewModelScope.launch {
             clearTransportState()

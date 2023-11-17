@@ -1,15 +1,8 @@
 package com.qwict.svkandroid.ui.screens
 
 import ImageDialog
-import android.annotation.SuppressLint
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +22,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -51,22 +40,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.components.AddCargoNumberDialog
 import com.qwict.svkandroid.ui.components.AlertDialog
-import com.qwict.svkandroid.ui.theme.SVKTextfield
+import com.qwict.svkandroid.ui.components.MultiFloatingButton
 import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 
@@ -87,6 +71,7 @@ enum class Identifier {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteEditScreen(
+    isTransportValid: () -> Boolean,
     finishTransport: () -> Unit,
     navigateToRouteScreen: () -> Unit,
     onUpdateTransportState: (TransportChangeEvent) -> Unit,
@@ -151,7 +136,6 @@ fun RouteEditScreen(
                 .fillMaxSize()
                 .padding(values)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -159,28 +143,45 @@ fun RouteEditScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineLarge,
             )
-            Spacer(modifier = Modifier.size(32.dp))
-            SVKTextfield {
-                OutlinedTextField(
-                    value = transportUiState.licensePlate,
-                    onValueChange = {
-                        onUpdateTransportState(TransportChangeEvent.LicensePlateChanged(it))
-                    },
-                    label = { Text("Nummerplaat") },
-                    modifier = Modifier.padding(bottom = 5.dp),
+//            SVKTextfield {
+            OutlinedTextField(
+                value = transportUiState.licensePlate,
+                onValueChange = {
+                    onUpdateTransportState(TransportChangeEvent.LicensePlateChanged(it))
+                },
+                label = { Text("Nummerplaat") },
+                isError = transportUiState.licensePlateError.isNotEmpty(),
+            )
+            if (transportUiState.licensePlateError.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = transportUiState.licensePlateError,
+                    color = MaterialTheme.colorScheme.error,
                 )
+            } else {
+                Spacer(modifier = Modifier.height(20.dp))
             }
+//            }
 
-            SVKTextfield {
-                OutlinedTextField(
-                    value = transportUiState.driverName,
-                    onValueChange = {
-                        onUpdateTransportState(TransportChangeEvent.DriverChanged(it))
-                    },
-                    label = { Text("Chauffeur") },
-                    modifier = Modifier.padding(bottom = 5.dp),
+//            SVKTextfield {
+            OutlinedTextField(
+                value = transportUiState.driverName,
+                onValueChange = {
+                    onUpdateTransportState(TransportChangeEvent.DriverChanged(it))
+                },
+                label = { Text("Chauffeur") },
+                isError = transportUiState.driverNameError.isNotEmpty(),
+            )
+            if (transportUiState.driverNameError.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = transportUiState.driverNameError,
+                    color = MaterialTheme.colorScheme.error,
                 )
+            } else {
+                Spacer(modifier = Modifier.height(20.dp))
             }
+//            }
             Spacer(modifier = Modifier.size(32.dp))
             LazyRow(
                 userScrollEnabled = true,
@@ -317,7 +318,9 @@ fun RouteEditScreen(
 
             Button(
                 onClick = {
-                    openAlertDialog.value = true
+                    if (isTransportValid()) {
+                        openAlertDialog.value = true
+                    }
                 },
             ) {
                 Text(
@@ -358,155 +361,6 @@ fun RouteEditScreen(
                     navigateToRouteScreen()
                 },
                 icon = Icons.Default.Warning,
-            )
-        }
-    }
-}
-
-@Composable
-fun MultiFloatingButton(
-    multiFloatingState: MultiFloatingState,
-    onMultiFabStateChange: (MultiFloatingState) -> Unit,
-    items: List<MinFabItem>,
-    openAddCargoNumberDialog: () -> Unit,
-    navigateToPhotoRoute: () -> Unit,
-) {
-    val transition = updateTransition(targetState = multiFloatingState, label = "transition")
-    val rotate by transition.animateFloat(label = "rotate") {
-        if (it == MultiFloatingState.Expanded) 315f else 0f
-    }
-    val alpha by transition.animateFloat(
-        label = "alpha",
-        transitionSpec = { tween(durationMillis = 100) },
-    ) {
-        if (it == MultiFloatingState.Expanded) 1f else 0f
-    }
-
-    Column(
-        horizontalAlignment = Alignment.End,
-    ) {
-        if (transition.currentState == MultiFloatingState.Expanded) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.onTertiary,
-                ),
-                modifier = Modifier
-                    .alpha(
-                        animateFloatAsState(
-                            targetValue = alpha,
-                            animationSpec = tween(100),
-                            label = "",
-                        ).value,
-                    )
-                    .width(170.dp),
-                elevation = CardDefaults.cardElevation(8.dp),
-            ) {
-                items.forEach {
-                    MinFab(
-                        item = it,
-                        onMinFabItemClick = { minFabItem ->
-                            when (minFabItem.identifier) {
-                                Identifier.CameraFab.name -> {
-                                    // TODO: Start Camera
-                                    navigateToPhotoRoute()
-                                }
-
-                                Identifier.AddLoadFab.name -> {
-                                    openAddCargoNumberDialog()
-//                                    navigateToScanRoute()
-                                }
-                            }
-                        },
-                        alpha = alpha,
-                    )
-                    Spacer(modifier = Modifier.size(12.dp))
-                }
-            }
-        }
-
-        FloatingActionButton(onClick = {
-            onMultiFabStateChange(
-                if (transition.currentState == MultiFloatingState.Expanded) {
-                    MultiFloatingState.Collapsed
-                } else {
-                    MultiFloatingState.Expanded
-                },
-            )
-        }) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = null,
-                modifier = Modifier.rotate(rotate),
-            )
-        }
-    }
-}
-
-@SuppressLint("UnrememberedMutableInteractionSource")
-@Composable
-fun MinFab(
-    item: MinFabItem,
-    alpha: Float,
-    showLabel: Boolean = true,
-    onMinFabItemClick: (MinFabItem) -> Unit,
-
-) {
-    Row(
-        Modifier
-            .padding(8.dp)
-            .alpha(
-                animateFloatAsState(
-                    targetValue = alpha,
-                    animationSpec = tween(100),
-                    label = "",
-                ).value,
-            ),
-    ) {
-        if (showLabel) {
-            Text(
-                text = item.label,
-                color = MaterialTheme.colorScheme.primary,
-
-                fontSize = 24.sp,
-
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .alpha(
-                        animateFloatAsState(
-                            targetValue = alpha,
-                            animationSpec = tween(100),
-                            label = "",
-                        ).value,
-                    )
-                    .fillMaxWidth(0.8f),
-
-            )
-            Spacer(modifier = Modifier.size(4.dp))
-        }
-
-        Canvas(
-            modifier = Modifier
-                .size(16.dp)
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    onClick = {
-                        onMinFabItemClick.invoke(item)
-                    },
-                    indication = rememberRipple(
-                        bounded = false,
-                        radius = 20.dp,
-                        color = MaterialTheme.colorScheme.onSurface,
-
-                    ),
-                ),
-        ) {
-            drawImage(
-                image = item.icon,
-                topLeft = Offset(
-                    center.x - (item.icon.width / 2),
-                    center.y - (item.icon.width / 2),
-                ),
-                alpha = alpha,
             )
         }
     }

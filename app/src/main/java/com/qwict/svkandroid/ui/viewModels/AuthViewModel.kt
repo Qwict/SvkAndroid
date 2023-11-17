@@ -95,6 +95,10 @@ class AuthViewModel @Inject constructor(
         )
     }
 
+    fun switchPasswordVisibility() {
+        authUiState = authUiState.copy(passwordVisible = !authUiState.passwordVisible)
+    }
+
     fun onUpdateLoginState(event: AuthenticationFormEvent) {
         when (event) {
             is AuthenticationFormEvent.EmailChanged -> {

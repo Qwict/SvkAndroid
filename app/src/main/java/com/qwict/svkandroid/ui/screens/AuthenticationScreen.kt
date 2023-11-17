@@ -13,9 +13,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +44,7 @@ fun AuthenticationScreen(
     login: () -> Unit,
     loginUiState: LoginUiState,
     authUiState: AuthUiState,
+    switchPasswordVisibility: () -> Unit,
 ) {
     if (authUiState.isLoading) {
         Loading()
@@ -64,6 +69,7 @@ fun AuthenticationScreen(
                     loginUiState = loginUiState,
                     onUpdateLoginState = onUpdateLoginState,
                     authUiState = authUiState,
+                    switchPasswordVisibility = switchPasswordVisibility,
                 )
 
                 Text(
@@ -88,6 +94,7 @@ fun LoginInputFields(
     loginUiState: LoginUiState,
     onUpdateLoginState: (AuthenticationFormEvent) -> Unit,
     authUiState: AuthUiState,
+    switchPasswordVisibility: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -103,6 +110,7 @@ fun LoginInputFields(
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email,
             ),
+            isError = authUiState.emailError.isNotEmpty(),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
@@ -125,7 +133,7 @@ fun LoginInputFields(
             value = loginUiState.password,
             onValueChange = { onUpdateLoginState(AuthenticationFormEvent.PasswordChanged(it)) },
             label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (authUiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
             ),
@@ -135,6 +143,18 @@ fun LoginInputFields(
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                 )
+            },
+            isError = authUiState.passwordError.isNotEmpty(),
+            trailingIcon = {
+                val image = if (authUiState.passwordVisible) {
+                    Icons.Filled.Visibility
+                } else {
+                    Icons.Filled.VisibilityOff
+                }
+                val description = if (authUiState.passwordVisible) "Hide password" else "Show password"
+                IconButton(onClick = { switchPasswordVisibility() }) {
+                    Icon(imageVector = image, description)
+                }
             },
         )
         if (authUiState.passwordError.isNotEmpty()) {

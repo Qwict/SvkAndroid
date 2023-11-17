@@ -11,6 +11,7 @@ data class AuthUiState(
     val user: User = EMPTY_USER,
     val authState: AuthState = AuthState.UnAuthenticated,
     val isLoading: Boolean = false,
+    val passwordVisible: Boolean = false,
 )
 
 sealed interface AuthState {

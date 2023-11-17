@@ -76,6 +76,7 @@ fun AddCargoNumberDialog(
                     modifier = Modifier
                         .width(200.dp)
                         .height(50.dp),
+
                 ) {
                     Text(text = stringResource(R.string.btn_scan_barcode), fontSize = 20.sp)
                 }

@@ -43,6 +43,7 @@ fun NavGraph(
                     loginUiState = authViewModel.loginUiState,
                     login = { authViewModel.login() },
                     authUiState = authViewModel.authUiState,
+                    switchPasswordVisibility = { authViewModel.switchPasswordVisibility() },
                 )
             }
         }
@@ -93,6 +94,7 @@ fun NavGraph(
                             popUpTo(Navigations.RouteEdit.route) { inclusive = true }
                         }
                     },
+                    isTransportValid = { transportViewModel.isTransportValid() },
                 )
             }
             composable(route = Navigations.Photo.route) {
