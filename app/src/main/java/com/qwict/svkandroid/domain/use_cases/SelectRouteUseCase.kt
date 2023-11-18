@@ -17,12 +17,13 @@ class SelectRouteUseCase @Inject constructor(
     ): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-            repo.insertTransportObject(
-                Transport(
-                    routeNumber = routeNumber,
-                    routeDate = Date(),
-                ),
-            )
+                repo.insertTransportObject(
+                    Transport(
+                        routeNumber = routeNumber,
+                        routeDate = Date(),
+                    ),
+                )
+                emit(Resource.Success(routeNumber))
             Log.d("SelectRouteUseCase", "Saved transport ($routeNumber) locally")
             emit(Resource.Success(routeNumber))
         } catch (e: Exception) {

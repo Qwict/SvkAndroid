@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -60,6 +62,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,6 +101,7 @@ fun RouteEditScreen(
     navigateToPhotoRoute: () -> Unit,
     scanCargoNumber: () -> Unit,
     isCargoNumberValidThenSave: () -> Boolean,
+    isDriverNameLicensePlateValid: () -> Boolean,
     clearCargoNumberError: () -> Unit,
     startEditingCargoNumber: () -> Unit,
     stopEditingCargoNumber: () -> Unit,
@@ -168,6 +172,9 @@ fun RouteEditScreen(
                     },
                     label = { Text("Nummerplaat") },
                     modifier = Modifier.padding(bottom = 5.dp),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
                 )
             }
 
@@ -179,6 +186,14 @@ fun RouteEditScreen(
                     },
                     label = { Text("Chauffeur") },
                     modifier = Modifier.padding(bottom = 5.dp),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            isDriverNameLicensePlateValid()
+                        }
+                    )
                 )
             }
             Spacer(modifier = Modifier.size(32.dp))
