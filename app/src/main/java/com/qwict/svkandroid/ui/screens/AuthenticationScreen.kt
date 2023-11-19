@@ -3,7 +3,6 @@ package com.qwict.svkandroid.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -76,6 +75,7 @@ fun AuthenticationScreen(
                     text = authUiState.error,
                     color = Color.Red,
                     fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 8.dp),
                 )
@@ -105,7 +105,12 @@ fun LoginInputFields(
         OutlinedTextField(
             value = loginUiState.email,
             onValueChange = { onUpdateLoginState(AuthenticationFormEvent.EmailChanged(it)) },
-            label = { Text("Email") },
+            label = {
+                Text(
+                    text = "Email",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email,
@@ -119,20 +124,21 @@ fun LoginInputFields(
                 )
             },
         )
-        if (authUiState.emailError.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = authUiState.emailError,
-                color = MaterialTheme.colorScheme.error,
-            )
-        } else {
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+        Text(
+            text = authUiState.emailError,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error,
+        )
 
         OutlinedTextField(
             value = loginUiState.password,
             onValueChange = { onUpdateLoginState(AuthenticationFormEvent.PasswordChanged(it)) },
-            label = { Text("Password") },
+            label = {
+                Text(
+                    text = "Password",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
             visualTransformation = if (authUiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
@@ -157,15 +163,11 @@ fun LoginInputFields(
                 }
             },
         )
-        if (authUiState.passwordError.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = authUiState.passwordError,
-                color = MaterialTheme.colorScheme.error,
-            )
-        } else {
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+        Text(
+            text = authUiState.passwordError,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error,
+        )
     }
 }
 
@@ -176,8 +178,7 @@ fun LogButton(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(
