@@ -16,7 +16,6 @@ import com.qwict.svkandroid.ui.screens.PermissionScreen
 import com.qwict.svkandroid.ui.screens.PhotoScreen
 import com.qwict.svkandroid.ui.screens.RouteEditScreen
 import com.qwict.svkandroid.ui.screens.RouteScreen
-import com.qwict.svkandroid.ui.screens.UploadScreen
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
 import com.qwict.svkandroid.ui.viewModels.TransportViewModel
 
@@ -99,15 +98,11 @@ fun NavGraph(
             }
             composable(route = Navigations.Photo.route) {
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
-                PhotoScreen { navController.navigate(Navigations.Upload.route) }
-            }
-            composable(route = Navigations.Upload.route) {
-                val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
-                UploadScreen {
-                    navController.navigate(Navigations.RouteEdit.route) {
-                        popUpTo(Navigations.RouteEdit.route) { inclusive = true }
-                    }
-                }
+                PhotoScreen(
+                    onTakePhoto = { transportViewModel.onTakePhoto(it) },
+                    capturedImages = transportViewModel.transportUiState.images,
+                    goBack = { navController.navigateUp() },
+                )
             }
         }
     }

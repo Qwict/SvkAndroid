@@ -1,5 +1,6 @@
 package com.qwict.svkandroid.ui.viewModels
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +33,7 @@ class TransportViewModel @Inject constructor(
         private set
     var showDialogState by mutableStateOf(false)
         private set
-    var selectedImage by mutableStateOf(0)
+    var selectedImage by mutableStateOf<Bitmap?>(null)
         private set
 
     init {
@@ -63,6 +64,12 @@ class TransportViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun onTakePhoto(bitmap: Bitmap) {
+        transportUiState = transportUiState.copy(
+            images = transportUiState.images.toMutableList().apply { add(bitmap) },
+        )
+    }
+
     fun deleteImageOnIndex(imageIndex: Int) {
         Log.i("TransportViewModel", "deleteImageOnIndex: $imageIndex")
         if (imageIndex >= 0 && imageIndex < transportUiState.images.size) {
@@ -76,8 +83,8 @@ class TransportViewModel @Inject constructor(
         }
     }
 
-    fun toggleShowDialogState(imageIndex: Int) {
-        selectedImage = imageIndex
+    fun toggleShowDialogState(image: Bitmap?) {
+        selectedImage = image
         showDialogState = !showDialogState
     }
 

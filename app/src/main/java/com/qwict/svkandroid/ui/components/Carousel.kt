@@ -19,7 +19,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 
@@ -38,7 +38,8 @@ fun Carousel(
                     .height(300.dp),
             ) {
                 Image(
-                    painter = painterResource(id = image),
+                    bitmap = image.asImageBitmap(),
+                    // painter = painterResource(id = image),
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxSize()
