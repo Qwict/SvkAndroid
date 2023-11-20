@@ -10,8 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SVKTextfield(
-
+fun SVKTextField(
     content: @Composable () -> Unit,
 ) {
     // This box just wraps the background and the OutlinedTextField

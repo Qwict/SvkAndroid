@@ -143,19 +143,18 @@ class TransportViewModel @Inject constructor(
         return false
     }
 
-    fun isDriverNameLicensePlateValid() : Boolean {
+    fun isDriverNameLicensePlateValid(): Boolean {
         val driverNameResult = validators.validateNotEmptyText(transportUiState.driverName, "Driver name")
-        val licensePlateResult = validators.validateNotEmptyText(transportUiState.licensePlate, "Licenseplate")
+        val licensePlateResult = validators.validateNotEmptyText(transportUiState.licensePlate, "License plate")
 
-        if(driverNameResult.successful && licensePlateResult.successful){
+        if (driverNameResult.successful && licensePlateResult.successful) {
             updateLocalRoute()
             return true
         }
         transportUiState = transportUiState.copy(
-            driverName = driverNameResult.errorMessage,
-            licensePlate = licensePlateResult.errorMessage
+            driverNameError = driverNameResult.errorMessage,
+            licensePlateError = licensePlateResult.errorMessage,
         )
-
         return false
     }
 
@@ -266,25 +265,25 @@ class TransportViewModel @Inject constructor(
         setDriverUseCase(
             routeNumber = transportUiState.routeNumber,
             licensePlate = transportUiState.licensePlate,
-            driver = transportUiState.driverName
+            driver = transportUiState.driverName,
         ).onEach { result ->
-            when(result){
+            when (result) {
                 is Resource.Success -> {
                     transportUiState = transportUiState.copy(
                         driverName = result.data!!.driverName,
-                        licensePlate = result.data!!.licensePlate
+                        licensePlate = result.data!!.licensePlate,
                     )
                 }
 
                 is Resource.Error -> {
                     transportUiState = TransportUiState(
-                        error = result.message ?: "An unexpected error occured"
+                        error = result.message ?: "An unexpected error occured",
                     )
                 }
 
                 is Resource.Loading -> {
                     transportUiState = transportUiState.copy(
-                        isLoading = true
+                        isLoading = true,
                     )
                 }
             }
