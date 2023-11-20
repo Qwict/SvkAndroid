@@ -66,6 +66,7 @@ fun MultiFloatingButton(
                     containerColor = MaterialTheme.colorScheme.onTertiary,
                 ),
                 modifier = Modifier
+                    .padding(bottom = 20.dp)
                     .alpha(
                         animateFloatAsState(
                             targetValue = alpha,
