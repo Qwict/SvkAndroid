@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import kotlinx.coroutines.flow.Flow
@@ -33,9 +34,7 @@ interface TransportDao {
     @Query("SELECT * FROM transport WHERE is_active_flow = 1")
     suspend fun getActiveTransport(): TransportRoomEntity
 
+    @Transaction
     @Query("SELECT * FROM transport WHERE is_synced = 0")
-    suspend fun getTransportsToSync(): List<TransportRoomEntity>
-//    @Transaction
-//    @Query("SELECT * FROM transport")
-//    fun getTransportWithCargosAndImages(): List<TransportRoomEntityWithCargosAndImages>
+    fun getTransportToSync(): List<TransportRoomEntity>
 }

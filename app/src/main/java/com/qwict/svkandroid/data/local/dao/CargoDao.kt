@@ -32,4 +32,7 @@ interface CargoDao {
 
     @Query("SELECT * FROM cargo WHERE transport_id = :transportId")
     suspend fun getCargosByTransportId(transportId: Int): List<CargoRoomEntity>
+
+    @Query("SELECT * FROM cargo WHERE is_synced = 0")
+    fun getCargosToSync(): List<CargoRoomEntity>
 }

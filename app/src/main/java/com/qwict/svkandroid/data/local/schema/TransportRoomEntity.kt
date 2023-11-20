@@ -33,26 +33,11 @@ data class TransportRoomEntity(
     val isActiveFlow: Boolean = true,
 )
 
-// TODO: Doesn't work?
-// data class TransportRoomEntityWithCargosAndImages(
-//    val transport: TransportRoomEntity,
-//    @Relation(
-//        parentColumn = "id",
-//        entityColumn = "id",
-//    )
-//    val cargos: List<CargoRoomEntity>,
-//    @Relation(
-//        parentColumn = "id",
-//        entityColumn = "id",
-//    )
-//    val images: List<ImageRoomEntity>,
-// )
-
 data class TransportRoomEntityWithCargos(
     val transport: TransportRoomEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "id",
+        entityColumn = "transport_id",
     )
     val cargos: List<CargoRoomEntity>,
 )
@@ -61,7 +46,7 @@ data class TransportRoomEntityWithImages(
     val transport: TransportRoomEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "id",
+        entityColumn = "transport_id",
     )
     val images: List<ImageRoomEntity>,
 )

@@ -30,6 +30,8 @@ data class CargoRoomEntity(
     val transportId: Int = 0,
     @ColumnInfo(name = "loader_id")
     val loaderId: Int = 0,
+    @ColumnInfo(name = "is_synced")
+    val isSynced: Boolean = false,
 )
 
 fun CargoRoomEntity.asDomainModel() = Cargo(

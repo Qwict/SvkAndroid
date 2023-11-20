@@ -2,8 +2,10 @@ package com.qwict.svkandroid.common.di
 
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Constants.BASE_URL
+import com.qwict.svkandroid.common.Constants.BLOB_URL
 import com.qwict.svkandroid.data.local.RoomContainer
 import com.qwict.svkandroid.data.local.RoomContainerImpl
+import com.qwict.svkandroid.data.remote.BlobApiService
 import com.qwict.svkandroid.data.remote.RetrofitApiService
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.data.repository.SvkRepositoryImpl
@@ -31,6 +33,16 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RetrofitApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBlobService(): BlobApiService {
+        return Retrofit.Builder()
+            .baseUrl(BLOB_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BlobApiService::class.java)
     }
 
     @Provides

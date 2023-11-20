@@ -30,6 +30,9 @@ data class ImageRoomEntity(
     // The transport that the picture was taken for
     @ColumnInfo(name = "transport_id")
     val transportId: Int = 0,
+
+    @ColumnInfo(name = "is_synced")
+    val isSynced: Boolean = false,
 )
 
 fun ImageRoomEntity.asDomainModel(): Image {

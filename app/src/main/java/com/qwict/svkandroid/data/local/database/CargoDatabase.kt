@@ -11,4 +11,5 @@ interface CargoDatabase {
     suspend fun insertAll(cargos: List<CargoRoomEntity>)
     suspend fun update(cargo: CargoRoomEntity)
     suspend fun delete(cargo: CargoRoomEntity)
+    suspend fun getCargosToSync(): List<CargoRoomEntity>
 }

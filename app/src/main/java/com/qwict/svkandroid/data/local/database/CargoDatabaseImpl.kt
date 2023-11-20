@@ -31,4 +31,8 @@ class CargoDatabaseImpl(private val cargoDao: CargoDao) : CargoDatabase {
     override suspend fun delete(cargo: CargoRoomEntity) {
         cargoDao.delete(cargo)
     }
+
+    override suspend fun getCargosToSync(): List<CargoRoomEntity> {
+        return cargoDao.getCargosToSync()
+    }
 }

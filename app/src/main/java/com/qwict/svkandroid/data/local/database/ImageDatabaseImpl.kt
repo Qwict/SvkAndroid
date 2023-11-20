@@ -28,4 +28,8 @@ class ImageDatabaseImpl(private val imageDao: ImageDao) : ImageDatabase {
     override suspend fun delete(image: ImageRoomEntity) {
         imageDao.delete(image)
     }
+
+    override suspend fun getImagesToSync(): List<ImageRoomEntity> {
+        return imageDao.getImagesToSync()
+    }
 }

@@ -10,4 +10,5 @@ interface ImageDatabase {
     suspend fun insertAll(images: List<ImageRoomEntity>)
     suspend fun update(image: ImageRoomEntity)
     suspend fun delete(image: ImageRoomEntity)
+    suspend fun getImagesToSync(): List<ImageRoomEntity>
 }
