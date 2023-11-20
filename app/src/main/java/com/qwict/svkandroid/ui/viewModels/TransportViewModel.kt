@@ -12,6 +12,7 @@ import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.use_cases.GetActiveTransportUseCase
 import com.qwict.svkandroid.domain.use_cases.SelectRouteUseCase
+import com.qwict.svkandroid.domain.use_cases.SetDriverUseCase
 import com.qwict.svkandroid.domain.validator.Validators
 import com.qwict.svkandroid.ui.screens.BarcodeFormat
 import com.qwict.svkandroid.ui.screens.BarcodeScanner
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class TransportViewModel @Inject constructor(
     private val validators: Validators,
     private val selectRouteUseCase: SelectRouteUseCase,
+    private val setDriverUseCase: SetDriverUseCase,
     private val getActiveTransportUseCase: GetActiveTransportUseCase,
     private val repository: SvkRepository,
 ) : ViewModel() {
@@ -141,6 +143,22 @@ class TransportViewModel @Inject constructor(
         return false
     }
 
+    fun isDriverNameLicensePlateValid() : Boolean {
+        val driverNameResult = validators.validateNotEmptyText(transportUiState.driverName, "Driver name")
+        val licensePlateResult = validators.validateNotEmptyText(transportUiState.licensePlate, "Licenseplate")
+
+        if(driverNameResult.successful && licensePlateResult.successful){
+            updateLocalRoute()
+            return true
+        }
+        transportUiState = transportUiState.copy(
+            driverName = driverNameResult.errorMessage,
+            licensePlate = licensePlateResult.errorMessage
+        )
+
+        return false
+    }
+
     fun isCargoNumberValidThenSave(): Boolean {
         val cargoNumberResult = validators.validateNotEmptyText(transportUiState.newCargoNumber, "Cargo Number")
 
@@ -199,7 +217,6 @@ class TransportViewModel @Inject constructor(
                     transportUiState = transportUiState.copy(
                         routeNumber = result.data!!,
                     )
-                    println("TransportUIState look like this : $transportUiState")
                 }
 
                 is Resource.Error -> {
@@ -215,6 +232,7 @@ class TransportViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
     fun stopEditingCargoNumber() {
         transportUiState = transportUiState.copy(isEditingCargoNumber = false)
     }
@@ -241,6 +259,36 @@ class TransportViewModel @Inject constructor(
 
     private fun clearTransportState() {
         transportUiState = TransportUiState()
+    }
+
+    private fun updateLocalRoute() {
+        Log.i("Update", "Updating route in local db")
+        setDriverUseCase(
+            routeNumber = transportUiState.routeNumber,
+            licensePlate = transportUiState.licensePlate,
+            driver = transportUiState.driverName
+        ).onEach { result ->
+            when(result){
+                is Resource.Success -> {
+                    transportUiState = transportUiState.copy(
+                        driverName = result.data!!.driverName,
+                        licensePlate = result.data!!.licensePlate
+                    )
+                }
+
+                is Resource.Error -> {
+                    transportUiState = TransportUiState(
+                        error = result.message ?: "An unexpected error occured"
+                    )
+                }
+
+                is Resource.Loading -> {
+                    transportUiState = transportUiState.copy(
+                        isLoading = true
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }
 

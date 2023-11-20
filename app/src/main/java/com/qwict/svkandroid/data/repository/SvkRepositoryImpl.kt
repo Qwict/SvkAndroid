@@ -7,6 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.qwict.svkandroid.data.local.RoomContainer
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.local.schema.asDomainModel
 import com.qwict.svkandroid.data.remote.RetrofitApiService
@@ -71,6 +72,10 @@ class SvkRepositoryImpl @Inject constructor(
 
     override suspend fun insertTransportObject(transport: Transport) {
         roomContainer.transportDatabase.insert(transport.asRoomEntity())
+    }
+
+    override suspend fun updateLocalTransport(transport: Transport) {
+        roomContainer.transportDatabase.update(transport.asRoomEntity())
     }
 
     override suspend fun getActiveTransport(): Transport {

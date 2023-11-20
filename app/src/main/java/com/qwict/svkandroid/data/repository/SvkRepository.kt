@@ -1,5 +1,6 @@
 package com.qwict.svkandroid.data.repository
 
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto
@@ -43,6 +44,7 @@ interface SvkRepository {
     suspend fun patchTransport(transport: Transport): TransportDto
 
     suspend fun insertTransportObject(transport: Transport)
+    suspend fun updateLocalTransport(transport: Transport)
     suspend fun getActiveTransport(): Transport
     suspend fun syncTransports()
 }

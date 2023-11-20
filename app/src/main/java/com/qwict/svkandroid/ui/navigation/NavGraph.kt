@@ -82,6 +82,7 @@ fun NavGraph(
                     transportUiState = transportViewModel.transportUiState,
                     scanCargoNumber = { transportViewModel.scanCargoNumber() },
                     isCargoNumberValidThenSave = { transportViewModel.isCargoNumberValidThenSave() },
+                    isDriverNameLicensePlateValid = { transportViewModel.isDriverNameLicensePlateValid() },
 
                     clearCargoNumberError = { transportViewModel.clearCargoNumberError() },
                     startEditingCargoNumber = { transportViewModel.startEditingCargoNumber() },
