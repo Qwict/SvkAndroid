@@ -160,6 +160,7 @@ fun RouteEditScreen(
                 },
                 label = { Text("Nummerplaat") },
                 isError = transportUiState.licensePlateError.isNotEmpty(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
             if (transportUiState.licensePlateError.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -180,6 +181,7 @@ fun RouteEditScreen(
                 },
                 label = { Text("Chauffeur") },
                 isError = transportUiState.driverNameError.isNotEmpty(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
             )
             if (transportUiState.driverNameError.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(4.dp))
