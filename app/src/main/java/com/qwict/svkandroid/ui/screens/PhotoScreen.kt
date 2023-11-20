@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,6 +48,7 @@ import androidx.core.content.ContextCompat
 fun PhotoScreen(onTakePhoto: (Bitmap) -> Unit, capturedImages: List<Bitmap>, goBack: () -> Unit) {
     val applicationContext: Context = LocalContext.current
     var isFlashOn by remember { mutableStateOf(false) }
+
     val controller = remember {
         LifecycleCameraController(applicationContext).apply {
             setEnabledUseCases(
@@ -176,7 +178,9 @@ private fun LastPhotoComponent(
         modifier = modifier
             .size(128.dp)
             .padding(16.dp),
-        //  elevation = 8.dp,
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp,
+        ),
         shape = MaterialTheme.shapes.large,
     ) {
         Image(
