@@ -2,6 +2,7 @@ package com.qwict.svkandroid.ui.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -17,13 +18,19 @@ fun AlertDialog(
 ) {
     AlertDialog(
         icon = {
-            Icon(icon, contentDescription = "Example Icon")
+            Icon(icon, contentDescription = "The Icon of the Alert dialog")
         },
         title = {
-            Text(text = dialogTitle)
+            Text(
+                style = MaterialTheme.typography.headlineMedium,
+                text = dialogTitle,
+            )
         },
         text = {
-            Text(text = dialogText)
+            Text(
+                style = MaterialTheme.typography.bodyLarge,
+                text = dialogText,
+            )
         },
         onDismissRequest = {
             onDismissRequest()

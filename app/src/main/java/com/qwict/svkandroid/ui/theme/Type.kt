@@ -23,7 +23,7 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Light,
-        fontSize = 14.sp,
+        fontSize = 18.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp,
     ),
@@ -31,7 +31,7 @@ val Typography = Typography(
     bodyMedium = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Light,
-        fontSize = 12.sp,
+        fontSize = 16.sp,
         lineHeight = 18.sp,
         letterSpacing = 0.sp,
     ),
@@ -39,7 +39,7 @@ val Typography = Typography(
     headlineLarge = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
+        fontSize = 28.sp,
         lineHeight = 26.sp,
         letterSpacing = 0.sp,
     ),
@@ -47,7 +47,7 @@ val Typography = Typography(
     headlineMedium = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
+        fontSize = 24.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.sp,
     ),
@@ -55,7 +55,7 @@ val Typography = Typography(
     headlineSmall = TextStyle(
         fontFamily = Roboto,
         fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
+        fontSize = 20.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.sp,
     ),

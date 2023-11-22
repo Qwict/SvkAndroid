@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.qwict.svkandroid.common.AuthenticationSingleton
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.domain.use_cases.LoginUseCase
+import com.qwict.svkandroid.domain.use_cases.RegisterUseCase
 import com.qwict.svkandroid.domain.validator.Validators
-import com.qwict.svkandroid.ui.viewModels.states.AuthState
+import com.qwict.svkandroid.ui.viewModels.states.AuthFormState
 import com.qwict.svkandroid.ui.viewModels.states.AuthUiState
-import com.qwict.svkandroid.ui.viewModels.states.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,9 +21,10 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val registerUseCase: RegisterUseCase,
     private val validators: Validators,
 ) : ViewModel() {
-    var loginUiState by mutableStateOf(LoginUiState())
+    var authFormState by mutableStateOf(AuthFormState())
         private set
     var authUiState by mutableStateOf(AuthUiState())
         private set
@@ -32,22 +33,30 @@ class AuthViewModel @Inject constructor(
         authUiState = if (AuthenticationSingleton.isUserAuthenticated) {
             AuthUiState(
                 user = AuthenticationSingleton.user,
-                authState = AuthState.LoggedIn,
             )
         } else {
-            AuthUiState(
-                authState = AuthState.UnAuthenticated,
-            )
+            AuthUiState()
         }
     }
 
+    fun clearValidationErrors() {
+        authFormState = authFormState.copy(
+            emailError = "",
+            passwordError = "",
+            passwordConfirmError = "",
+        )
+        authUiState = authUiState.copy(
+            error = "",
+        )
+    }
+
     fun login() {
-        val email = loginUiState.email
-        val password = loginUiState.password
+        val email = authFormState.email
+        val password = authFormState.password
         Log.i("AuthViewModel", "loginUser: $email, $password")
 
-        val emailResult = validators.emailValidator(loginUiState.email)
-        val passwordResult = validators.passwordValidator(loginUiState.password)
+        val emailResult = validators.emailValidator(authFormState.email)
+        val passwordResult = validators.passwordValidator(authFormState.password)
 
         Log.i("AuthViewModel", "loginUser: $emailResult, $passwordResult")
         val hasErrors = listOf(
@@ -56,7 +65,7 @@ class AuthViewModel @Inject constructor(
         ).any { !it.successful }
 
         if (hasErrors) {
-            authUiState = authUiState.copy(
+            authFormState = authFormState.copy(
                 passwordError = passwordResult.errorMessage,
                 emailError = emailResult.errorMessage,
             )
@@ -67,13 +76,12 @@ class AuthViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
                         authUiState =
-                            AuthUiState(user = result.data!!, authState = AuthState.LoggedIn)
+                            AuthUiState(user = result.data!!)
                     }
 
                     is Resource.Error -> {
                         authUiState = AuthUiState(
                             error = result.message ?: "An unexpected error occurred",
-                            authState = AuthState.UnAuthenticated,
                         )
                     }
 
@@ -85,29 +93,74 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun registerUser() {
+        val emailResult = validators.emailValidator(authFormState.email)
+        val passwordResult =
+            validators.validateNewPassword(authFormState.password, authFormState.passwordConfirm)
+
+        val hasErrors = listOf(
+            emailResult,
+            passwordResult,
+        ).any { !it.successful }
+
+        if (hasErrors) {
+            authFormState = authFormState.copy(
+                emailError = emailResult.errorMessage,
+                passwordError = passwordResult.errorMessage,
+                passwordConfirmError = passwordResult.errorMessage,
+            )
+            return
+        } else {
+            registerUseCase(authFormState.email, authFormState.password).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        authUiState =
+                            AuthUiState(
+                                user = result.data!!,
+                                isRequestSendDialogVisible = true,
+                            )
+                    }
+
+                    is Resource.Error -> {
+                        authUiState = authUiState.copy(
+                            error = result.message ?: "An unexpected error occurred",
+                            isLoading = false,
+                        )
+                    }
+
+                    is Resource.Loading -> {
+                        authUiState = authUiState.copy(
+                            error = "",
+                            isLoading = true,
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
+
     fun logout() {
         AuthenticationSingleton.logout()
         // Will remember the email address on logout
-        loginUiState = loginUiState.copy(password = "")
+        authFormState = authFormState.copy(password = "")
         // Clear the authentication ui sate on logout
-        authUiState = AuthUiState(
-            authState = AuthState.UnAuthenticated,
-        )
     }
 
     fun switchPasswordVisibility() {
-        authUiState = authUiState.copy(passwordVisible = !authUiState.passwordVisible)
+        authUiState = authUiState.copy(isPasswordVisible = !authUiState.isPasswordVisible)
     }
 
     fun onUpdateLoginState(event: AuthenticationFormEvent) {
         when (event) {
             is AuthenticationFormEvent.EmailChanged -> {
-                loginUiState = loginUiState.copy(email = event.email)
+                authFormState = authFormState.copy(email = event.email)
             }
             is AuthenticationFormEvent.PasswordChanged -> {
-                loginUiState = loginUiState.copy(password = event.password)
+                authFormState = authFormState.copy(password = event.password)
             }
-            else -> {}
+            is AuthenticationFormEvent.ConfirmPasswordChanged -> {
+                authFormState = authFormState.copy(passwordConfirm = event.passwordConfirm)
+            }
         }
     }
 }
@@ -115,4 +168,5 @@ class AuthViewModel @Inject constructor(
 sealed class AuthenticationFormEvent {
     data class EmailChanged(val email: String) : AuthenticationFormEvent()
     data class PasswordChanged(val password: String) : AuthenticationFormEvent()
+    data class ConfirmPasswordChanged(val passwordConfirm: String) : AuthenticationFormEvent()
 }

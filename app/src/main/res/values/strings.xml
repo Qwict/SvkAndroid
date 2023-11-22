@@ -37,6 +37,7 @@
     <string name="initial_title">Sign in</string>
     <string name="logged_in_title">You\'re logged in.</string>
     <string name="logged_out_title">You\'re logged out.</string>
+    <string name="register_route">Request Validation</string>
 
     <!-- "Log in" and "Log out" buttons -->
     <string name="button_login">Log in</string>

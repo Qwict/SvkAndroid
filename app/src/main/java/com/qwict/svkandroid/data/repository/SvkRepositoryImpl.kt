@@ -7,7 +7,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.qwict.svkandroid.data.local.RoomContainer
-import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.local.schema.asDomainModel
 import com.qwict.svkandroid.data.remote.RetrofitApiService
@@ -42,6 +41,11 @@ class SvkRepositoryImpl @Inject constructor(
 
         // return user dto to domain layer
         return userDto
+    }
+
+    override suspend fun register(body: LoginDto): UserDto {
+        // call api and get user
+        return svkApi.register(body)
     }
 
     override suspend fun insertLocalUser(user: UserDto) {

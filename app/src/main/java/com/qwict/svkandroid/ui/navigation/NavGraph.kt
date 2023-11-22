@@ -11,9 +11,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
-import com.qwict.svkandroid.ui.screens.AuthenticationScreen
+import com.qwict.svkandroid.ui.screens.LoginScreen
 import com.qwict.svkandroid.ui.screens.PermissionScreen
 import com.qwict.svkandroid.ui.screens.PhotoScreen
+import com.qwict.svkandroid.ui.screens.RegisterScreen
 import com.qwict.svkandroid.ui.screens.RouteEditScreen
 import com.qwict.svkandroid.ui.screens.RouteScreen
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
@@ -37,12 +38,30 @@ fun NavGraph(
         ) {
             composable(route = Navigations.Authenticate.route) {
                 val authViewModel = it.sharedViewModel<AuthViewModel>(navController)
-                AuthenticationScreen(
+                LoginScreen(
                     onUpdateLoginState = { authViewModel.onUpdateLoginState(it) },
-                    loginUiState = authViewModel.loginUiState,
+                    authFormState = authViewModel.authFormState,
                     login = { authViewModel.login() },
                     authUiState = authViewModel.authUiState,
                     switchPasswordVisibility = { authViewModel.switchPasswordVisibility() },
+                    navigateToRegisterScreen = { navController.navigate(Navigations.Register.route) },
+                    clearValidationErrors = { authViewModel.clearValidationErrors() },
+                )
+            }
+            composable(route = Navigations.Register.route) {
+                val authViewModel = it.sharedViewModel<AuthViewModel>(navController)
+                RegisterScreen(
+                    authState = authViewModel.authUiState,
+                    registerUser = { authViewModel.registerUser() },
+                    authFormState = authViewModel.authFormState,
+                    onEvent = { authViewModel.onUpdateLoginState(it) },
+                    switchPasswordVisibility = { authViewModel.switchPasswordVisibility() },
+                    clearValidationErrors = { authViewModel.clearValidationErrors() },
+                    navigateToLoginScreen = {
+                        navController.navigate(Navigations.Authenticate.route) {
+                            popUpTo(Navigations.Authenticate.route) { inclusive = true }
+                        }
+                    },
                 )
             }
         }

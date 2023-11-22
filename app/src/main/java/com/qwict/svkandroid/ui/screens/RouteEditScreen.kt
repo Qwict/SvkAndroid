@@ -198,7 +198,7 @@ fun RouteEditScreen(
                 errorText = transportUiState.driverNameError,
                 offsetX = offsetXDriverName,
                 isError = transportUiState.driverNameError.isNotEmpty(),
-                icon = Icons.Default.Person,
+                leadingIcon = Icons.Default.Person,
             )
             ShakingTextFieldWithIcon(
                 textFieldValue = transportUiState.licensePlate,
@@ -207,7 +207,7 @@ fun RouteEditScreen(
                 errorText = transportUiState.licensePlateError,
                 offsetX = offsetXLicensePlate,
                 isError = transportUiState.licensePlateError.isNotEmpty(),
-                icon = Icons.Default.LocalShipping,
+                leadingIcon = Icons.Default.LocalShipping,
             )
             Spacer(modifier = Modifier.size(32.dp))
             LazyRow(

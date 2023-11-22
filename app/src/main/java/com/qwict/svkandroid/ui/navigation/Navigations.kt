@@ -12,7 +12,10 @@ enum class Navigations(val route: String, @StringRes val title: Int) {
         route = "Authenticate",
         title = R.string.logged_out_title,
     ),
-
+    Register(
+        route = "Register",
+        title = R.string.register_route,
+    ),
     MainRoute(
         route = "Main",
         title = R.string.main_route,

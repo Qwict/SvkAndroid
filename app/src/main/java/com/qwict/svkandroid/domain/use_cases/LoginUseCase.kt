@@ -52,7 +52,8 @@ class LoginUseCase @Inject constructor(
             if (e.code() == 400) {
                 emit(Resource.Error("Make sure to fill out all fields."))
             } else if (e.code() == 403) {
-                emit(Resource.Error("Invalid credentials."))
+                emit(Resource.Error(e.localizedMessage ?: "Invalid credentials."))
+//                emit(Resource.Error("Invalid credentials."))
             } else {
                 emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
             }

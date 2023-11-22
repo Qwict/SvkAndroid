@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.data.remote.dto
 
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
+import com.qwict.svkandroid.domain.model.User
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -20,5 +21,14 @@ fun UserDto.asRoomEntity(): UserRoomEntity {
         firstName = firstName,
         lastName = lastName,
         remoteId = userId,
+    )
+}
+
+fun UserDto.asDomainModel(): User {
+    return User(
+        email = email,
+        firstName = "",
+        lastName = "",
+        role = "",
     )
 }

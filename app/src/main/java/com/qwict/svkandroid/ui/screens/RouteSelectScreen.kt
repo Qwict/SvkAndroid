@@ -63,7 +63,7 @@ fun RouteScreen(
                 isError = transportUiState.routeNumberError.isNotEmpty(),
                 errorText = transportUiState.routeNumberError,
                 offsetX = offsetXRouteNumber,
-                icon = Icons.Filled.LocalShipping,
+                leadingIcon = Icons.Filled.LocalShipping,
             )
 
             Button(
