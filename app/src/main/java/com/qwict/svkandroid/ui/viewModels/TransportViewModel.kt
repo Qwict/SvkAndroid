@@ -1,6 +1,8 @@
 package com.qwict.svkandroid.ui.viewModels
 
+import android.content.ContentValues
 import android.graphics.Bitmap
+import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,10 +11,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Resource
+import com.qwict.svkandroid.common.getDecodedPayload
+import com.qwict.svkandroid.data.local.getEncryptedPreference
 import com.qwict.svkandroid.data.repository.SvkRepository
+import com.qwict.svkandroid.domain.model.Cargo
+import com.qwict.svkandroid.domain.use_cases.AddImagesUseCase
+import com.qwict.svkandroid.domain.use_cases.DeleteImageUseCase
 import com.qwict.svkandroid.domain.use_cases.GetActiveTransportUseCase
+import com.qwict.svkandroid.domain.use_cases.InsertCargoUseCase
 import com.qwict.svkandroid.domain.use_cases.SelectRouteUseCase
 import com.qwict.svkandroid.domain.use_cases.SetDriverUseCase
+import com.qwict.svkandroid.domain.use_cases.UpdateCargoUseCase
 import com.qwict.svkandroid.domain.validator.Validators
 import com.qwict.svkandroid.ui.screens.BarcodeFormat
 import com.qwict.svkandroid.ui.screens.BarcodeScanner
@@ -21,13 +30,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class TransportViewModel @Inject constructor(
     private val validators: Validators,
     private val selectRouteUseCase: SelectRouteUseCase,
+    private val insertCargoUseCase: InsertCargoUseCase,
+    private val updateCargoUseCase: UpdateCargoUseCase,
+    private val addImagesUseCase: AddImagesUseCase,
     private val setDriverUseCase: SetDriverUseCase,
+    private val deleteImageUseCase: DeleteImageUseCase,
     private val getActiveTransportUseCase: GetActiveTransportUseCase,
     private val repository: SvkRepository,
 ) : ViewModel() {
@@ -67,21 +81,76 @@ class TransportViewModel @Inject constructor(
     }
 
     fun onTakePhoto(bitmap: Bitmap) {
+        val resolver = SvkAndroidApplication.appContext.contentResolver
+        var uuid = UUID.randomUUID()
+
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media._ID, uuid.toString())
+            put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            put(MediaStore.Images.Media.DATA, transportUiState.routeNumber)
+        }
+
+        val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+        val imgUri = resolver.insert(collection, values)
+
+        imgUri?.let {uri ->
+            resolver.openOutputStream(uri)?.use {outputStream ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+            }
+
+            Log.d("InsertImg", "Image inserted at $uuid")
+        }
+
         transportUiState = transportUiState.copy(
-            images = transportUiState.images.toMutableList().apply { add(bitmap) },
+            images = transportUiState.images.toMutableMap().apply { put(uuid, bitmap) },
         )
+
+        addImagesUseCase(uuid, transportUiState.routeNumber).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+
+                }
+
+                is Resource.Error -> {
+
+                }
+
+                is Resource.Loading -> {
+
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
-    fun deleteImageOnIndex(imageIndex: Int) {
+    fun deleteImageOnIndex(imageIndex: UUID) {
         Log.i("TransportViewModel", "deleteImageOnIndex: $imageIndex")
-        if (imageIndex >= 0 && imageIndex < transportUiState.images.size) {
+        if (!imageIndex.equals(null)) {
+//      if (imageIndex >= 0 && imageIndex < transportUiState.images.size) {
+            deleteImageUseCase(uuid = imageIndex).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+
+                    }
+
+                    is Resource.Error -> {
+
+                    }
+
+                    is Resource.Loading -> {
+
+                    }
+                }
+            }.launchIn(viewModelScope)
+
             transportUiState = transportUiState.copy(
-                images = transportUiState.images.toMutableList().apply { removeAt(imageIndex) },
+                images = transportUiState.images.toMutableMap().apply { remove(imageIndex) },
+//                images = transportUiState.images.toMutableList().apply { remove(imageIndex -> int) },
             )
             Log.i("TransportViewModel", "deleteImageOnIndex: $imageIndex")
-        } else {
+        } else  {
             // Handle index out of bounds, e.g., throw an exception or log an error
-            println("Invalid index: $imageIndex")
         }
     }
 
@@ -182,6 +251,13 @@ class TransportViewModel @Inject constructor(
         }
 
         if (cargoNumberResult.successful) {
+            if(transportUiState.isEditingCargoNumber){
+                updateCargo(transportUiState.originalCargoNumber,transportUiState.newCargoNumber)
+            } else {
+                insertCargo(
+                    Cargo(cargoNumber = transportUiState.newCargoNumber,loaderId = getDecodedPayload(getEncryptedPreference("token")).userId)
+                )
+            }
             transportUiState = transportUiState.copy(
                 cargoNumbers = cargoNumbers.toMutableList().apply {
                     add(transportUiState.newCargoNumber)
@@ -190,6 +266,7 @@ class TransportViewModel @Inject constructor(
                 cargoNumberError = "",
             )
             transportUiState = transportUiState.copy(isEditingCargoNumber = false)
+
             return true
         }
         transportUiState = transportUiState.copy(cargoNumberError = cargoNumberResult.errorMessage)
@@ -232,19 +309,34 @@ class TransportViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun stopEditingCargoNumber() {
-        transportUiState = transportUiState.copy(isEditingCargoNumber = false)
+    private fun updateCargo(oldCargoNumber: String, newCargoNumber: String){
+        Log.i("Update", "Updating cargo in local db")
+        updateCargoUseCase(oldCargoNumber, newCargoNumber).onEach {result ->
+            when (result) {
+                is Resource.Success -> {}
+                is Resource.Loading -> {}
+                is Resource.Error -> {}
+            }
+        }.launchIn(viewModelScope)
     }
 
-    fun isTransportValid(): Boolean {
-        val driverNameResult = validators.validateNotEmptyText(transportUiState.driverName, "Driver Name")
-        val licensePlateResult = validators.validateNotEmptyText(transportUiState.licensePlate, "License Plate")
-        transportUiState = transportUiState.copy(
-            driverNameError = driverNameResult.errorMessage,
-            licensePlateError = licensePlateResult.errorMessage,
-        )
 
-        return driverNameResult.successful && licensePlateResult.successful
+    private fun insertCargo(cargo: Cargo){
+        Log.i("Insert", "Insert cargo in local db")
+        insertCargoUseCase(
+            cargo = cargo,
+            routeNumber =  transportUiState.routeNumber
+        ).onEach { result ->
+            when (result) {
+                is Resource.Success -> {}
+                is Resource.Loading -> {}
+                is Resource.Error -> {}
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun stopEditingCargoNumber() {
+        transportUiState = transportUiState.copy(isEditingCargoNumber = false)
     }
 
     fun finishTransport() {

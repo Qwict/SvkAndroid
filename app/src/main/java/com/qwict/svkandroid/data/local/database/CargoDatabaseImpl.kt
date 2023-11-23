@@ -5,11 +5,11 @@ import com.qwict.svkandroid.data.local.schema.CargoRoomEntity
 import kotlinx.coroutines.flow.Flow
 
 class CargoDatabaseImpl(private val cargoDao: CargoDao) : CargoDatabase {
-    override fun getCargoFlowById(id: Int): Flow<CargoRoomEntity> {
-        return cargoDao.getCargoFlowById(id)
+    override fun getCargoFlowByCargoNumber(cargoNumber: String): Flow<CargoRoomEntity> {
+        return cargoDao.getCargoFlowByCargoNumber(cargoNumber)
     }
     override suspend fun getCargoById(id: Int): CargoRoomEntity {
-        return cargoDao.getCargoById(id)
+        return cargoDao.getCargoByCargoNumber(id)
     }
 
     override suspend fun getCargosByTransportId(transportId: Int): List<CargoRoomEntity> {

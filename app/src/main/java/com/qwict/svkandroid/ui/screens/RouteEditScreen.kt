@@ -2,6 +2,7 @@ package com.qwict.svkandroid.ui.screens
 
 import ImageDialog
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -60,6 +61,7 @@ import com.qwict.svkandroid.ui.components.ShakingTextFieldWithIcon
 import com.qwict.svkandroid.ui.components.animateText
 import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
+import java.util.UUID
 
 enum class MultiFloatingState {
     Expanded, Collapsed
@@ -85,7 +87,7 @@ fun RouteEditScreen(
     transportUiState: TransportUiState,
     showDialogState: Boolean,
     selectedImage: Bitmap?,
-    deleteImageOnIndex: (Int) -> Unit,
+    deleteImageOnIndex: (UUID) -> Unit,
     toggleShowDialogState: (Bitmap?) -> Unit,
     navigateToPhotoRoute: () -> Unit,
     scanCargoNumber: () -> Unit,
@@ -93,7 +95,7 @@ fun RouteEditScreen(
     isDriverNameLicensePlateValid: () -> Boolean,
     clearCargoNumberError: () -> Unit,
     startEditingCargoNumber: () -> Unit,
-    stopEditingCargoNumber: () -> Unit,
+    stopEditingCargoNumber: () -> Unit
 ) {
     var multiFloatingState by remember {
         mutableStateOf(MultiFloatingState.Collapsed)
@@ -214,7 +216,7 @@ fun RouteEditScreen(
                 userScrollEnabled = true,
 
             ) {
-                itemsIndexed(transportUiState.images) { index, image ->
+                itemsIndexed(transportUiState.images.entries.toList()) { index, image ->
                     Box(
                         modifier = Modifier
                             .width(300.dp)
@@ -222,7 +224,7 @@ fun RouteEditScreen(
                     ) {
                         // Load property image here
                         Image(
-                            bitmap = image.asImageBitmap(),
+                            bitmap = image.value.asImageBitmap(),
                             // painter = painterResource(id = image),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
@@ -231,13 +233,13 @@ fun RouteEditScreen(
                                 .padding(2.dp)
                                 .clickable {
                                     toggleShowDialogState(
-                                        image,
+                                        image.value,
                                     )
                                 },
 
                         )
                         IconButton(
-                            onClick = { deleteImageOnIndex(index) },
+                            onClick = { deleteImageOnIndex(image.key) },
                             modifier = Modifier.align(Alignment.TopEnd),
                             colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -361,3 +363,10 @@ fun RouteEditScreen(
         }
     }
 }
+
+data class ImageLocal(
+    val id: Long,
+    val dateTaken: String,
+    val routeNumber: String,
+    val uri: Uri
+)

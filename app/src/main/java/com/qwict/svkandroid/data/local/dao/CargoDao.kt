@@ -24,12 +24,12 @@ interface CargoDao {
     @Delete
     suspend fun delete(cargo: CargoRoomEntity)
 
-    @Query("SELECT * FROM cargo WHERE id = :id")
-    fun getCargoFlowById(id: Int): Flow<CargoRoomEntity>
+    @Query("SELECT * FROM cargo WHERE cargo_number LIKE :cargoNumber")
+    fun getCargoFlowByCargoNumber(cargoNumber: String): Flow<CargoRoomEntity>
 
-    @Query("SELECT * FROM cargo WHERE id = :id")
-    fun getCargoById(id: Int): CargoRoomEntity
+    @Query("SELECT * FROM cargo WHERE id LIKE :id")
+    fun getCargoByCargoNumber(id: Int): CargoRoomEntity
 
-    @Query("SELECT * FROM cargo WHERE transport_id = :transportId")
+    @Query("SELECT * FROM cargo WHERE route_number = :transportId")
     suspend fun getCargosByTransportId(transportId: Int): List<CargoRoomEntity>
 }

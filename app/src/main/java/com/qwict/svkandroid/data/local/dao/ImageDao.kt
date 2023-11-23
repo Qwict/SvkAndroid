@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 @Dao
 interface ImageDao {
@@ -23,8 +24,8 @@ interface ImageDao {
     @Delete
     suspend fun delete(image: ImageRoomEntity)
 
-    @Query("SELECT * FROM image WHERE id = :id")
-    fun getImageFlowById(id: Int): Flow<ImageRoomEntity>
+    @Query("SELECT * FROM image WHERE image_uuid = :id")
+    fun getImageFlowById(id: String): Flow<ImageRoomEntity>
 
     @Query("SELECT * FROM image WHERE id = :id")
     fun getImageById(id: Int): ImageRoomEntity

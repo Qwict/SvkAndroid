@@ -94,14 +94,14 @@ fun NavGraph(
                             popUpTo(Navigations.RouteEdit.route) { inclusive = true }
                         }
                     },
-                    isTransportValid = { transportViewModel.isTransportValid() },
+                    isTransportValid = { transportViewModel.isDriverNameLicensePlateValid() }
                 )
             }
             composable(route = Navigations.Photo.route) {
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
                 PhotoScreen(
                     onTakePhoto = { transportViewModel.onTakePhoto(it) },
-                    capturedImages = transportViewModel.transportUiState.images,
+                    capturedImages = transportViewModel.transportUiState.images.values.toList(),
                     goBack = { navController.navigateUp() },
                 )
             }

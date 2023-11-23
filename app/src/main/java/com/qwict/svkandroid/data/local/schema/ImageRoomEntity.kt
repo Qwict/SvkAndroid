@@ -1,5 +1,4 @@
 package com.qwict.svkandroid.data.local.schema
-
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
@@ -20,23 +19,22 @@ data class ImageRoomEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     // The image UUID that will be used in the blob storage (file name)
+
     @ColumnInfo(name = "image_uuid")
-    val imageUuid: UUID = UUID.randomUUID(),
+    val imageUuid: String = UUID.randomUUID().toString(),
 
     // The user (loader) that took the picture
     @ColumnInfo(name = "user_id")
     val userId: Int = 0,
 
     // The transport that the picture was taken for
-    @ColumnInfo(name = "transport_id")
-    val transportId: Int = 0,
+    @ColumnInfo(name = "route_number")
+    val routeNumber: String = ""
 )
 
 fun ImageRoomEntity.asDomainModel(): Image {
     return Image(
-        imageUuid = imageUuid,
-        userId = userId,
-        transportId = transportId,
+        imageUuid = imageUuid
     )
 }
 
