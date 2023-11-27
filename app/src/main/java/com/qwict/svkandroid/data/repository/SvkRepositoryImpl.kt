@@ -7,6 +7,9 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.qwict.svkandroid.data.local.RoomContainer
+import com.qwict.svkandroid.data.local.schema.CargoRoomEntity
+import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithImages
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.local.schema.asDomainModel
 import com.qwict.svkandroid.data.remote.RetrofitApiService
@@ -15,10 +18,13 @@ import com.qwict.svkandroid.data.remote.dto.LoginDto
 import com.qwict.svkandroid.data.remote.dto.TransportDto
 import com.qwict.svkandroid.data.remote.dto.UserDto
 import com.qwict.svkandroid.data.remote.dto.asRoomEntity
+import com.qwict.svkandroid.domain.model.Cargo
 import com.qwict.svkandroid.domain.model.Transport
 import com.qwict.svkandroid.domain.model.asRoomEntity
 import com.qwict.svkandroid.tasks.SyncWorker
 import java.io.File
+import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
 
 class SvkRepositoryImpl @Inject constructor(
@@ -78,6 +84,36 @@ class SvkRepositoryImpl @Inject constructor(
         roomContainer.transportDatabase.insert(transport.asRoomEntity())
     }
 
+    override suspend fun insertCargoObject(cargo: Cargo, routeNumber: String) {
+        roomContainer.cargoDatabase.insert(CargoRoomEntity(
+            cargoNumber = cargo.cargoNumber,
+            cargoDate = Date(),
+            loaderId = cargo.loaderId,
+            routeNumber = routeNumber
+            )
+        )
+    }
+
+    override suspend fun insertImage(imgUUID: UUID, userId: Int, routeNumber: String){
+        val imageRoom = ImageRoomEntity(
+            imageUuid = imgUUID.toString(),
+            userId = userId,
+            routeNumber = routeNumber
+        )
+        roomContainer.imageDatabase.insert(
+            imageRoom
+        )
+
+        val transport = getActiveTransport()
+        val newTransport = TransportRoomEntityWithImages(
+            transport.asRoomEntity(),
+            listOf(imageRoom)
+        )
+
+        roomContainer.transportDatabase.insert(newTransport.transport)
+//        roomContainer.imageDatabase.insertAll(newTransport.images)
+
+    }
     override suspend fun updateLocalTransport(transport: Transport) {
         roomContainer.transportDatabase.update(transport.asRoomEntity())
     }
@@ -99,5 +135,25 @@ class SvkRepositoryImpl @Inject constructor(
             .build()
         val workManager = WorkManager.getInstance(ctx)
         workManager.enqueueUniqueWork("SYNC_TRANSPORTS", ExistingWorkPolicy.KEEP, workRequest)
+    }
+
+    override suspend fun deleteImage(imageUUID: String) {
+        roomContainer.imageDatabase.getImageFlowByUUID(imageUUID).collect{result ->
+            roomContainer.imageDatabase.delete(result)
+        }
+    }
+
+    override suspend fun updateCargo(oldCargoNumber: String, newCargoNumber: String) {
+        roomContainer.cargoDatabase.getCargoFlowByCargoNumber(oldCargoNumber).collect{result ->
+            roomContainer.cargoDatabase.update(
+                CargoRoomEntity(
+                    id = result.id,
+                    cargoNumber = newCargoNumber,
+                    cargoDate = result.cargoDate,
+                    routeNumber = result.routeNumber,
+                    loaderId = result.loaderId
+                )
+            )
+        }
     }
 }

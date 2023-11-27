@@ -4,7 +4,7 @@ import com.qwict.svkandroid.data.local.schema.CargoRoomEntity
 import kotlinx.coroutines.flow.Flow
 
 interface CargoDatabase {
-    fun getCargoFlowById(id: Int): Flow<CargoRoomEntity>
+    fun getCargoFlowByCargoNumber(cargoNumber: String): Flow<CargoRoomEntity>
     suspend fun getCargoById(id: Int): CargoRoomEntity
     suspend fun getCargosByTransportId(transportId: Int): List<CargoRoomEntity>
     suspend fun insert(cargo: CargoRoomEntity)

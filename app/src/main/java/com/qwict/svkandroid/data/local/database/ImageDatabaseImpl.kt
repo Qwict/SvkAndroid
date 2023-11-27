@@ -5,7 +5,7 @@ import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
 import kotlinx.coroutines.flow.Flow
 
 class ImageDatabaseImpl(private val imageDao: ImageDao) : ImageDatabase {
-    override fun getImageFlowById(id: Int): Flow<ImageRoomEntity> {
+    override fun getImageFlowByUUID(id: String): Flow<ImageRoomEntity> {
         return imageDao.getImageFlowById(id)
     }
 

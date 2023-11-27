@@ -2,6 +2,7 @@ package com.qwict.svkandroid.domain.model
 
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithCargos
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithImages
 import java.util.Date
 
 data class Transport(
@@ -27,5 +28,12 @@ fun Transport.asRoomEntityWithCargos(): TransportRoomEntityWithCargos {
     return TransportRoomEntityWithCargos(
         transport = asRoomEntity(),
         cargos = cargos.map { it.asRoomEntity() },
+    )
+}
+
+fun Transport.asRoomEntityWithImages(): TransportRoomEntityWithImages {
+    return TransportRoomEntityWithImages(
+        transport = asRoomEntity(),
+        images = images.map { it.asRoomEntity() }
     )
 }

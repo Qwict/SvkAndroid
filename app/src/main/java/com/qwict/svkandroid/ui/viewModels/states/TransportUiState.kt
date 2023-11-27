@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.ui.viewModels.states
 
 import android.graphics.Bitmap
+import java.util.UUID
 
 data class TransportUiState(
     val routeNumber: String = "",
@@ -17,13 +18,14 @@ data class TransportUiState(
     val cargoNumberError: String = "",
     val cargoNumbers: List<String> = listOf(),
 
-   /* val images: List<Int> = listOf(
-        R.drawable.transport_two,
-        R.drawable.transport_three,
-        R.drawable.transport_four,
-    ),*/
+    /* val images: List<Int> = listOf(
+         R.drawable.transport_two,
+         R.drawable.transport_three,
+         R.drawable.transport_four,
+     ),*/
 
-    val images: List<Bitmap> = emptyList(),
+    val images: Map<UUID,Bitmap> = emptyMap(),
+
 
     val isLoading: Boolean = false,
     val error: String = "",

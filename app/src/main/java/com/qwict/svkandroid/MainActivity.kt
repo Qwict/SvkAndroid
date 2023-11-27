@@ -22,6 +22,7 @@ class MainActivity : ComponentActivity() {
         ) {
         }
         launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        launcher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
         setContent {
             // A surface container using the 'background' color from the theme
             SvkAndroidTheme {

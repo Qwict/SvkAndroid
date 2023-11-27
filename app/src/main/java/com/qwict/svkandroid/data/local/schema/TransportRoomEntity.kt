@@ -36,8 +36,8 @@ data class TransportRoomEntity(
 data class TransportRoomEntityWithCargos(
     val transport: TransportRoomEntity,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "transport_id",
+        parentColumn = "route_number",
+        entityColumn = "route_number",
     )
     val cargos: List<CargoRoomEntity>,
 )
@@ -45,8 +45,8 @@ data class TransportRoomEntityWithCargos(
 data class TransportRoomEntityWithImages(
     val transport: TransportRoomEntity,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "transport_id",
+        parentColumn = "route_number",
+        entityColumn = "route_number",
     )
     val images: List<ImageRoomEntity>,
 )

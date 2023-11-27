@@ -5,8 +5,10 @@ import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto
 import com.qwict.svkandroid.data.remote.dto.TransportDto
 import com.qwict.svkandroid.data.remote.dto.UserDto
+import com.qwict.svkandroid.domain.model.Cargo
 import com.qwict.svkandroid.domain.model.Transport
 import java.io.File
+import java.util.UUID
 
 interface SvkRepository {
     suspend fun getHealth(): HealthDto
@@ -45,7 +47,11 @@ interface SvkRepository {
     suspend fun register(body: LoginDto): UserDto
 
     suspend fun insertTransportObject(transport: Transport)
+    suspend fun insertImage(imgUUID: UUID, userId: Int, routeNumber: String)
+    suspend fun insertCargoObject(cargo: Cargo, routeNumber: String)
     suspend fun updateLocalTransport(transport: Transport)
     suspend fun getActiveTransport(): Transport
     suspend fun syncTransports()
+    suspend fun deleteImage(imageUUID: String)
+    suspend fun updateCargo(oldCargoNumber: String, newCargoNumber: String)
 }

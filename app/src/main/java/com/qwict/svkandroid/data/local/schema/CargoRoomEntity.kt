@@ -26,8 +26,8 @@ data class CargoRoomEntity(
     val cargoDate: Date = Date(),
 
 //    TODO: Ask; Might be doing foreign keys wrong here... (slave end of the relationship (other side will be fine...)
-    @ColumnInfo(name = "transport_id")
-    val transportId: Int = 0,
+    @ColumnInfo(name = "route_number")
+    val routeNumber: String = "",
     @ColumnInfo(name = "loader_id")
     val loaderId: Int = 0,
     @ColumnInfo(name = "is_synced")
