@@ -1,26 +1,21 @@
 package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
-import android.util.Log
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.data.repository.SvkRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class UpdateCargoUseCase @Inject constructor(
+class DeleteActiveTransportUseCase @Inject constructor(
     private val repo: SvkRepository,
 ) {
-    operator fun invoke(
-        oldCargoNumber: String,
-        newCargoNumber: String,
-    ): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(): Flow<Resource<Boolean>> = flow {
         try {
-            Log.i("Update", "Updating cargo")
             emit(Resource.Loading())
-            repo.updateCargo(oldCargoNumber, newCargoNumber)
+            repo.deleteActiveTransport()
             emit(Resource.Success(true))
         } catch (e: Exception) {
-            emit(Resource.Error("Unexpected error while updating cargo: ${e.message}"))
+            emit(Resource.Error("Failed to delete active transport: ${e.message}"))
         }
     }
 }

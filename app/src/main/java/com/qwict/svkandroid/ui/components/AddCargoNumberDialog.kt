@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,19 +23,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
+import com.qwict.svkandroid.ui.viewModels.DialogToggleEvent
 import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCargoNumberDialog(
-    onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
     scanCargoNumber: () -> Unit,
     transportUiState: TransportUiState,
     onUpdateTransportState: (TransportChangeEvent) -> Unit,
-    stopEditingCargoNumber: () -> Unit,
-    clearCargoNumberError: () -> Unit,
+    onToggleDialogState: (DialogToggleEvent) -> Unit,
     isValidAndAddCargoNumber: () -> Boolean,
 ) {
     // For shaking text fields
@@ -53,7 +50,6 @@ fun AddCargoNumberDialog(
         },
         text = {
             Column(
-//                modifier = Modifier.fillMaxSize().padding(16.dp),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -80,7 +76,7 @@ fun AddCargoNumberDialog(
             }
         },
         onDismissRequest = {
-            onDismissRequest()
+            onToggleDialogState(DialogToggleEvent.CargoDialog)
         },
         confirmButton = {
             Button(onClick = {
@@ -98,9 +94,8 @@ fun AddCargoNumberDialog(
                 onClick = {
                     onUpdateTransportState(TransportChangeEvent.CargoNumberChanged(""))
                     onUpdateTransportState(TransportChangeEvent.OriginalCargoNumberChanged(""))
-                    stopEditingCargoNumber()
-                    clearCargoNumberError()
-                    onDismissRequest()
+                    onUpdateTransportState(TransportChangeEvent.CargoNumberErrorCleared)
+                    onToggleDialogState(DialogToggleEvent.CargoDialog)
                 },
             ) {
                 Text("Cancel")

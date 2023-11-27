@@ -11,11 +11,14 @@ import javax.inject.Inject
 class GetActiveTransportUseCase @Inject constructor(
     private val repo: SvkRepository,
 ) {
-    operator fun invoke(): Flow<Resource<Transport>> = flow {
+    operator fun invoke(): Flow<Resource<Transport?>> = flow {
         emit(Resource.Loading())
         try {
             val activeTransport = repo.getActiveTransport()
             emit(Resource.Success(activeTransport))
+        } catch (nullPointerException: NullPointerException) {
+            Log.e("GetActiveTransport", "invoke: ", nullPointerException)
+            emit(Resource.Error("No active transport was found."))
         } catch (e: Exception) {
             Log.e("GetActiveTransport", "invoke: ", e)
             emit(Resource.Error("Something went wrong while getting active transport."))

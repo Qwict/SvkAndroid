@@ -1,4 +1,4 @@
-package com.qwict.svkandroid.domain.use_cases
+package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.util.Log
 import com.qwict.svkandroid.common.Resource
@@ -11,11 +11,11 @@ import java.util.UUID
 import javax.inject.Inject
 
 class AddImagesUseCase @Inject constructor(
-    private val repo: SvkRepository
-){
+    private val repo: SvkRepository,
+) {
     operator fun invoke(
         uuid: UUID,
-        routeNumber: String
+        routeNumber: String,
     ): Flow<Resource<UUID>> = flow {
         try {
             Log.i("Insert", "Inserting image uuid in local db")

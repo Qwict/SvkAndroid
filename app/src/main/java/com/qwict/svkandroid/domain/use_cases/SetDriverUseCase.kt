@@ -1,5 +1,4 @@
-package com.qwict.svkandroid.domain.use_cases
-
+package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.util.Log
 import com.qwict.svkandroid.common.Resource
@@ -10,12 +9,12 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SetDriverUseCase @Inject constructor(
-    private val repo: SvkRepository
+    private val repo: SvkRepository,
 ) {
     operator fun invoke(
         routeNumber: String,
         licensePlate: String,
-        driver: String
+        driver: String,
     ): Flow<Resource<Transport>> = flow {
         try {
             Log.i("Update", "Updating transport in room with licenseplate and drivername")
@@ -24,10 +23,10 @@ class SetDriverUseCase @Inject constructor(
             val transport = Transport(
                 routeNumber = routeNumber,
                 licensePlate = licensePlate,
-                driverName = driver
+                driverName = driver,
             )
             repo.insertTransportObject(
-                transport
+                transport,
             )
             emit(Resource.Success(transport))
         } catch (e: Exception) {

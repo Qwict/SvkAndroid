@@ -1,8 +1,8 @@
 package com.qwict.svkandroid.ui.screens
 
 import ImageDialog
-import android.graphics.Bitmap
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Warning
@@ -50,8 +51,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.components.AddCargoNumberDialog
 import com.qwict.svkandroid.ui.components.AlertDialog
@@ -59,7 +62,9 @@ import com.qwict.svkandroid.ui.components.ImageListItem
 import com.qwict.svkandroid.ui.components.MultiFloatingButton
 import com.qwict.svkandroid.ui.components.ShakingTextFieldWithIcon
 import com.qwict.svkandroid.ui.components.animateText
+import com.qwict.svkandroid.ui.viewModels.DialogToggleEvent
 import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
+import com.qwict.svkandroid.ui.viewModels.states.DialogUiState
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 import java.util.UUID
 
@@ -80,29 +85,30 @@ enum class Identifier {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteEditScreen(
-    isTransportValid: () -> Boolean,
-    finishTransport: () -> Unit,
+    // navigation
     navigateToRouteScreen: () -> Unit,
-    onUpdateTransportState: (TransportChangeEvent) -> Unit,
-    transportUiState: TransportUiState,
-    showDialogState: Boolean,
-    selectedImage: Bitmap?,
-    deleteImageOnIndex: (UUID) -> Unit,
-    toggleShowDialogState: (Bitmap?) -> Unit,
     navigateToPhotoRoute: () -> Unit,
-    scanCargoNumber: () -> Unit,
+
+    // states
+    transportUiState: TransportUiState,
+    onUpdateTransportState: (TransportChangeEvent) -> Unit,
+    dialogUiState: DialogUiState,
+    onToggleDialogState: (DialogToggleEvent) -> Unit,
+
+    // Validators
     isCargoNumberValidThenSave: () -> Boolean,
+    isTransportValid: () -> Boolean,
     isDriverNameLicensePlateValid: () -> Boolean,
-    clearCargoNumberError: () -> Unit,
-    startEditingCargoNumber: () -> Unit,
-    stopEditingCargoNumber: () -> Unit
+
+    // Business logic
+    finishTransport: () -> Unit,
+    deleteActiveTransport: () -> Unit,
+    deleteImageOnIndex: (UUID) -> Unit,
+    scanCargoNumber: () -> Unit,
 ) {
     var multiFloatingState by remember {
         mutableStateOf(MultiFloatingState.Collapsed)
     }
-
-    val openAddCargoNumberDialog = remember { mutableStateOf(false) }
-    val openAlertDialog = remember { mutableStateOf(false) }
 
     // For shaking text fields
     val coroutineScope = rememberCoroutineScope()
@@ -110,15 +116,10 @@ fun RouteEditScreen(
     val offsetXLicensePlate = remember { Animatable(0f) }
     val offsetXDriverName = remember { Animatable(0f) }
 
-//    val transportUiState = transportViewModel.state.collectAsState()
-    if (showDialogState) {
-        selectedImage?.let {
-            ImageDialog(
-                onDismissRequest = { toggleShowDialogState(null) },
-                image = it,
-            )
-        }
+    BackHandler {
+        onToggleDialogState(DialogToggleEvent.BackAlertDialog)
     }
+
     val items = listOf(
         MinFabItem(
             icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
@@ -144,7 +145,7 @@ fun RouteEditScreen(
                 },
                 items = items,
                 navigateToPhotoRoute = navigateToPhotoRoute,
-                openAddCargoNumberDialog = { openAddCargoNumberDialog.value = true },
+                openAddCargoNumberDialog = { onToggleDialogState(DialogToggleEvent.CargoDialog) },
             )
         },
         bottomBar = {
@@ -158,8 +159,9 @@ fun RouteEditScreen(
                         .weight(1f),
                     onClick = {
                         if (isTransportValid()) {
-                            openAlertDialog.value = true
+                            onToggleDialogState(DialogToggleEvent.FinishTransportDialog)
                         } else {
+                            // TODO: the isNotEmpty is more efficient, but is not instant (only after second click)
                             if (!isDriverNameLicensePlateValid()) {
 //                            if (transportUiState.licensePlateError.isNotEmpty()) {
                                 animateText(offsetXLicensePlate, coroutineScope, view)
@@ -192,7 +194,15 @@ fun RouteEditScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineLarge,
             )
-            Spacer(modifier = Modifier.size(32.dp))
+            Text(
+                text = transportUiState.error,
+                color = Color.Red,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+            Spacer(modifier = Modifier.size(10.dp))
             ShakingTextFieldWithIcon(
                 textFieldValue = transportUiState.driverName,
                 onValueChange = { onUpdateTransportState(TransportChangeEvent.DriverChanged(it)) },
@@ -232,9 +242,8 @@ fun RouteEditScreen(
                                 .fillMaxSize()
                                 .padding(2.dp)
                                 .clickable {
-                                    toggleShowDialogState(
-                                        image.value,
-                                    )
+                                    onUpdateTransportState(TransportChangeEvent.SelectedImageChanged(image.value))
+                                    onToggleDialogState(DialogToggleEvent.ImageDialog)
                                 },
 
                         )
@@ -295,8 +304,9 @@ fun RouteEditScreen(
                             trailingContent = {
                                 IconButton(
                                     onClick = {
-                                        clearCargoNumberError()
-                                        startEditingCargoNumber()
+                                        onUpdateTransportState(
+                                            TransportChangeEvent.CargoNumberErrorCleared,
+                                        )
                                         onUpdateTransportState(
                                             TransportChangeEvent.OriginalCargoNumberChanged(
                                                 transportUiState.cargoNumbers[index],
@@ -307,7 +317,7 @@ fun RouteEditScreen(
                                                 transportUiState.cargoNumbers[index],
                                             ),
                                         )
-                                        openAddCargoNumberDialog.value = true
+                                        onToggleDialogState(DialogToggleEvent.CargoDialog)
                                     },
                                     colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
                                 ) {
@@ -330,43 +340,67 @@ fun RouteEditScreen(
     }
 
     when {
-        openAddCargoNumberDialog.value -> {
+        dialogUiState.isCargoDialogOpen -> {
             AddCargoNumberDialog(
-                onDismissRequest = { openAddCargoNumberDialog.value = false },
                 onConfirmation = {
-                    openAddCargoNumberDialog.value = false
                     println("Confirmation registered") // Add logic here to handle confirmation.
                 },
                 scanCargoNumber = { scanCargoNumber() },
                 transportUiState = transportUiState,
                 onUpdateTransportState = onUpdateTransportState,
+                onToggleDialogState = onToggleDialogState,
                 isValidAndAddCargoNumber = { isCargoNumberValidThenSave() },
-                stopEditingCargoNumber = { stopEditingCargoNumber() },
-                clearCargoNumberError = { clearCargoNumberError() },
             )
         }
-    }
 
-    when {
-        openAlertDialog.value -> {
+        dialogUiState.isFinishTransportDialogOpen -> {
             AlertDialog(
-                onDismissRequest = { openAlertDialog.value = false },
+                onDismissRequest = { onToggleDialogState(DialogToggleEvent.FinishTransportDialog) },
                 dialogTitle = "Finish Transport",
-                dialogText = "Are you sure you want to finish this transport? This action cannot be undone.",
+                dialogText = "Are you sure you want to finish this transport? " +
+                    "This final version will be synced online",
                 onConfirmation = {
-                    openAlertDialog.value = false
+                    onToggleDialogState(DialogToggleEvent.FinishTransportDialog)
                     finishTransport()
                     navigateToRouteScreen()
                 },
                 icon = Icons.Default.Warning,
             )
         }
+
+        dialogUiState.isBackAlertDialogOpen -> {
+            AlertDialog(
+                onDismissRequest = {
+                    onToggleDialogState(DialogToggleEvent.BackAlertDialog)
+                },
+                onConfirmation = {
+                    navigateToRouteScreen()
+                    deleteActiveTransport()
+                    onToggleDialogState(DialogToggleEvent.BackAlertDialog)
+                },
+                dialogTitle = "Cancel Transport",
+                dialogText = "This transport will be deleted, are you sure?",
+                icon = Icons.Default.Info,
+            )
+        }
+
+        dialogUiState.isImageDialogOpen -> {
+            transportUiState.selectedImage?.let {
+                ImageDialog(
+                    onDismissRequest = {
+                        onToggleDialogState(DialogToggleEvent.ImageDialog)
+                    },
+                    image = it,
+                )
+            }
+        }
     }
 }
 
+// TODO: why is this here? *joris
 data class ImageLocal(
     val id: Long,
     val dateTaken: String,
     val routeNumber: String,
-    val uri: Uri
+    val uri: Uri,
 )

@@ -34,6 +34,6 @@ fun Transport.asRoomEntityWithCargos(): TransportRoomEntityWithCargos {
 fun Transport.asRoomEntityWithImages(): TransportRoomEntityWithImages {
     return TransportRoomEntityWithImages(
         transport = asRoomEntity(),
-        images = images.map { it.asRoomEntity() }
+        images = images.map { it.asRoomEntity() },
     )
 }

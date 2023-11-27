@@ -54,4 +54,5 @@ interface SvkRepository {
     suspend fun syncTransports()
     suspend fun deleteImage(imageUUID: String)
     suspend fun updateCargo(oldCargoNumber: String, newCargoNumber: String)
+    suspend fun deleteActiveTransport()
 }

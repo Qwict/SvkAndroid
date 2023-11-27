@@ -1,7 +1,6 @@
 package com.qwict.svkandroid.ui.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -43,19 +42,22 @@ fun SvkAndroidAppbar(
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(
-                    onClick = navigateUp,
-                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Return",
-                    )
-                }
-            }
-        },
+        // TODO: To be honest this button is sh*t,
+        //  the user can just press the back button on the phone (or back action) and it would be the same
+        //  otherwise... we need to find a way to overwrite this back button action
+//        navigationIcon = {
+//            if (canNavigateBack) {
+//                IconButton(
+//                    onClick = navigateUp,
+//                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimary),
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Filled.ArrowBack,
+//                        contentDescription = "Return",
+//                    )
+//                }
+//            }
+//        },
 //        TODO: Should see in mockup what we want here... (this is the top right icon)
         actions = {
             if (currentScreen.route != Navigations.Authenticate.route && isRouteSelectScreen) {
@@ -82,7 +84,8 @@ fun SvkAndroidAppbar(
                     openAlertDialog.value = false
                 },
                 dialogTitle = "Log out?",
-                dialogText = "Are you sure you want to log out, Any unsaved data will be lost.",
+                dialogText = "Are you sure you want to log out? " +
+                    "Any transport that was not finished will not be synced online.",
                 icon = Icons.Default.Info,
             )
         }

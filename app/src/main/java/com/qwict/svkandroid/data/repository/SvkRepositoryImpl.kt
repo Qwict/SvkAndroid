@@ -85,34 +85,34 @@ class SvkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertCargoObject(cargo: Cargo, routeNumber: String) {
-        roomContainer.cargoDatabase.insert(CargoRoomEntity(
-            cargoNumber = cargo.cargoNumber,
-            cargoDate = Date(),
-            loaderId = cargo.loaderId,
-            routeNumber = routeNumber
-            )
+        roomContainer.cargoDatabase.insert(
+            CargoRoomEntity(
+                cargoNumber = cargo.cargoNumber,
+                cargoDate = Date(),
+                loaderId = cargo.loaderId,
+                routeNumber = routeNumber,
+            ),
         )
     }
 
-    override suspend fun insertImage(imgUUID: UUID, userId: Int, routeNumber: String){
+    override suspend fun insertImage(imgUUID: UUID, userId: Int, routeNumber: String) {
         val imageRoom = ImageRoomEntity(
             imageUuid = imgUUID.toString(),
             userId = userId,
-            routeNumber = routeNumber
+            routeNumber = routeNumber,
         )
         roomContainer.imageDatabase.insert(
-            imageRoom
+            imageRoom,
         )
 
         val transport = getActiveTransport()
         val newTransport = TransportRoomEntityWithImages(
             transport.asRoomEntity(),
-            listOf(imageRoom)
+            listOf(imageRoom),
         )
 
         roomContainer.transportDatabase.insert(newTransport.transport)
 //        roomContainer.imageDatabase.insertAll(newTransport.images)
-
     }
     override suspend fun updateLocalTransport(transport: Transport) {
         roomContainer.transportDatabase.update(transport.asRoomEntity())
@@ -138,22 +138,28 @@ class SvkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteImage(imageUUID: String) {
-        roomContainer.imageDatabase.getImageFlowByUUID(imageUUID).collect{result ->
+        roomContainer.imageDatabase.getImageFlowByUUID(imageUUID).collect { result ->
             roomContainer.imageDatabase.delete(result)
         }
     }
 
     override suspend fun updateCargo(oldCargoNumber: String, newCargoNumber: String) {
-        roomContainer.cargoDatabase.getCargoFlowByCargoNumber(oldCargoNumber).collect{result ->
+        roomContainer.cargoDatabase.getCargoFlowByCargoNumber(oldCargoNumber).collect { result ->
             roomContainer.cargoDatabase.update(
                 CargoRoomEntity(
                     id = result.id,
                     cargoNumber = newCargoNumber,
                     cargoDate = result.cargoDate,
                     routeNumber = result.routeNumber,
-                    loaderId = result.loaderId
-                )
+                    loaderId = result.loaderId,
+                ),
             )
+        }
+    }
+
+    override suspend fun deleteActiveTransport() {
+        roomContainer.transportDatabase.getActiveTransport().let { transport ->
+            roomContainer.transportDatabase.delete(transport)
         }
     }
 }

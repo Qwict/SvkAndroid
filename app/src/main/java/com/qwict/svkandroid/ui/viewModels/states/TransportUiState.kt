@@ -12,20 +12,15 @@ data class TransportUiState(
     val driverName: String = "",
     val driverNameError: String = "",
 
+    val selectedImage: Bitmap? = null,
+
     val newCargoNumber: String = "",
     val originalCargoNumber: String = "",
-    val isEditingCargoNumber: Boolean = false,
+
     val cargoNumberError: String = "",
     val cargoNumbers: List<String> = listOf(),
 
-    /* val images: List<Int> = listOf(
-         R.drawable.transport_two,
-         R.drawable.transport_three,
-         R.drawable.transport_four,
-     ),*/
-
-    val images: Map<UUID,Bitmap> = emptyMap(),
-
+    val images: Map<UUID, Bitmap> = emptyMap(),
 
     val isLoading: Boolean = false,
     val error: String = "",

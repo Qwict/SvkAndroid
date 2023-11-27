@@ -92,28 +92,26 @@ fun NavGraph(
             composable(route = Navigations.RouteEdit.route) {
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
                 RouteEditScreen(
-                    onUpdateTransportState = { transportViewModel.onUpdateTransportState(it) },
-                    navigateToPhotoRoute = { navController.navigate(Navigations.Photo.route) },
-                    deleteImageOnIndex = { transportViewModel.deleteImageOnIndex(it) },
-                    toggleShowDialogState = { transportViewModel.toggleShowDialogState(it) },
-                    showDialogState = transportViewModel.showDialogState,
-                    selectedImage = transportViewModel.selectedImage,
-                    transportUiState = transportViewModel.transportUiState,
-                    scanCargoNumber = { transportViewModel.scanCargoNumber() },
-                    isCargoNumberValidThenSave = { transportViewModel.isCargoNumberValidThenSave() },
-                    isDriverNameLicensePlateValid = { transportViewModel.isDriverNameLicensePlateValid() },
-
-                    clearCargoNumberError = { transportViewModel.clearCargoNumberError() },
-                    startEditingCargoNumber = { transportViewModel.startEditingCargoNumber() },
-                    stopEditingCargoNumber = { transportViewModel.stopEditingCargoNumber() },
-
-                    finishTransport = { transportViewModel.finishTransport() },
                     navigateToRouteScreen = {
                         navController.navigate(Navigations.RouteSelect.route) {
                             popUpTo(Navigations.RouteEdit.route) { inclusive = true }
                         }
                     },
-                    isTransportValid = { transportViewModel.isDriverNameLicensePlateValid() }
+                    navigateToPhotoRoute = { navController.navigate(Navigations.Photo.route) },
+
+                    transportUiState = transportViewModel.transportUiState,
+                    onUpdateTransportState = { transportViewModel.onUpdateTransportState(it) },
+                    dialogUiState = transportViewModel.dialogUiState,
+                    onToggleDialogState = { transportViewModel.onToggleDialogState(it) },
+
+                    isTransportValid = { transportViewModel.isDriverNameLicensePlateValid() },
+                    isCargoNumberValidThenSave = { transportViewModel.isCargoNumberValidThenSave() },
+                    isDriverNameLicensePlateValid = { transportViewModel.isDriverNameLicensePlateValid() },
+
+                    deleteImageOnIndex = { transportViewModel.deleteImageOnIndex(it) },
+                    deleteActiveTransport = { transportViewModel.deleteActiveTransport() },
+                    scanCargoNumber = { transportViewModel.scanCargoNumber() },
+                    finishTransport = { transportViewModel.finishTransport() },
                 )
             }
             composable(route = Navigations.Photo.route) {

@@ -16,6 +16,7 @@ import com.qwict.svkandroid.data.local.getEncryptedPreference
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.model.Cargo
 import com.qwict.svkandroid.domain.use_cases.AddImagesUseCase
+import com.qwict.svkandroid.domain.use_cases.DeleteActiveTransportUseCase
 import com.qwict.svkandroid.domain.use_cases.DeleteImageUseCase
 import com.qwict.svkandroid.domain.use_cases.GetActiveTransportUseCase
 import com.qwict.svkandroid.domain.use_cases.InsertCargoUseCase
@@ -25,6 +26,7 @@ import com.qwict.svkandroid.domain.use_cases.UpdateCargoUseCase
 import com.qwict.svkandroid.domain.validator.Validators
 import com.qwict.svkandroid.ui.screens.BarcodeFormat
 import com.qwict.svkandroid.ui.screens.BarcodeScanner
+import com.qwict.svkandroid.ui.viewModels.states.DialogUiState
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -40,6 +42,7 @@ class TransportViewModel @Inject constructor(
     private val insertCargoUseCase: InsertCargoUseCase,
     private val updateCargoUseCase: UpdateCargoUseCase,
     private val addImagesUseCase: AddImagesUseCase,
+    private val deleteActiveTransportUseCase: DeleteActiveTransportUseCase,
     private val setDriverUseCase: SetDriverUseCase,
     private val deleteImageUseCase: DeleteImageUseCase,
     private val getActiveTransportUseCase: GetActiveTransportUseCase,
@@ -47,9 +50,7 @@ class TransportViewModel @Inject constructor(
 ) : ViewModel() {
     var transportUiState by mutableStateOf(TransportUiState())
         private set
-    var showDialogState by mutableStateOf(false)
-        private set
-    var selectedImage by mutableStateOf<Bitmap?>(null)
+    var dialogUiState by mutableStateOf(DialogUiState())
         private set
 
     init {
@@ -67,7 +68,7 @@ class TransportViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    transportUiState = TransportUiState(
+                    transportUiState = transportUiState.copy(
                         error = result.message
                             ?: "There was an error getting the active transport.",
                     )
@@ -95,8 +96,8 @@ class TransportViewModel @Inject constructor(
 
         val imgUri = resolver.insert(collection, values)
 
-        imgUri?.let {uri ->
-            resolver.openOutputStream(uri)?.use {outputStream ->
+        imgUri?.let { uri ->
+            resolver.openOutputStream(uri)?.use { outputStream ->
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             }
 
@@ -110,15 +111,12 @@ class TransportViewModel @Inject constructor(
         addImagesUseCase(uuid, transportUiState.routeNumber).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-
                 }
 
                 is Resource.Error -> {
-
                 }
 
                 is Resource.Loading -> {
-
                 }
             }
         }.launchIn(viewModelScope)
@@ -131,15 +129,12 @@ class TransportViewModel @Inject constructor(
             deleteImageUseCase(uuid = imageIndex).onEach { result ->
                 when (result) {
                     is Resource.Success -> {
-
                     }
 
                     is Resource.Error -> {
-
                     }
 
                     is Resource.Loading -> {
-
                     }
                 }
             }.launchIn(viewModelScope)
@@ -149,33 +144,8 @@ class TransportViewModel @Inject constructor(
 //                images = transportUiState.images.toMutableList().apply { remove(imageIndex -> int) },
             )
             Log.i("TransportViewModel", "deleteImageOnIndex: $imageIndex")
-        } else  {
+        } else {
             // Handle index out of bounds, e.g., throw an exception or log an error
-        }
-    }
-
-    fun toggleShowDialogState(image: Bitmap?) {
-        selectedImage = image
-        showDialogState = !showDialogState
-    }
-
-    fun onUpdateTransportState(event: TransportChangeEvent) {
-        transportUiState = when (event) {
-            is TransportChangeEvent.LicensePlateChanged -> {
-                transportUiState.copy(licensePlate = event.licensePlate)
-            }
-            is TransportChangeEvent.DriverChanged -> {
-                transportUiState.copy(driverName = event.driverName)
-            }
-            is TransportChangeEvent.RouteNumberChanged -> {
-                transportUiState.copy(routeNumber = event.routeNumber)
-            }
-            is TransportChangeEvent.CargoNumberChanged -> {
-                transportUiState.copy(newCargoNumber = event.cargoNumber)
-            }
-            is TransportChangeEvent.OriginalCargoNumberChanged -> {
-                transportUiState.copy(originalCargoNumber = event.originalCargoNumber)
-            }
         }
     }
 
@@ -232,14 +202,14 @@ class TransportViewModel @Inject constructor(
 
         // Remove the original cargo number from the list (if editing)
         var cargoNumbers = transportUiState.cargoNumbers
-        if (transportUiState.isEditingCargoNumber) {
+        if (dialogUiState.isCargoDialogOpen) {
             cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
         }
 
         if (cargoNumbers.contains(transportUiState.newCargoNumber)) {
             transportUiState = transportUiState.copy(
                 cargoNumberError = "Cargo number was all ready added to this route",
-                cargoNumbers = if (transportUiState.isEditingCargoNumber) {
+                cargoNumbers = if (dialogUiState.isCargoDialogOpen) {
                     cargoNumbers.toMutableList().apply {
                         add(transportUiState.originalCargoNumber)
                     }
@@ -251,11 +221,11 @@ class TransportViewModel @Inject constructor(
         }
 
         if (cargoNumberResult.successful) {
-            if(transportUiState.isEditingCargoNumber){
-                updateCargo(transportUiState.originalCargoNumber,transportUiState.newCargoNumber)
+            if (dialogUiState.isCargoDialogOpen) {
+                updateCargo(transportUiState.originalCargoNumber, transportUiState.newCargoNumber)
             } else {
                 insertCargo(
-                    Cargo(cargoNumber = transportUiState.newCargoNumber,loaderId = getDecodedPayload(getEncryptedPreference("token")).userId)
+                    Cargo(cargoNumber = transportUiState.newCargoNumber, loaderId = getDecodedPayload(getEncryptedPreference("token")).userId),
                 )
             }
             transportUiState = transportUiState.copy(
@@ -265,7 +235,7 @@ class TransportViewModel @Inject constructor(
                 newCargoNumber = "",
                 cargoNumberError = "",
             )
-            transportUiState = transportUiState.copy(isEditingCargoNumber = false)
+            dialogUiState = dialogUiState.copy(isCargoDialogOpen = false)
 
             return true
         }
@@ -273,17 +243,6 @@ class TransportViewModel @Inject constructor(
         return false
     }
 
-    fun clearRouteNumberError() {
-        transportUiState = transportUiState.copy(routeNumberError = "")
-    }
-
-    fun clearCargoNumberError() {
-        transportUiState = transportUiState.copy(cargoNumberError = "")
-    }
-
-    fun startEditingCargoNumber() {
-        transportUiState = transportUiState.copy(isEditingCargoNumber = true)
-    }
     private fun selectRoute() {
         Log.i("TransportViewModel", "select route : ${transportUiState.routeNumber}")
 
@@ -296,7 +255,7 @@ class TransportViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    transportUiState = TransportUiState(
+                    transportUiState = transportUiState.copy(
                         error = result.message
                             ?: "There was an error finding a rout with number: ${transportUiState.routeNumber}",
                     )
@@ -309,9 +268,9 @@ class TransportViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun updateCargo(oldCargoNumber: String, newCargoNumber: String){
+    private fun updateCargo(oldCargoNumber: String, newCargoNumber: String) {
         Log.i("Update", "Updating cargo in local db")
-        updateCargoUseCase(oldCargoNumber, newCargoNumber).onEach {result ->
+        updateCargoUseCase(oldCargoNumber, newCargoNumber).onEach { result ->
             when (result) {
                 is Resource.Success -> {}
                 is Resource.Loading -> {}
@@ -320,12 +279,11 @@ class TransportViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-
-    private fun insertCargo(cargo: Cargo){
+    private fun insertCargo(cargo: Cargo) {
         Log.i("Insert", "Insert cargo in local db")
         insertCargoUseCase(
             cargo = cargo,
-            routeNumber =  transportUiState.routeNumber
+            routeNumber = transportUiState.routeNumber,
         ).onEach { result ->
             when (result) {
                 is Resource.Success -> {}
@@ -333,10 +291,6 @@ class TransportViewModel @Inject constructor(
                 is Resource.Error -> {}
             }
         }.launchIn(viewModelScope)
-    }
-
-    fun stopEditingCargoNumber() {
-        transportUiState = transportUiState.copy(isEditingCargoNumber = false)
     }
 
     fun finishTransport() {
@@ -368,8 +322,8 @@ class TransportViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    transportUiState = TransportUiState(
-                        error = result.message ?: "An unexpected error occured",
+                    transportUiState = transportUiState.copy(
+                        error = result.message ?: "An unexpected error occurred",
                     )
                 }
 
@@ -381,6 +335,67 @@ class TransportViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    fun onUpdateTransportState(event: TransportChangeEvent) {
+        transportUiState = when (event) {
+            is TransportChangeEvent.LicensePlateChanged -> {
+                transportUiState.copy(licensePlate = event.licensePlate)
+            }
+            is TransportChangeEvent.DriverChanged -> {
+                transportUiState.copy(driverName = event.driverName)
+            }
+            is TransportChangeEvent.RouteNumberChanged -> {
+                transportUiState.copy(routeNumber = event.routeNumber)
+            }
+            is TransportChangeEvent.CargoNumberChanged -> {
+                transportUiState.copy(newCargoNumber = event.cargoNumber)
+            }
+            is TransportChangeEvent.OriginalCargoNumberChanged -> {
+                transportUiState.copy(originalCargoNumber = event.originalCargoNumber)
+            }
+            is TransportChangeEvent.SelectedImageChanged -> {
+                transportUiState.copy(selectedImage = event.selectedImage)
+            }
+            is TransportChangeEvent.CargoNumberErrorCleared -> {
+                transportUiState.copy(cargoNumberError = "")
+            }
+        }
+    }
+    fun onToggleDialogState(event: DialogToggleEvent) {
+        dialogUiState = when (event) {
+            is DialogToggleEvent.BackAlertDialog -> {
+                dialogUiState.copy(isBackAlertDialogOpen = !dialogUiState.isBackAlertDialogOpen)
+            }
+            is DialogToggleEvent.ImageDialog -> {
+                dialogUiState.copy(isImageDialogOpen = !dialogUiState.isImageDialogOpen)
+            }
+            is DialogToggleEvent.CargoDialog -> {
+                dialogUiState.copy(isCargoDialogOpen = !dialogUiState.isCargoDialogOpen)
+            }
+            is DialogToggleEvent.FinishTransportDialog -> {
+                dialogUiState.copy(isFinishTransportDialogOpen = !dialogUiState.isFinishTransportDialogOpen)
+            }
+        }
+    }
+
+    fun deleteActiveTransport() {
+        viewModelScope.launch {
+            deleteActiveTransportUseCase().onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        clearTransportState()
+                        Log.i("Delete", "Successfully deleted transport")
+                    }
+                    is Resource.Loading -> {
+                        Log.i("Delete", "Loading")
+                    }
+                    is Resource.Error -> {
+                        Log.i("Delete", "Failed to delete the active transport")
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
 }
 
 sealed class TransportChangeEvent {
@@ -389,4 +404,13 @@ sealed class TransportChangeEvent {
     data class DriverChanged(val driverName: String) : TransportChangeEvent()
     data class CargoNumberChanged(val cargoNumber: String) : TransportChangeEvent()
     data class OriginalCargoNumberChanged(val originalCargoNumber: String) : TransportChangeEvent()
+    data class SelectedImageChanged(val selectedImage: Bitmap?) : TransportChangeEvent()
+    data object CargoNumberErrorCleared : TransportChangeEvent()
+}
+
+sealed class DialogToggleEvent {
+    data object BackAlertDialog : DialogToggleEvent()
+    data object ImageDialog : DialogToggleEvent()
+    data object CargoDialog : DialogToggleEvent()
+    data object FinishTransportDialog : DialogToggleEvent()
 }
