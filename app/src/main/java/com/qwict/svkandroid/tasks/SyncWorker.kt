@@ -85,7 +85,8 @@ class SyncWorker(private val ctx: Context, params: WorkerParameters) : Coroutine
                         id = it.id,
                         cargoNumber = it.cargoNumber,
                         cargoDate = Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)),
-                        transportId = it.transportId,
+                        //transportId = 3,
+                        routeNumber = it.routeNumber
                     ),
                 )
                 database.cargoDatabase.update(it.copy(isSynced = true))

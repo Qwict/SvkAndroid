@@ -8,5 +8,6 @@ data class CargoDto(
     val id: Int,
     val cargoNumber: String,
     val cargoDate: Date,
-    val transportId: Int,
+    //val transportId: Int,
+    val routeNumber: String
 )
