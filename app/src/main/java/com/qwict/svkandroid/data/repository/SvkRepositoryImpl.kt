@@ -11,7 +11,7 @@ import com.qwict.svkandroid.data.local.schema.CargoRoomEntity
 import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.local.schema.asDomainModel
-import com.qwict.svkandroid.data.remote.RetrofitApiService
+import com.qwict.svkandroid.data.remote.SvkApiService
 import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto
 import com.qwict.svkandroid.data.remote.dto.TransportDto
@@ -26,7 +26,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 class SvkRepositoryImpl @Inject constructor(
-    private val svkApi: RetrofitApiService,
+    private val svkApi: SvkApiService,
     private val roomContainer: RoomContainer,
     private val ctx: Context,
 ) : SvkRepository {
