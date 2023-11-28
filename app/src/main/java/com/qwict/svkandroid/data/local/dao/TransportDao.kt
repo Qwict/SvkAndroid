@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
-import kotlinx.coroutines.flow.Flow
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithCargosAndImages
 
 @Dao
 interface TransportDao {
@@ -24,17 +24,14 @@ interface TransportDao {
     @Delete
     suspend fun delete(transport: TransportRoomEntity)
 
-    @Query("SELECT * FROM transport WHERE id = :id")
-    fun getTransportFlowById(id: Int): Flow<TransportRoomEntity>
-
-    @Query("SELECT * FROM transport WHERE id = :id")
-    fun getTransportById(id: Int): TransportRoomEntity
+    @Query("SELECT * FROM transport WHERE route_number = :routeNumber")
+    fun getTransportByRouteNumber(routeNumber: String): TransportRoomEntity
     // TODO: Figure out how to get this to work
 
-    @Query("SELECT * FROM transport WHERE is_active_flow = 1")
+    @Query("SELECT * FROM transport WHERE is_active = 1")
     suspend fun getActiveTransport(): TransportRoomEntity
 
     @Transaction
     @Query("SELECT * FROM transport WHERE is_synced = 0")
-    fun getTransportToSync(): List<TransportRoomEntity>
+    fun getTransportToSync(): List<TransportRoomEntityWithCargosAndImages>
 }

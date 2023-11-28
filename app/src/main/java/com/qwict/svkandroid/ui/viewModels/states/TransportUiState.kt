@@ -5,6 +5,7 @@ import java.util.UUID
 
 data class TransportUiState(
     val routeNumber: String = "",
+
     val routeNumberError: String = "",
 
     val licensePlate: String = "",

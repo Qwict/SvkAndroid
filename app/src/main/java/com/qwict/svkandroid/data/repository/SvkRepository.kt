@@ -43,16 +43,16 @@ interface SvkRepository {
      * (a Duplicate entry exception was thrown) and the transport was patched instead.
      */
     suspend fun patchTransport(transport: Transport): TransportDto
-
     suspend fun register(body: LoginDto): UserDto
-
-    suspend fun insertTransportObject(transport: Transport)
-    suspend fun insertImage(imgUUID: UUID, userId: Int, routeNumber: String)
-    suspend fun insertCargoObject(cargo: Cargo, routeNumber: String)
+    suspend fun insertTransport(transport: Transport)
+    suspend fun finishTransportByRouteNumber(routeNumber: String)
+    suspend fun insertImage(imageUuid: UUID, userId: Int, routeNumber: String)
+    suspend fun insertCargo(cargo: Cargo)
     suspend fun updateLocalTransport(transport: Transport)
     suspend fun getActiveTransport(): Transport
     suspend fun syncTransports()
-    suspend fun deleteImage(imageUUID: String)
+    suspend fun deleteImage(imageUuid: UUID)
     suspend fun updateCargo(oldCargoNumber: String, newCargoNumber: String)
     suspend fun deleteActiveTransport()
+    suspend fun finishTransport()
 }

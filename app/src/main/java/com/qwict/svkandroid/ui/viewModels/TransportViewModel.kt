@@ -13,11 +13,13 @@ import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.common.getDecodedPayload
 import com.qwict.svkandroid.data.local.getEncryptedPreference
-import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.model.Cargo
+import com.qwict.svkandroid.domain.model.Image
+import com.qwict.svkandroid.domain.model.Transport
 import com.qwict.svkandroid.domain.use_cases.AddImagesUseCase
 import com.qwict.svkandroid.domain.use_cases.DeleteActiveTransportUseCase
 import com.qwict.svkandroid.domain.use_cases.DeleteImageUseCase
+import com.qwict.svkandroid.domain.use_cases.FinishTransportUseCase
 import com.qwict.svkandroid.domain.use_cases.GetActiveTransportUseCase
 import com.qwict.svkandroid.domain.use_cases.InsertCargoUseCase
 import com.qwict.svkandroid.domain.use_cases.SelectRouteUseCase
@@ -46,7 +48,8 @@ class TransportViewModel @Inject constructor(
     private val setDriverUseCase: SetDriverUseCase,
     private val deleteImageUseCase: DeleteImageUseCase,
     private val getActiveTransportUseCase: GetActiveTransportUseCase,
-    private val repository: SvkRepository,
+//    private val repository: SvkRepository,
+    private val finishTransportUseCase: FinishTransportUseCase,
 ) : ViewModel() {
     var transportUiState by mutableStateOf(TransportUiState())
         private set
@@ -122,11 +125,11 @@ class TransportViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun deleteImageOnIndex(imageIndex: UUID) {
-        Log.i("TransportViewModel", "deleteImageOnIndex: $imageIndex")
-        if (!imageIndex.equals(null)) {
+    fun deleteImageOnIndex(imageUuid: UUID) {
+        Log.i("TransportViewModel", "deleteImageOnIndex: $imageUuid")
+        if (!imageUuid.equals(null)) {
 //      if (imageIndex >= 0 && imageIndex < transportUiState.images.size) {
-            deleteImageUseCase(uuid = imageIndex).onEach { result ->
+            deleteImageUseCase(imageUuid).onEach { result ->
                 when (result) {
                     is Resource.Success -> {
                     }
@@ -140,10 +143,10 @@ class TransportViewModel @Inject constructor(
             }.launchIn(viewModelScope)
 
             transportUiState = transportUiState.copy(
-                images = transportUiState.images.toMutableMap().apply { remove(imageIndex) },
+                images = transportUiState.images.toMutableMap().apply { remove(imageUuid) },
 //                images = transportUiState.images.toMutableList().apply { remove(imageIndex -> int) },
             )
-            Log.i("TransportViewModel", "deleteImageOnIndex: $imageIndex")
+            Log.i("TransportViewModel", "deleteImageOnIndex: $imageUuid")
         } else {
             // Handle index out of bounds, e.g., throw an exception or log an error
         }
@@ -225,7 +228,11 @@ class TransportViewModel @Inject constructor(
                 updateCargo(transportUiState.originalCargoNumber, transportUiState.newCargoNumber)
             } else {
                 insertCargo(
-                    Cargo(cargoNumber = transportUiState.newCargoNumber, loaderId = getDecodedPayload(getEncryptedPreference("token")).userId),
+                    Cargo(
+                        cargoNumber = transportUiState.newCargoNumber,
+                        loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
+                        routeNumber = transportUiState.routeNumber,
+                    ),
                 )
             }
             transportUiState = transportUiState.copy(
@@ -281,10 +288,7 @@ class TransportViewModel @Inject constructor(
 
     private fun insertCargo(cargo: Cargo) {
         Log.i("Insert", "Insert cargo in local db")
-        insertCargoUseCase(
-            cargo = cargo,
-            routeNumber = transportUiState.routeNumber,
-        ).onEach { result ->
+        insertCargoUseCase(cargo = cargo).onEach { result ->
             when (result) {
                 is Resource.Success -> {}
                 is Resource.Loading -> {}
@@ -294,12 +298,37 @@ class TransportViewModel @Inject constructor(
     }
 
     fun finishTransport() {
-        viewModelScope.launch {
-            clearTransportState()
-            repository.syncTransports()
-        }
+        finishTransportUseCase(collectTransportFromState()).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    clearTransportState()
+                }
+                is Resource.Loading -> {}
+                is Resource.Error -> {}
+            }
+        }.launchIn(viewModelScope)
+    }
 
-        // TODO: Save the transport to the database (again) and set the is_active_flow to false
+    private fun collectTransportFromState(): Transport {
+        return Transport(
+            routeNumber = transportUiState.routeNumber,
+            licensePlate = transportUiState.licensePlate,
+            driverName = transportUiState.driverName,
+            cargos = transportUiState.cargoNumbers.map { cargoNumber ->
+                Cargo(
+                    cargoNumber = cargoNumber,
+                    routeNumber = transportUiState.routeNumber,
+                    loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
+                )
+            },
+            images = transportUiState.images.map { image ->
+                Image(
+                    imageUuid = image.key,
+                    routeNumber = transportUiState.routeNumber,
+                    loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
+                )
+            },
+        )
     }
 
     private fun clearTransportState() {
@@ -317,7 +346,7 @@ class TransportViewModel @Inject constructor(
                 is Resource.Success -> {
                     transportUiState = transportUiState.copy(
                         driverName = result.data!!.driverName,
-                        licensePlate = result.data!!.licensePlate,
+                        licensePlate = result.data.licensePlate,
                     )
                 }
 

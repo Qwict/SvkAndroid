@@ -6,7 +6,6 @@ import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.model.Transport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.util.Date
 import javax.inject.Inject
 
 class SelectRouteUseCase @Inject constructor(
@@ -17,12 +16,9 @@ class SelectRouteUseCase @Inject constructor(
     ): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-            repo.insertTransportObject(
-                Transport(
-                    routeNumber = routeNumber,
-                    routeDate = Date(),
-                ),
-            )
+
+            val freshTransport = Transport(routeNumber = routeNumber)
+            repo.insertTransport(freshTransport)
             emit(Resource.Success(routeNumber))
             Log.d("SelectRouteUseCase", "Saved transport ($routeNumber) locally")
             emit(Resource.Success(routeNumber))

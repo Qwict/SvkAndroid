@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.qwict.svkandroid.data.local.schema.CargoRoomEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CargoDao {
@@ -25,14 +24,8 @@ interface CargoDao {
     suspend fun delete(cargo: CargoRoomEntity)
 
     @Query("SELECT * FROM cargo WHERE cargo_number LIKE :cargoNumber")
-    fun getCargoFlowByCargoNumber(cargoNumber: String): Flow<CargoRoomEntity>
+    fun getCargoByCargoNumber(cargoNumber: String): CargoRoomEntity
 
-    @Query("SELECT * FROM cargo WHERE id LIKE :id")
-    fun getCargoByCargoNumber(id: Int): CargoRoomEntity
-
-    @Query("SELECT * FROM cargo WHERE route_number = :transportId")
-    suspend fun getCargosByTransportId(transportId: Int): List<CargoRoomEntity>
-
-    @Query("SELECT * FROM cargo WHERE is_synced = 0")
-    fun getCargosToSync(): List<CargoRoomEntity>
+    @Query("SELECT * FROM cargo WHERE route_number = :routeNumber")
+    suspend fun getCargosByRouteNumber(routeNumber: String): List<CargoRoomEntity>
 }

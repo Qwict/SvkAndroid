@@ -3,15 +3,12 @@ package com.qwict.svkandroid.data.local.database
 import android.util.Log
 import com.qwict.svkandroid.data.local.dao.TransportDao
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
-import kotlinx.coroutines.flow.Flow
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithCargosAndImages
 
 class TransportDatabaseImpl(private val transportDao: TransportDao) : TransportDatabase {
-    override fun getTransportFlowById(id: Int): Flow<TransportRoomEntity> {
-        return transportDao.getTransportFlowById(id)
-    }
-    override suspend fun getTransportById(id: Int): TransportRoomEntity {
-        Log.d("TransportDatabase", "Got transport by id $id")
-        return transportDao.getTransportById(id)
+    override suspend fun getTransportByRouteNumber(routeNumber: String): TransportRoomEntity {
+        Log.d("TransportDatabase", "Getting Transport object $routeNumber")
+        return transportDao.getTransportByRouteNumber(routeNumber)
     }
 
     override suspend fun insert(transport: TransportRoomEntity) {
@@ -37,7 +34,7 @@ class TransportDatabaseImpl(private val transportDao: TransportDao) : TransportD
         return transportDao.getActiveTransport()
     }
 
-    override suspend fun getTransportsToSync(): List<TransportRoomEntity> {
+    override suspend fun getTransportsToSync(): List<TransportRoomEntityWithCargosAndImages> {
         return transportDao.getTransportToSync()
     }
 }

@@ -23,9 +23,7 @@ object AuthenticationSingleton {
                 // Might want to save user here to in the future...
                 user = User(
                     email = decodedHeader.email,
-                    role = "forklift_driver", // decodedHeader.role,
-                    firstName = "", // decodedToken.firstName,
-                    lastName = "", // decodedToken.lastName,
+                    role = decodedHeader.role,
                 )
                 isUserAuthenticated = true
             } else {

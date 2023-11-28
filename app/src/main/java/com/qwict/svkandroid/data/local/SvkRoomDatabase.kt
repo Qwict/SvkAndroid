@@ -16,17 +16,12 @@ import com.qwict.svkandroid.data.local.schema.CargoRoomEntity
 import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
-import com.qwict.svkandroid.data.local.schema.populateCargos
-import com.qwict.svkandroid.data.local.schema.populateImages
-import com.qwict.svkandroid.data.local.schema.populateTransports
-import com.qwict.svkandroid.data.local.schema.populateUsers
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Database(
     entities = [TransportRoomEntity::class, CargoRoomEntity::class, UserRoomEntity::class, ImageRoomEntity::class],
     // change this to version+1 when you change the schema
-    version = 5,
+    version = 1,
     exportSchema = false,
 )
 @TypeConverters(DateConverter::class)
@@ -53,17 +48,17 @@ abstract class SvkRoomDatabase : RoomDatabase() {
                         super.onCreate(db)
 
                         // Use a coroutine to insert data if we would have seeds...
-                        val transportDao = Instance?.transportDao()
-                        val userDao = Instance?.userDao()
-                        val cargoDao = Instance?.cargoDao()
-                        val imageDao = Instance?.imageDao()
-                        Log.i("SvkRoomDatabase", "Inserting all transports, cargos, users and images")
-                        scope.launch {
-                            transportDao?.insertAll(populateTransports())
-                            cargoDao?.insertAll(populateCargos())
-                            userDao?.insertAll(populateUsers())
-                            imageDao?.insertAll(populateImages())
-                        }
+//                        val transportDao = Instance?.transportDao()
+//                        val userDao = Instance?.userDao()
+//                        val cargoDao = Instance?.cargoDao()
+//                        val imageDao = Instance?.imageDao()
+//                        Log.i("SvkRoomDatabase", "Inserting all transports, cargos, users and images")
+//                        scope.launch {
+//                            transportDao?.insertAll(populateTransports())
+//                            cargoDao?.insertAll(populateCargos())
+//                            userDao?.insertAll(populateUsers())
+//                            imageDao?.insertAll(populateImages())
+//                        }
                     }
                 })
 //                     Will destroy the database on schema change (uncomment this when error is thrown)

@@ -1,16 +1,12 @@
 package com.qwict.svkandroid.domain.model
 
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
-import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithCargos
-import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithImages
-import java.util.Date
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithCargosAndImages
 
 data class Transport(
-    val routeNumber: String = "",
-    val routeDate: Date = Date(),
+    val routeNumber: String,
     val driverName: String = "",
     val licensePlate: String = "",
-    val loaderId: Int = 0,
     val images: List<Image> = emptyList(),
     val cargos: List<Cargo> = emptyList(),
 )
@@ -18,22 +14,16 @@ data class Transport(
 fun Transport.asRoomEntity(): TransportRoomEntity {
     return TransportRoomEntity(
         routeNumber = routeNumber,
-        routeDate = routeDate,
-        driver = driverName,
         licensePlate = licensePlate,
+        driverName = driverName,
     )
 }
 
-fun Transport.asRoomEntityWithCargos(): TransportRoomEntityWithCargos {
-    return TransportRoomEntityWithCargos(
-        transport = asRoomEntity(),
-        cargos = cargos.map { it.asRoomEntity() },
-    )
-}
-
-fun Transport.asRoomEntityWithImages(): TransportRoomEntityWithImages {
-    return TransportRoomEntityWithImages(
+// TODO: We might want to start using this to simplify repository implementation...
+fun Transport.asCompleteRoomEntity(): TransportRoomEntityWithCargosAndImages {
+    return TransportRoomEntityWithCargosAndImages(
         transport = asRoomEntity(),
         images = images.map { it.asRoomEntity() },
+        cargos = cargos.map { it.asRoomEntity() },
     )
 }

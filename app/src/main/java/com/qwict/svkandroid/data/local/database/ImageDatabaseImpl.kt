@@ -2,15 +2,11 @@ package com.qwict.svkandroid.data.local.database
 
 import com.qwict.svkandroid.data.local.dao.ImageDao
 import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
-import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 class ImageDatabaseImpl(private val imageDao: ImageDao) : ImageDatabase {
-    override fun getImageFlowByUUID(id: String): Flow<ImageRoomEntity> {
-        return imageDao.getImageFlowById(id)
-    }
-
-    override suspend fun getImageById(id: Int): ImageRoomEntity {
-        return imageDao.getImageById(id)
+    override suspend fun getImageByImageUuid(imageUuid: UUID): ImageRoomEntity {
+        return imageDao.getImageByImageUuid(imageUuid)
     }
 
     override suspend fun insert(image: ImageRoomEntity) {

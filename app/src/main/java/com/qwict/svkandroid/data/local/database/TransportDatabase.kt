@@ -1,15 +1,14 @@
 package com.qwict.svkandroid.data.local.database
 
 import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
-import kotlinx.coroutines.flow.Flow
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntityWithCargosAndImages
 
 interface TransportDatabase {
-    fun getTransportFlowById(id: Int): Flow<TransportRoomEntity>
-    suspend fun getTransportById(id: Int): TransportRoomEntity
+    suspend fun getTransportByRouteNumber(routeNumber: String): TransportRoomEntity
     suspend fun insert(transport: TransportRoomEntity)
     suspend fun insertAll(transports: List<TransportRoomEntity>)
     suspend fun update(transport: TransportRoomEntity)
     suspend fun delete(transport: TransportRoomEntity)
     suspend fun getActiveTransport(): TransportRoomEntity
-    suspend fun getTransportsToSync(): List<TransportRoomEntity>
+    suspend fun getTransportsToSync(): List<TransportRoomEntityWithCargosAndImages>
 }

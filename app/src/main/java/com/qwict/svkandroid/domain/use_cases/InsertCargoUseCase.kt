@@ -13,15 +13,11 @@ class InsertCargoUseCase @Inject constructor(
 ) {
     operator fun invoke(
         cargo: Cargo,
-        routeNumber: String,
     ): Flow<Resource<String>> = flow {
         try {
             Log.i("Insert", "Insert new cargo in the local db")
             emit(Resource.Loading())
-            repo.insertCargoObject(
-                cargo = cargo,
-                routeNumber = routeNumber,
-            )
+            repo.insertCargo(cargo = cargo)
             emit(Resource.Success(cargo.cargoNumber))
         } catch (e: Exception) {
             Log.e("Insert", e.message.toString())

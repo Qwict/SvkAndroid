@@ -4,8 +4,8 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ImageDto(
-    val id: Int,
     val imageUuid: String,
-    val userId: Int,
-    val transportId: Int,
+    val createdAt: Long,
+    val routeNumber: String,
+    val loaderId: Int,
 )

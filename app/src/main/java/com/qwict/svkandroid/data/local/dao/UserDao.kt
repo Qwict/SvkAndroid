@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -23,11 +22,8 @@ interface UserDao {
     @Delete
     suspend fun delete(user: UserRoomEntity)
 
-    @Query("SELECT * FROM user WHERE id = :id")
-    fun getUserFlowById(id: Int): Flow<UserRoomEntity>
-
-    @Query("SELECT * FROM user WHERE id = :id")
-    fun getUserById(id: Int): UserRoomEntity
+    @Query("SELECT * FROM user WHERE remote_id = :remoteId")
+    suspend fun getUserByRemoteId(remoteId: Int): UserRoomEntity
 
     @Query("SELECT * FROM user WHERE email = :email")
     suspend fun getUserByEmail(email: String): UserRoomEntity

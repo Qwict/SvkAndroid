@@ -2,14 +2,10 @@ package com.qwict.svkandroid.data.local.database
 
 import com.qwict.svkandroid.data.local.dao.UserDao
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
-import kotlinx.coroutines.flow.Flow
 
 class UserDatabaseImpl(private val userDao: UserDao) : UserDatabase {
-    override fun getFlowUserById(id: Int): Flow<UserRoomEntity> {
-        return userDao.getUserFlowById(id)
-    }
     override suspend fun getUserById(id: Int): UserRoomEntity {
-        return userDao.getUserById(id)
+        return userDao.getUserByRemoteId(id)
     }
 
     override suspend fun getUserByEmail(email: String): UserRoomEntity {

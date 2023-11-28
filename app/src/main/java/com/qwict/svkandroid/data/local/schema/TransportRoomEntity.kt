@@ -1,49 +1,38 @@
 package com.qwict.svkandroid.data.local.schema
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.qwict.svkandroid.data.remote.dto.TransportDto
 import com.qwict.svkandroid.domain.model.Transport
-import java.util.Date
 
-@Entity(
-    tableName = "transport",
-    indices = [
-        Index(
-            value = arrayOf("route_number"),
-            unique = true,
-        ),
-    ],
-)
+@Entity(tableName = "transport")
 data class TransportRoomEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-//    @ColumnInfo(name = "remote_id") var remoteId: Int = 0, // could be used somewhere ... maybe add it later?
+    @PrimaryKey
     @ColumnInfo(name = "route_number")
     val routeNumber: String,
-    @ColumnInfo(name = "route_date")
-    val routeDate: Date = Date(),
-    val driver: String,
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "license_plate")
     val licensePlate: String,
+    @ColumnInfo(name = "driver_name")
+    val driverName: String,
+    @ColumnInfo(name = "is_active")
+    val isActive: Boolean = true,
     @ColumnInfo(name = "is_synced")
     val isSynced: Boolean = false,
-    @ColumnInfo(name = "is_active_flow")
-    val isActiveFlow: Boolean = true,
 )
 
-data class TransportRoomEntityWithCargos(
+data class TransportRoomEntityWithCargosAndImages(
+    @Embedded
     val transport: TransportRoomEntity,
     @Relation(
         parentColumn = "route_number",
         entityColumn = "route_number",
     )
     val cargos: List<CargoRoomEntity>,
-)
-
-data class TransportRoomEntityWithImages(
-    val transport: TransportRoomEntity,
     @Relation(
         parentColumn = "route_number",
         entityColumn = "route_number",
@@ -51,37 +40,17 @@ data class TransportRoomEntityWithImages(
     val images: List<ImageRoomEntity>,
 )
 
-data class TransportRoomEntityWithCargosAndImages(
-    val transport: TransportRoomEntity,
-    val transportWithCargos: TransportRoomEntityWithCargos,
-    val transportWithImages: TransportRoomEntityWithImages,
-)
-
 fun TransportRoomEntity.asDomainModel() = Transport(
     routeNumber = routeNumber,
-    routeDate = routeDate,
-    driverName = driver,
+    driverName = driverName,
     licensePlate = licensePlate,
 )
 
-fun TransportRoomEntityWithCargos.asDomainModel() = Transport(
+fun TransportRoomEntityWithCargosAndImages.asTransportDto() = TransportDto(
     routeNumber = transport.routeNumber,
-    routeDate = transport.routeDate,
-    driverName = transport.driver,
+    createdAt = transport.createdAt,
+    driverName = transport.driverName,
     licensePlate = transport.licensePlate,
-    cargos = cargos.map { it.asDomainModel() },
+    cargos = cargos.map { it.asCargoDto() },
+    images = images.map { it.asImageDto() },
 )
-
-fun TransportRoomEntityWithCargosAndImages.asDomainModel() = Transport(
-    routeNumber = transport.routeNumber,
-    routeDate = transport.routeDate,
-    driverName = transport.driver,
-    licensePlate = transport.licensePlate,
-    cargos = transportWithCargos.cargos.map { it.asDomainModel() },
-    images = transportWithImages.images.map { it.asDomainModel() },
-)
-
-// Could insert seeds here to populate the database with some data
-fun populateTransports(): List<TransportRoomEntity> {
-    return listOf()
-}

@@ -25,7 +25,7 @@ class SetDriverUseCase @Inject constructor(
                 licensePlate = licensePlate,
                 driverName = driver,
             )
-            repo.insertTransportObject(
+            repo.insertTransport(
                 transport,
             )
             emit(Resource.Success(transport))

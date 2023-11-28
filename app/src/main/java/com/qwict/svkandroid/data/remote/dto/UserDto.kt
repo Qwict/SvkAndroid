@@ -18,17 +18,14 @@ data class UserDto(
 fun UserDto.asRoomEntity(): UserRoomEntity {
     return UserRoomEntity(
         email = email,
-        firstName = firstName,
-        lastName = lastName,
         remoteId = userId,
+        role = role,
     )
 }
 
 fun UserDto.asDomainModel(): User {
     return User(
         email = email,
-        firstName = "",
-        lastName = "",
         role = "",
     )
 }

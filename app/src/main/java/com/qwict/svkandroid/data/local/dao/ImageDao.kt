@@ -27,8 +27,8 @@ interface ImageDao {
     @Query("SELECT * FROM image WHERE image_uuid = :id")
     fun getImageFlowById(id: String): Flow<ImageRoomEntity>
 
-    @Query("SELECT * FROM image WHERE id = :id")
-    fun getImageById(id: Int): ImageRoomEntity
+    @Query("SELECT * FROM image WHERE image_uuid = :imageUuid")
+    fun getImageByImageUuid(imageUuid: UUID): ImageRoomEntity
 
     @Query("SELECT * FROM image WHERE is_synced = 0")
     fun getImagesToSync(): List<ImageRoomEntity>
