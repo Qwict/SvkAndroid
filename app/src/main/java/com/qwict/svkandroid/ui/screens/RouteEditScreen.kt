@@ -147,6 +147,7 @@ fun RouteEditScreen(
                 navigateToPhotoRoute = navigateToPhotoRoute,
                 openAddCargoNumberDialog = { onToggleDialogState(DialogToggleEvent.CargoDialog) },
             )
+
         },
         bottomBar = {
             Row(
