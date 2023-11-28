@@ -12,4 +12,6 @@ object Constants {
         email = "",
         role = "No Role",
     )
+
+    const val ROLE_LOADER = "Loader"
 }

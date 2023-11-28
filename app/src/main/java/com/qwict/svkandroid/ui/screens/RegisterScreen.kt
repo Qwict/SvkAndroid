@@ -137,14 +137,13 @@ fun RegisterScreen(
                     switchPasswordVisibility = { switchPasswordVisibility() },
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-
                 Text(
                     text = authState.error,
                     color = Color.Red,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier.padding(8.dp),
                 )
                 AuthButton(
                     text = "Submit",

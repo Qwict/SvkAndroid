@@ -101,7 +101,7 @@ fun LoginScreen(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier.padding(8.dp),
                 )
                 AuthButton(
                     text = "Login",

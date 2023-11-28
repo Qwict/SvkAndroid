@@ -2,6 +2,7 @@ package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.util.Log
 import com.qwict.svkandroid.common.AuthenticationSingleton
+import com.qwict.svkandroid.common.Constants.ROLE_LOADER
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.common.getDecodedPayload
 import com.qwict.svkandroid.data.local.getEncryptedPreference
@@ -28,21 +29,25 @@ class LoginUseCase @Inject constructor(
             emit(Resource.Loading())
             val userDto = repo.login(loginDto = LoginDto(email = email, password = password))
             if (userDto.validated) {
-                // Shared Preferences Part, not sure if this should also be in the repository layer...
-                // but if so there will be a lot of businiss logic in repository layer;
-                // which only serves for repository pattern. I believe
-                saveEncryptedPreference("token", userDto.token)
+                if (isRoleValid(userDto.role)) {
+                    // Shared Preferences Part, not sure if this should also be in the repository layer...
+                    // but if so there will be a lot of businiss logic in repository layer;
+                    // which only serves for repository pattern. I believe
+                    saveEncryptedPreference("token", userDto.token)
 
-                // Singleton Part
-                AuthenticationSingleton.validateUser()
+                    // Singleton Part
+                    AuthenticationSingleton.validateUser()
 
-                if (AuthenticationSingleton.isUserAuthenticated) {
-//                    emit(Resource.Success(repo.getLocalUserByEmail(authenticatedUser.user.email).asDomainModel()))
-                    val email = getDecodedPayload(getEncryptedPreference("token")).email
-                    val userRoomEntity = repo.getLocalUserByEmail(email)
-                    emit(Resource.Success(userRoomEntity.asDomainModel()))
+                    if (AuthenticationSingleton.isUserAuthenticated) {
+                        //                    emit(Resource.Success(repo.getLocalUserByEmail(authenticatedUser.user.email).asDomainModel()))
+                        val email = getDecodedPayload(getEncryptedPreference("token")).email
+                        val userRoomEntity = repo.getLocalUserByEmail(email)
+                        emit(Resource.Success(userRoomEntity.asDomainModel()))
+                    } else {
+                        emit(Resource.Error("Something went wrong while validating your information on your device."))
+                    }
                 } else {
-                    emit(Resource.Error("Something went wrong while validating your information on your device."))
+                    emit(Resource.Error("Your role (${userDto.role}) is not allowed to use this application."))
                 }
             } else {
                 emit(Resource.Error("Something went wrong while validating your information on the server."))
@@ -63,4 +68,8 @@ class LoginUseCase @Inject constructor(
             emit(Resource.Error("Couldn't reach server. Check your internet connection."))
         }
     }
+}
+
+private fun isRoleValid(role: String): Boolean {
+    return role == ROLE_LOADER
 }
