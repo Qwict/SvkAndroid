@@ -1,5 +1,6 @@
 package com.qwict.svkandroid.data.repository
 
+import android.net.Uri
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto
@@ -46,7 +47,7 @@ interface SvkRepository {
     suspend fun register(body: LoginDto): UserDto
     suspend fun insertTransport(transport: Transport)
     suspend fun finishTransportByRouteNumber(routeNumber: String)
-    suspend fun insertImage(imageUuid: UUID, userId: Int, routeNumber: String)
+    suspend fun insertImage(imageUuid: UUID, userId: Int, routeNumber: String, localUri: Uri)
     suspend fun insertCargo(cargo: Cargo)
     suspend fun updateLocalTransport(transport: Transport)
     suspend fun getActiveTransport(): Transport

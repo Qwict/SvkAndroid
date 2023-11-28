@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.qwict.svkandroid.data.local.converter.DateConverter
+import com.qwict.svkandroid.data.local.converter.UriConverter
 import com.qwict.svkandroid.data.local.dao.CargoDao
 import com.qwict.svkandroid.data.local.dao.ImageDao
 import com.qwict.svkandroid.data.local.dao.TransportDao
@@ -21,10 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 @Database(
     entities = [TransportRoomEntity::class, CargoRoomEntity::class, UserRoomEntity::class, ImageRoomEntity::class],
     // change this to version+1 when you change the schema
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
-@TypeConverters(DateConverter::class)
+@TypeConverters(DateConverter::class, UriConverter::class)
 abstract class SvkRoomDatabase : RoomDatabase() {
 
     abstract fun transportDao(): TransportDao

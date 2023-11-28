@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.di.AppModule
-import com.qwict.svkandroid.data.local.schema.asImageDto
 import com.qwict.svkandroid.data.local.schema.asTransportDto
-import java.io.IOException
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 
 class SyncWorker(
     private val ctx: Context,
@@ -15,7 +17,7 @@ class SyncWorker(
 ) : CoroutineWorker(ctx, params) {
 
     private val database = AppModule.provideRoomContainer()
-    private val api = AppModule.provideRetrofitApiService()
+    private val api = AppModule.provideSvkApiService()
     private val blobApi = AppModule.provideBlobService()
     override suspend fun doWork(): Result {
         sync()
@@ -23,24 +25,26 @@ class SyncWorker(
     }
 
     private suspend fun sync() {
-        makeStatusNotification(1, "Syncing", "Syncing transport to server...", ctx)
+        makeStatusNotification(1, "Syncing", "Syncing transports to server...", ctx)
         syncImages()
         syncTransports()
-//        syncCargos()
         makeStatusNotification(1, "Syncing", "Successfully synced transports", ctx)
     }
 
     private suspend fun syncImages() {
         val imagesToSync = database.imageDatabase.getImagesToSync()
-        imagesToSync.forEach {
+        val resolver = SvkAndroidApplication.appContext.contentResolver
+        imagesToSync.forEachIndexed { i, it ->
             try {
-                Log.i("SyncWorker", "Syncing image: for transport: ${it.routeNumber}")
-                // TODO: send image data instead of test string
-                val blobResponse = blobApi.postImage(it.imageUuid.toString(), "Test")
-                val response = api.postImage(it.asImageDto())
+                Log.i("SyncWorker", "Syncing image ${i+1} for transport ${it.routeNumber} (UUID ${it.imageUuid})")
+                val bytes = resolver.openInputStream(it.localUri)?.use { it.readBytes() }
+                    ?: throw Error("Failed to read local image")
+                val mediaType = resolver.getType(it.localUri)?.toMediaTypeOrNull()
+                val requestBody = bytes.toRequestBody(mediaType)
+                blobApi.postImage(it.imageUuid.toString(), requestBody)
                 database.imageDatabase.update(it.copy(isSynced = true))
-            } catch (ex: IOException) {
-                Log.e("SyncWorker", "Failed to sync image for transport with routeNumber: ${it.routeNumber}", ex)
+            } catch (ex: HttpException) {
+                Log.e("SyncWorker", "Failed to sync image for transport with routeNumber ${it.routeNumber}: ${ex.code()} ${ex.response()?.body()}")
             }
         }
     }
@@ -56,32 +60,9 @@ class SyncWorker(
                     //  Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC))
                 )
                 database.transportDatabase.update(it.transport.copy(isSynced = true))
-            } catch (ex: IOException) {
+            } catch (ex: HttpException) {
                 Log.e("SyncWorker", "Failed to sync transport with routeNumber: ${it.transport.routeNumber}", ex)
             }
         }
     }
-
-    // TODO: considering that we are syncing the cargos (and image representations) in transport,
-    //      we shouldn't sync the cargos anymore.
-//    private suspend fun syncCargos() {
-//        val cargosToSync = database.cargoDatabase.getCargosToSync()
-//        cargosToSync.forEach {
-//            try {
-//                Log.i("SyncWorker", "Syncing cargo: ${it.id}")
-//                val response = api.postCargo(
-//                    CargoDto(
-//                        id = it.id,
-//                        cargoNumber = it.cargoNumber,
-//                        cargoDate = Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)),
-//                        // transportId = 3,
-//                        routeNumber = it.routeNumber,
-//                    ),
-//                )
-//                database.cargoDatabase.update(it.copy(isSynced = true))
-//            } catch (ex: IOException) {
-//                Log.e("SyncWorker", "Failed to sync cargo: ${it.id}", ex)
-//            }
-//        }
-//    }
 }

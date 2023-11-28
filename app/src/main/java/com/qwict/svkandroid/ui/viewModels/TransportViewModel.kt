@@ -86,7 +86,7 @@ class TransportViewModel @Inject constructor(
 
     fun onTakePhoto(bitmap: Bitmap) {
         val resolver = SvkAndroidApplication.appContext.contentResolver
-        var uuid = UUID.randomUUID()
+        val uuid = UUID.randomUUID()
 
         val values = ContentValues().apply {
             put(MediaStore.Images.Media._ID, uuid.toString())
@@ -97,9 +97,9 @@ class TransportViewModel @Inject constructor(
 
         val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-        val imgUri = resolver.insert(collection, values)
+        val imgUri = resolver.insert(collection, values) ?: return
 
-        imgUri?.let { uri ->
+        imgUri.let { uri ->
             resolver.openOutputStream(uri)?.use { outputStream ->
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             }
@@ -109,9 +109,10 @@ class TransportViewModel @Inject constructor(
 
         transportUiState = transportUiState.copy(
             images = transportUiState.images.toMutableMap().apply { put(uuid, bitmap) },
+            imageUris = transportUiState.imageUris.toMutableMap().apply { put(uuid, imgUri) }
         )
 
-        addImagesUseCase(uuid, transportUiState.routeNumber).onEach { result ->
+        addImagesUseCase(uuid, transportUiState.routeNumber, imgUri).onEach { result ->
             when (result) {
                 is Resource.Success -> {
                 }
@@ -310,6 +311,10 @@ class TransportViewModel @Inject constructor(
     }
 
     private fun collectTransportFromState(): Transport {
+        val loaderId = getDecodedPayload(getEncryptedPreference("token")).userId
+
+        Log.i("collectTransportFromState", "images ${transportUiState.images.keys} image URIs ${transportUiState.imageUris.keys}")
+
         return Transport(
             routeNumber = transportUiState.routeNumber,
             licensePlate = transportUiState.licensePlate,
@@ -318,16 +323,18 @@ class TransportViewModel @Inject constructor(
                 Cargo(
                     cargoNumber = cargoNumber,
                     routeNumber = transportUiState.routeNumber,
-                    loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
+                    loaderId = loaderId,
                 )
             },
-            images = transportUiState.images.map { image ->
+
+            images = transportUiState.imageUris.map {
                 Image(
-                    imageUuid = image.key,
+                    imageUuid = it.key,
+                    localUri = it.value,
                     routeNumber = transportUiState.routeNumber,
-                    loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
+                    loaderId = loaderId,
                 )
-            },
+            }
         )
     }
 

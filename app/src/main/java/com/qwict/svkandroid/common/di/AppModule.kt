@@ -29,7 +29,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitApiService(): SvkApiService {
+    fun provideSvkApiService(): SvkApiService {
         return Retrofit.Builder()
             .baseUrl(SVK_URL)
             .addConverterFactory(GsonConverterFactory.create())
