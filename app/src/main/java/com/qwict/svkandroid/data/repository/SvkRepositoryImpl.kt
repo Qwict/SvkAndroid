@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.data.repository
 
 import android.content.Context
+import android.net.Uri
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
@@ -96,10 +97,11 @@ class SvkRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun insertImage(imageUuid: UUID, userId: Int, routeNumber: String) {
+    override suspend fun insertImage(imageUuid: UUID, userId: Int, routeNumber: String, localUri: Uri) {
         roomContainer.imageDatabase.insert(
             ImageRoomEntity(
                 imageUuid = imageUuid,
+                localUri = localUri,
                 loaderId = userId,
                 routeNumber = routeNumber,
             ),

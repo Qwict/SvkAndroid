@@ -1,5 +1,6 @@
 package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
+import android.net.Uri
 import android.util.Log
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.common.getDecodedPayload
@@ -16,12 +17,13 @@ class AddImagesUseCase @Inject constructor(
     operator fun invoke(
         uuid: UUID,
         routeNumber: String,
+        localUri: Uri,
     ): Flow<Resource<UUID>> = flow {
         try {
             Log.i("Insert", "Inserting image uuid in local db")
             emit(Resource.Loading())
             val id = getDecodedPayload(getEncryptedPreference("token")).userId
-            repo.insertImage(uuid, id, routeNumber)
+            repo.insertImage(uuid, id, routeNumber, localUri)
             emit(Resource.Success(uuid))
         } catch (e: Exception) {
             Log.e("AddImageUseCase", "Failed to save imageData locally", e)
