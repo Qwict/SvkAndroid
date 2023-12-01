@@ -14,8 +14,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
@@ -37,53 +41,60 @@ fun RouteScreen(
     val coroutineScope = rememberCoroutineScope()
     val view = LocalView.current
     val offsetXRouteNumber = remember { Animatable(0f) }
+    var loaded by rememberSaveable { mutableStateOf(true) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.8f),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+    if (transportUiState.routeNumber.isNotEmpty() && loaded) {
+        Log.i("RouteSelectScreen", "LaunchedEffect: ${transportUiState.routeNumber}")
+        navigateToRouteEditRoute()
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.8f),
+            contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = "Route Screen",
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.headlineLarge,
-            )
-            ShakingTextFieldWithIcon(
-                textFieldValue = transportUiState.routeNumber,
-                onValueChange = {
-                    onUpdateTransportState(TransportChangeEvent.RouteNumberChanged(it))
-                },
-                label = "Route",
-                isError = transportUiState.routeNumberError.isNotEmpty(),
-                errorText = transportUiState.routeNumberError,
-                offsetX = offsetXRouteNumber,
-                leadingIcon = Icons.Filled.LocalShipping,
-            )
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = "Route Screen",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.headlineLarge,
+                )
+                ShakingTextFieldWithIcon(
+                    textFieldValue = transportUiState.routeNumber,
+                    onValueChange = {
+                        loaded = false
+                        onUpdateTransportState(TransportChangeEvent.RouteNumberChanged(it))
+                    },
+                    label = "Route",
+                    isError = transportUiState.routeNumberError.isNotEmpty(),
+                    errorText = transportUiState.routeNumberError,
+                    offsetX = offsetXRouteNumber,
+                    leadingIcon = Icons.Filled.LocalShipping,
+                )
 
-            Button(
-                modifier = Modifier.padding(top = 8.dp),
-                onClick = {
-                    Log.i("RouteSelectScreen", "onClick: ${isRouteNumberValid()}")
-                    if (isRouteNumberValid()) {
-                        navigateToRouteEditRoute()
-                    } else {
-                        animateText(offsetXRouteNumber, coroutineScope, view)
-                    }
-                },
-            ) {
-                Text(text = "Select")
-            }
-            Button(
-                modifier = Modifier.padding(top = 8.dp),
-                onClick = { scanRouteNumber() },
-            ) {
-                Text("Scan QR-code")
+                Button(
+                    modifier = Modifier.padding(top = 8.dp),
+                    onClick = {
+                        Log.i("RouteSelectScreen", "onClick: ${isRouteNumberValid()}")
+                        if (isRouteNumberValid()) {
+                            navigateToRouteEditRoute()
+                        } else {
+                            animateText(offsetXRouteNumber, coroutineScope, view)
+                        }
+                    },
+                ) {
+                    Text(text = "Select")
+                }
+                Button(
+                    modifier = Modifier.padding(top = 8.dp),
+                    onClick = { scanRouteNumber() },
+                ) {
+                    Text("Scan QR-code")
+                }
             }
         }
     }
