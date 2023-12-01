@@ -43,7 +43,7 @@ fun RouteScreen(
     val offsetXRouteNumber = remember { Animatable(0f) }
     var loaded by rememberSaveable { mutableStateOf(true) }
 
-    if (transportUiState.routeNumber.isNotEmpty() && loaded) {
+    if (transportUiState.routeNumber.isNotEmpty() && loaded && !transportUiState.isLoading) {
         Log.i("RouteSelectScreen", "LaunchedEffect: ${transportUiState.routeNumber}")
         navigateToRouteEditRoute()
     } else {

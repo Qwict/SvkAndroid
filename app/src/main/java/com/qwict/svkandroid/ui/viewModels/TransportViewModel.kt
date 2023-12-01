@@ -109,7 +109,7 @@ class TransportViewModel @Inject constructor(
 
         transportUiState = transportUiState.copy(
             images = transportUiState.images.toMutableMap().apply { put(uuid, bitmap) },
-            imageUris = transportUiState.imageUris.toMutableMap().apply { put(uuid, imgUri) }
+            imageUris = transportUiState.imageUris.toMutableMap().apply { put(uuid, imgUri) },
         )
 
         addImagesUseCase(uuid, transportUiState.routeNumber, imgUri).onEach { result ->
@@ -299,9 +299,11 @@ class TransportViewModel @Inject constructor(
     }
 
     fun finishTransport() {
+        transportUiState = transportUiState.copy(isLoading = true)
         finishTransportUseCase(collectTransportFromState()).onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.i("Finish", "Successfully finished transport")
                     clearTransportState()
                 }
                 is Resource.Loading -> {}
@@ -334,7 +336,7 @@ class TransportViewModel @Inject constructor(
                     routeNumber = transportUiState.routeNumber,
                     loaderId = loaderId,
                 )
-            }
+            },
         )
     }
 
