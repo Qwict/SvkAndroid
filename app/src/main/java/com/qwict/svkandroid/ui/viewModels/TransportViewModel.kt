@@ -66,6 +66,7 @@ class TransportViewModel @Inject constructor(
                         licensePlate = result.data.licensePlate,
                         driverName = result.data.driverName,
                         cargoNumbers = result.data.cargos.toMutableList().map { cargo -> cargo.cargoNumber },
+                        isLoading = false,
 //                        images = result.data.images.toMutableList().map { image -> image.imageUuid.toString() },
                     )
                 }
@@ -74,6 +75,7 @@ class TransportViewModel @Inject constructor(
                     transportUiState = transportUiState.copy(
                         error = result.message
                             ?: "There was an error getting the active transport.",
+                        isLoading = false,
                     )
                 }
 

@@ -46,7 +46,7 @@ fun RouteScreen(
     if (transportUiState.routeNumber.isNotEmpty() && loaded && !transportUiState.isLoading) {
         Log.i("RouteSelectScreen", "LaunchedEffect: ${transportUiState.routeNumber}")
         navigateToRouteEditRoute()
-    } else {
+    } else if (!transportUiState.isLoading) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
