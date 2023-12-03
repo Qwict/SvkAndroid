@@ -206,11 +206,7 @@ class TransportViewModel @Inject constructor(
     fun isCargoNumberValidThenSave(): Boolean {
         val cargoNumberResult = validators.validateNotEmptyText(transportUiState.newCargoNumber, "Cargo Number")
 
-        // Remove the original cargo number from the list (if editing)
         var cargoNumbers = transportUiState.cargoNumbers
-        if (dialogUiState.isCargoDialogOpen) {
-            cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
-        }
 
         if (cargoNumbers.contains(transportUiState.newCargoNumber)) {
             transportUiState = transportUiState.copy(
@@ -228,15 +224,19 @@ class TransportViewModel @Inject constructor(
 
         if (cargoNumberResult.successful) {
             if (dialogUiState.isCargoDialogOpen) {
-                updateCargo(transportUiState.originalCargoNumber, transportUiState.newCargoNumber)
-            } else {
-                insertCargo(
-                    Cargo(
-                        cargoNumber = transportUiState.newCargoNumber,
-                        loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
-                        routeNumber = transportUiState.routeNumber,
-                    ),
-                )
+                if (transportUiState.cargoNumbers.contains(transportUiState.originalCargoNumber)) {
+                    updateCargo(transportUiState.originalCargoNumber, transportUiState.newCargoNumber)
+                    // Remove the original cargo number from the list (if editing)
+                        cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
+                } else {
+                    insertCargo(
+                        Cargo(
+                            cargoNumber = transportUiState.newCargoNumber,
+                            loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
+                            routeNumber = transportUiState.routeNumber,
+                        ),
+                    )
+                }
             }
             transportUiState = transportUiState.copy(
                 cargoNumbers = cargoNumbers.toMutableList().apply {
@@ -249,6 +249,9 @@ class TransportViewModel @Inject constructor(
 
             return true
         }
+
+
+
         transportUiState = transportUiState.copy(cargoNumberError = cargoNumberResult.errorMessage)
         return false
     }
