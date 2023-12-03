@@ -1,14 +1,19 @@
 package com.qwict.svkandroid.ui.viewModels
 
+import android.content.ContentUris
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.useCursor
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.common.getDecodedPayload
@@ -34,6 +39,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
 
@@ -56,7 +62,9 @@ class TransportViewModel @Inject constructor(
     var dialogUiState by mutableStateOf(DialogUiState())
         private set
 
+
     init {
+
         getActiveTransportUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
@@ -69,6 +77,7 @@ class TransportViewModel @Inject constructor(
                         isLoading = false,
 //                        images = result.data.images.toMutableList().map { image -> image.imageUuid.toString() },
                     )
+                    getImagesOnInit()
                 }
 
                 is Resource.Error -> {
@@ -85,16 +94,59 @@ class TransportViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+//: Map<UUID, Bitmap>
+    fun getImagesOnInit()  {
+        val resolver = SvkAndroidApplication.appContext.contentResolver
+
+        val projection = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+        )
+
+        val millis = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -1)
+        }.timeInMillis
+        val selection = "${MediaStore.Images.Media.ARTIST} LIKE ?"
+        val selectionArgs = arrayOf(
+           transportUiState.routeNumber
+        )
+
+        resolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )?.use {cursor ->
+            val idColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+            val nameColumn = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
+
+            val images = mutableListOf<StoredImage>()
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
+                val name = cursor.getString(nameColumn)
+                val uri = ContentUris.withAppendedId(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    id
+                )
+
+                images.add(StoredImage(id, name, uri))
+            }
+            println("test for images size: ${images.size}")
+        }
+    }
 
     fun onTakePhoto(bitmap: Bitmap) {
         val resolver = SvkAndroidApplication.appContext.contentResolver
         val uuid = UUID.randomUUID()
 
         val values = ContentValues().apply {
-            put(MediaStore.Images.Media._ID, uuid.toString())
+            //put(MediaStore.Images.Media._ID, uuid.toString())
+            put(MediaStore.Images.Media.DESCRIPTION, uuid.toString())
             put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.DATA, transportUiState.routeNumber)
+            put(MediaStore.Images.Media.ARTIST, transportUiState.routeNumber)
         }
 
         val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -106,7 +158,7 @@ class TransportViewModel @Inject constructor(
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             }
 
-            Log.d("InsertImg", "Image inserted at $uuid")
+            Log.d("InsertImg", "Image inserted at $uuid ${MediaStore.Images.Media.EXTERNAL_CONTENT_URI} ${MediaStore.Images.Media.INTERNAL_CONTENT_URI}")
         }
 
         transportUiState = transportUiState.copy(
@@ -457,3 +509,9 @@ sealed class DialogToggleEvent {
     data object CargoDialog : DialogToggleEvent()
     data object FinishTransportDialog : DialogToggleEvent()
 }
+
+data class StoredImage(
+    val id : Long,
+    val displayName : String,
+    val uri : Uri
+)
