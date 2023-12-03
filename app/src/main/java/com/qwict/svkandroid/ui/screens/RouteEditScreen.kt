@@ -396,11 +396,3 @@ fun RouteEditScreen(
         }
     }
 }
-
-// TODO: why is this here? *joris
-data class ImageLocal(
-    val id: Long,
-    val dateTaken: String,
-    val routeNumber: String,
-    val uri: Uri,
-)
