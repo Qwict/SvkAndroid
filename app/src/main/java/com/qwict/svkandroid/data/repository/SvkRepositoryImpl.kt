@@ -2,6 +2,7 @@ package com.qwict.svkandroid.data.repository
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
@@ -22,6 +23,8 @@ import com.qwict.svkandroid.domain.model.Cargo
 import com.qwict.svkandroid.domain.model.Transport
 import com.qwict.svkandroid.domain.model.asRoomEntity
 import com.qwict.svkandroid.tasks.SyncWorker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
@@ -145,8 +148,17 @@ class SvkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateCargo(oldCargoNumber: String, newCargoNumber: String) {
-        val cargoRoomEntry = roomContainer.cargoDatabase.getCargoByCargoNumber(oldCargoNumber)
-        roomContainer.cargoDatabase.update(cargoRoomEntry.copy(cargoNumber = newCargoNumber))
+        withContext(Dispatchers.IO) {
+            try {
+                val cargoRoomEntry = roomContainer.cargoDatabase.getCargoByCargoNumber(oldCargoNumber)
+
+                roomContainer.cargoDatabase.insert(cargoRoomEntry.copy(cargoNumber = newCargoNumber))
+                roomContainer.cargoDatabase.delete(cargoRoomEntry)
+            }catch (e: Exception) {
+                Log.e("Error", "error in updateCargo : ${e.message!!}")
+            }
+
+        }
     }
 
     override suspend fun deleteActiveTransport() {

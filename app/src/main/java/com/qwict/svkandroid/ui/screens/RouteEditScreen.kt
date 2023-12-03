@@ -360,8 +360,8 @@ fun RouteEditScreen(
                 dialogText = "Are you sure you want to finish this transport? " +
                     "This final version will be synced online",
                 onConfirmation = {
-                    onToggleDialogState(DialogToggleEvent.FinishTransportDialog)
                     finishTransport()
+                    onToggleDialogState(DialogToggleEvent.FinishTransportDialog)
                     navigateToRouteScreen()
                 },
                 icon = Icons.Default.Warning,

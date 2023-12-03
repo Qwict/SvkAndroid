@@ -66,6 +66,7 @@ class TransportViewModel @Inject constructor(
                         licensePlate = result.data.licensePlate,
                         driverName = result.data.driverName,
                         cargoNumbers = result.data.cargos.toMutableList().map { cargo -> cargo.cargoNumber },
+                        isLoading = false,
 //                        images = result.data.images.toMutableList().map { image -> image.imageUuid.toString() },
                     )
                 }
@@ -74,6 +75,7 @@ class TransportViewModel @Inject constructor(
                     transportUiState = transportUiState.copy(
                         error = result.message
                             ?: "There was an error getting the active transport.",
+                        isLoading = false,
                     )
                 }
 
@@ -109,7 +111,7 @@ class TransportViewModel @Inject constructor(
 
         transportUiState = transportUiState.copy(
             images = transportUiState.images.toMutableMap().apply { put(uuid, bitmap) },
-            imageUris = transportUiState.imageUris.toMutableMap().apply { put(uuid, imgUri) }
+            imageUris = transportUiState.imageUris.toMutableMap().apply { put(uuid, imgUri) },
         )
 
         addImagesUseCase(uuid, transportUiState.routeNumber, imgUri).onEach { result ->
@@ -204,11 +206,7 @@ class TransportViewModel @Inject constructor(
     fun isCargoNumberValidThenSave(): Boolean {
         val cargoNumberResult = validators.validateNotEmptyText(transportUiState.newCargoNumber, "Cargo Number")
 
-        // Remove the original cargo number from the list (if editing)
         var cargoNumbers = transportUiState.cargoNumbers
-        if (dialogUiState.isCargoDialogOpen) {
-            cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
-        }
 
         if (cargoNumbers.contains(transportUiState.newCargoNumber)) {
             transportUiState = transportUiState.copy(
@@ -226,15 +224,19 @@ class TransportViewModel @Inject constructor(
 
         if (cargoNumberResult.successful) {
             if (dialogUiState.isCargoDialogOpen) {
-                updateCargo(transportUiState.originalCargoNumber, transportUiState.newCargoNumber)
-            } else {
-                insertCargo(
-                    Cargo(
-                        cargoNumber = transportUiState.newCargoNumber,
-                        loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
-                        routeNumber = transportUiState.routeNumber,
-                    ),
-                )
+                if (transportUiState.cargoNumbers.contains(transportUiState.originalCargoNumber)) {
+                    updateCargo(transportUiState.originalCargoNumber, transportUiState.newCargoNumber)
+                    // Remove the original cargo number from the list (if editing)
+                        cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
+                } else {
+                    insertCargo(
+                        Cargo(
+                            cargoNumber = transportUiState.newCargoNumber,
+                            loaderId = getDecodedPayload(getEncryptedPreference("token")).userId,
+                            routeNumber = transportUiState.routeNumber,
+                        ),
+                    )
+                }
             }
             transportUiState = transportUiState.copy(
                 cargoNumbers = cargoNumbers.toMutableList().apply {
@@ -247,6 +249,9 @@ class TransportViewModel @Inject constructor(
 
             return true
         }
+
+
+
         transportUiState = transportUiState.copy(cargoNumberError = cargoNumberResult.errorMessage)
         return false
     }
@@ -299,9 +304,11 @@ class TransportViewModel @Inject constructor(
     }
 
     fun finishTransport() {
+        transportUiState = transportUiState.copy(isLoading = true)
         finishTransportUseCase(collectTransportFromState()).onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    Log.i("Finish", "Successfully finished transport")
                     clearTransportState()
                 }
                 is Resource.Loading -> {}
@@ -334,7 +341,7 @@ class TransportViewModel @Inject constructor(
                     routeNumber = transportUiState.routeNumber,
                     loaderId = loaderId,
                 )
-            }
+            },
         )
     }
 
