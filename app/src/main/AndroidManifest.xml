@@ -26,13 +26,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TemplateApplication"
         tools:targetApi="31"
+        android:screenOrientation="portrait"
+
         android:usesCleartextTraffic="true">
 <!--        TODO: DONT USE THIS IN PRODUCTION  (clear text) !!!!!-->
         <activity
+
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.TemplateApplication">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

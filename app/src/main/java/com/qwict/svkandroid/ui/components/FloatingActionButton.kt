@@ -7,14 +7,16 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,18 +33,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.ui.screens.Identifier
 import com.qwict.svkandroid.ui.screens.MinFabItem
 import com.qwict.svkandroid.ui.screens.MultiFloatingState
+import kotlin.math.roundToInt
 
 @Composable
 fun MultiFloatingButton(
@@ -52,6 +58,9 @@ fun MultiFloatingButton(
     openAddCargoNumberDialog: () -> Unit,
     navigateToPhotoRoute: () -> Unit,
 ) {
+    var offsetY by remember {
+        mutableStateOf(0f)
+    }
     val transition = updateTransition(targetState = multiFloatingState, label = "transition")
     val rotate by transition.animateFloat(label = "rotate") {
         if (it == MultiFloatingState.Expanded) 315f else 0f
@@ -72,7 +81,7 @@ fun MultiFloatingButton(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.onTertiary,
                 ),
-                modifier = Modifier
+                modifier = Modifier.offset { IntOffset(0, offsetY.roundToInt()) }
                     .padding(bottom = 16.dp)
                     .alpha(
                         animateFloatAsState(
@@ -100,19 +109,31 @@ fun MultiFloatingButton(
                         },
                         alpha = alpha,
                     )
-                    if (it != items.last()) Divider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp),
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    if (it != items.last()) {
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
             }
         }
 
-        FloatingActionButton(modifier = Modifier
-            .height(70.dp)
-            .width(70.dp),
+        FloatingActionButton(
+
+            modifier = Modifier
+                .height(70.dp)
+                .width(70.dp).offset { IntOffset(0, offsetY.roundToInt()) }
+                .draggable(
+                    orientation = Orientation.Vertical,
+                    state = rememberDraggableState { delta ->
+                        if (offsetY + delta < 70 && offsetY + delta > -500) {
+                            offsetY += delta
+                        }
+                    },
+                ),
 
             onClick = {
                 onMultiFabStateChange(
@@ -122,7 +143,8 @@ fun MultiFloatingButton(
                         MultiFloatingState.Expanded
                     },
                 )
-            }) {
+            },
+        ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
@@ -144,7 +166,6 @@ fun MinFab(
 ) {
     Row(
         modifier = Modifier
-
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -165,8 +186,6 @@ fun MinFab(
             ),
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
-
-
             if (showLabel) {
                 Text(
                     text = item.label,
@@ -174,7 +193,6 @@ fun MinFab(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-
                         .alpha(
                             animateFloatAsState(
                                 targetValue = alpha,
@@ -182,13 +200,13 @@ fun MinFab(
                                 label = "",
                             ).value,
                         )
-                        .fillMaxWidth(0.8f)
+                        .fillMaxWidth(0.8f),
                 )
             }
 
             Canvas(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(32.dp),
 
             ) {
                 drawImage(
@@ -203,4 +221,3 @@ fun MinFab(
         }
     }
 }
-
