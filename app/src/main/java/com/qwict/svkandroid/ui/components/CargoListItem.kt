@@ -1,8 +1,11 @@
 package com.qwict.svkandroid.ui.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,10 +22,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ImageListItem(
     navigateToPhotoRoute: () -> Unit,
+    offsetX: Animatable<Float, AnimationVector1D>,
+
 ) {
     Box(
         modifier = Modifier
             .width(300.dp)
+            .offset(offsetX.value.dp, 0.dp)
             .height(200.dp),
     ) {
         IconButton(

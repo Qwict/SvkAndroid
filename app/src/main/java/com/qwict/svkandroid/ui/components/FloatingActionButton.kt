@@ -33,7 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -59,8 +60,9 @@ fun MultiFloatingButton(
     navigateToPhotoRoute: () -> Unit,
 ) {
     var offsetY by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
+    val configuration = LocalConfiguration.current
     val transition = updateTransition(targetState = multiFloatingState, label = "transition")
     val rotate by transition.animateFloat(label = "rotate") {
         if (it == MultiFloatingState.Expanded) 315f else 0f
@@ -122,14 +124,13 @@ fun MultiFloatingButton(
         }
 
         FloatingActionButton(
-
             modifier = Modifier
                 .height(70.dp)
                 .width(70.dp).offset { IntOffset(0, offsetY.roundToInt()) }
                 .draggable(
                     orientation = Orientation.Vertical,
                     state = rememberDraggableState { delta ->
-                        if (offsetY + delta < 70 && offsetY + delta > -500) {
+                        if (offsetY + delta < 0 && offsetY + delta > -configuration.screenHeightDp) {
                             offsetY += delta
                         }
                     },

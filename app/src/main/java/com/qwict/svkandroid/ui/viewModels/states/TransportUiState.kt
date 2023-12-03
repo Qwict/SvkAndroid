@@ -21,8 +21,10 @@ data class TransportUiState(
 
     val cargoNumberError: String = "",
     val cargoNumbers: List<String> = listOf(),
+    val cargoNumbersError: String = "",
 
     val images: Map<UUID, Bitmap> = emptyMap(),
+    val imagesError: String = "",
     val imageUris: Map<UUID, Uri> = emptyMap(),
 
     val isLoading: Boolean = false,

@@ -104,9 +104,8 @@ fun NavGraph(
                     dialogUiState = transportViewModel.dialogUiState,
                     onToggleDialogState = { transportViewModel.onToggleDialogState(it) },
 
-                    isTransportValid = { transportViewModel.isDriverNameLicensePlateValid() },
+                    isTransportValid = { transportViewModel.isTransportValid() },
                     isCargoNumberValidThenSave = { transportViewModel.isCargoNumberValidThenSave() },
-                    isDriverNameLicensePlateValid = { transportViewModel.isDriverNameLicensePlateValid() },
 
                     deleteImageOnIndex = { transportViewModel.deleteImageOnIndex(it) },
                     deleteActiveTransport = { transportViewModel.deleteActiveTransport() },

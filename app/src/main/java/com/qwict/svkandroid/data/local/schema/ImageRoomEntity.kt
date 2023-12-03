@@ -26,7 +26,7 @@ data class ImageRoomEntity(
 fun ImageRoomEntity.asImageDto(): ImageDto {
     return ImageDto(
         imageUuid = imageUuid.toString(),
-        localUri = localUri,
+//        localUri = localUri,
         createdAt = createdAt,
         loaderId = loaderId,
         routeNumber = routeNumber,

@@ -111,6 +111,7 @@ class TransportViewModel @Inject constructor(
 
         transportUiState = transportUiState.copy(
             images = transportUiState.images.toMutableMap().apply { put(uuid, bitmap) },
+            imagesError = "",
             imageUris = transportUiState.imageUris.toMutableMap().apply { put(uuid, imgUri) },
         )
 
@@ -188,17 +189,31 @@ class TransportViewModel @Inject constructor(
         return false
     }
 
-    fun isDriverNameLicensePlateValid(): Boolean {
+    fun isTransportValid(): Boolean {
         val driverNameResult = validators.validateNotEmptyText(transportUiState.driverName, "Driver name")
         val licensePlateResult = validators.validateNotEmptyText(transportUiState.licensePlate, "License plate")
 
-        if (driverNameResult.successful && licensePlateResult.successful) {
+        val cargoNumbersResult = validators.validateNotEmptyList(transportUiState.cargoNumbers, "Cargo numbers")
+        val imagesResult = validators.validateNotEmptyList(transportUiState.images.keys.toList(), "Images")
+
+        val hasErrors = listOf(
+            driverNameResult,
+            licensePlateResult,
+            cargoNumbersResult,
+            imagesResult,
+        ).any {
+            !it.successful
+        }
+
+        if (!hasErrors) {
             updateLocalRoute()
             return true
         }
         transportUiState = transportUiState.copy(
             driverNameError = driverNameResult.errorMessage,
             licensePlateError = licensePlateResult.errorMessage,
+            cargoNumbersError = cargoNumbersResult.errorMessage,
+            imagesError = imagesResult.errorMessage,
         )
         return false
     }
@@ -227,7 +242,7 @@ class TransportViewModel @Inject constructor(
                 if (transportUiState.cargoNumbers.contains(transportUiState.originalCargoNumber)) {
                     updateCargo(transportUiState.originalCargoNumber, transportUiState.newCargoNumber)
                     // Remove the original cargo number from the list (if editing)
-                        cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
+                    cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
                 } else {
                     insertCargo(
                         Cargo(
@@ -249,8 +264,6 @@ class TransportViewModel @Inject constructor(
 
             return true
         }
-
-
 
         transportUiState = transportUiState.copy(cargoNumberError = cargoNumberResult.errorMessage)
         return false

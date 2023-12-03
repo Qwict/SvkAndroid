@@ -1,7 +1,7 @@
 package com.qwict.svkandroid.ui.screens
 
 import ImageDialog
-import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -98,7 +99,6 @@ fun RouteEditScreen(
     // Validators
     isCargoNumberValidThenSave: () -> Boolean,
     isTransportValid: () -> Boolean,
-    isDriverNameLicensePlateValid: () -> Boolean,
 
     // Business logic
     finishTransport: () -> Unit,
@@ -115,6 +115,8 @@ fun RouteEditScreen(
     val view = LocalView.current
     val offsetXLicensePlate = remember { Animatable(0f) }
     val offsetXDriverName = remember { Animatable(0f) }
+    val offsetXImageButton = remember { Animatable(0f) }
+    val offsetXCargoNumbers = remember { Animatable(0f) }
 
     BackHandler {
         onToggleDialogState(DialogToggleEvent.BackAlertDialog)
@@ -155,20 +157,26 @@ fun RouteEditScreen(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(horizontal = 32.dp)
                         .weight(1f),
                     onClick = {
+                        Log.e("RouteEditScreen", "Length of images: ${ transportUiState.images.keys.size }")
+
                         if (isTransportValid()) {
                             onToggleDialogState(DialogToggleEvent.FinishTransportDialog)
                         } else {
                             // TODO: the isNotEmpty is more efficient, but is not instant (only after second click)
-                            if (!isDriverNameLicensePlateValid()) {
-//                            if (transportUiState.licensePlateError.isNotEmpty()) {
+                            if (transportUiState.licensePlate.isBlank()) {
                                 animateText(offsetXLicensePlate, coroutineScope, view)
                             }
-                            if (!isDriverNameLicensePlateValid()) {
-//                            if (transportUiState.driverNameError.isNotEmpty()) {
+                            if (transportUiState.driverName.isBlank()) {
                                 animateText(offsetXDriverName, coroutineScope, view)
+                            }
+                            if (transportUiState.cargoNumbers.isEmpty()) {
+                                animateText(offsetXCargoNumbers, coroutineScope, view)
+                            }
+                            if (transportUiState.images.keys.isEmpty()) {
+                                animateText(offsetXImageButton, coroutineScope, view)
                             }
                         }
                     },
@@ -224,7 +232,6 @@ fun RouteEditScreen(
             Spacer(modifier = Modifier.size(32.dp))
             LazyRow(
                 userScrollEnabled = true,
-
             ) {
                 itemsIndexed(transportUiState.images.entries.toList()) { index, image ->
                     Box(
@@ -267,10 +274,21 @@ fun RouteEditScreen(
                     }
                 }
                 item {
-                    ImageListItem(navigateToPhotoRoute = navigateToPhotoRoute)
+                    ImageListItem(
+                        navigateToPhotoRoute = navigateToPhotoRoute,
+                        offsetX = offsetXImageButton,
+                    )
                 }
             }
 
+            Text(
+                text = transportUiState.imagesError,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .offset(offsetXImageButton.value.dp, 0.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center,
+            )
             Spacer(modifier = Modifier.size(32.dp))
 
             LazyColumn(
@@ -282,10 +300,20 @@ fun RouteEditScreen(
                 if (transportUiState.cargoNumbers.isEmpty()) {
                     item {
                         Text(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .offset(offsetXCargoNumbers.value.dp, 0.dp),
                             text = "No Cargo Numbers added yet",
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.headlineMedium,
+                            textAlign = TextAlign.Center,
+                        )
+                        Text(
+                            text = transportUiState.cargoNumbersError,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .offset(offsetXCargoNumbers.value.dp, 0.dp),
                             textAlign = TextAlign.Center,
                         )
                     }

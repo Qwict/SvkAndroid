@@ -4,5 +4,6 @@ class Validators {
     val emailValidator = ValidateEmail()
     val passwordValidator = ValidatePassword()
     val validateNotEmptyText = ValidateNotEmptyText()
+    val validateNotEmptyList = ValidateNotEmptyList()
     val validateNewPassword = ValidateNewPassword()
 }
