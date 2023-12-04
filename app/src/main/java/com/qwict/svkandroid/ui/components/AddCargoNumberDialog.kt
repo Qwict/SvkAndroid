@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material3.AlertDialog
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qwict.svkandroid.R
@@ -56,11 +58,15 @@ fun AddCargoNumberDialog(
                 ShakingTextField(
                     textFieldValue = transportUiState.newCargoNumber,
                     onValueChange = { onUpdateTransportState(TransportChangeEvent.CargoNumberChanged(it)) },
+
                     label = "Cargo Number",
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword),
+
                     errorText = transportUiState.cargoNumberError,
                     offsetX = offsetXCargoNumber,
                     isError = transportUiState.cargoNumberError.isNotEmpty(),
-                )
+
+                    )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(

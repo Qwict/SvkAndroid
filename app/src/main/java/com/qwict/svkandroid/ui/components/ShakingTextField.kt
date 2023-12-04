@@ -144,6 +144,8 @@ fun ShakingTextField(
     label: String,
     isError: Boolean,
     errorText: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+
     offsetX: Animatable<Float, AnimationVector1D>,
 ) {
 //    SVKTextField {
@@ -153,7 +155,7 @@ fun ShakingTextField(
             onValueChange = { onValueChange(it) },
             label = { Text(label) },
             isError = isError,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = keyboardOptions,
             modifier = Modifier.offset(offsetX.value.dp, 0.dp),
             singleLine = true,
         )
