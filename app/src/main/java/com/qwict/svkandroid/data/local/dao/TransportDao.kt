@@ -32,6 +32,6 @@ interface TransportDao {
     suspend fun getActiveTransport(): TransportRoomEntity
 
     @Transaction
-    @Query("SELECT * FROM transport WHERE is_synced = 0")
+    @Query("SELECT * FROM transport WHERE is_synced = 0 AND is_active = 0")
     fun getTransportToSync(): List<TransportRoomEntityWithCargosAndImages>
 }
