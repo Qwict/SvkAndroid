@@ -64,7 +64,7 @@ class TransportViewModel @Inject constructor(
         getActiveTransportUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    Log.d("TransportViewModel", "init transportviewmodel: ${result.data}")
+                    Log.d("TransportViewModel", "init: ${result.data}")
                     getImagesOnInit(result.data!!.images)
                     transportUiState = transportUiState.copy(
                         routeNumber = result.data!!.routeNumber,
@@ -112,7 +112,6 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
                         images[img.imageUuid] = bitmap
                     }
                 }
-                println("test for images size: $images")
             }
             return images
         } catch (e: Exception) {
@@ -140,7 +139,7 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             }
 
-            Log.d("InsertImg", "Image inserted at $uuid ${MediaStore.Images.Media.EXTERNAL_CONTENT_URI} ${MediaStore.Images.Media.INTERNAL_CONTENT_URI}")
+            Log.d("InsertImg", "Image inserted at $uuid")
         }
 
         transportUiState = transportUiState.copy(

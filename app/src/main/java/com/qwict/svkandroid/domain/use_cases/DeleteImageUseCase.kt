@@ -19,8 +19,6 @@ class DeleteImageUseCase @Inject constructor(
         try {
             val test = imageUuid.toString().replace("-","").uppercase()
             val uuidTest = UUID.nameUUIDFromBytes(test.toByteArray())
-            Log.d("Test", "img uri with replace: $test")
-            Log.d("Test", "img uri UUID created from test: $uuidTest")
             Log.i("Get", "Getting image with UUID $imageUuid")
 
 
