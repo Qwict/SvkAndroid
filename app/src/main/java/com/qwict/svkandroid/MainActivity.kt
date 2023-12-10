@@ -18,11 +18,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val launcher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission(),
+            ActivityResultContracts.RequestMultiplePermissions(),
         ) {
         }
-        launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-        launcher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
+        launcher.launch( arrayOf(
+            android.Manifest.permission.POST_NOTIFICATIONS,
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.CAMERA
+                )
+            )
+        //launcher.launch(android.Manifest.permission.READ_MEDIA_IMAGES)
         setContent {
             // A surface container using the 'background' color from the theme
             SvkAndroidTheme {

@@ -67,17 +67,17 @@ fun NavGraph(
         }
 
         navigation(
-            startDestination = Navigations.Permission.route,
+            startDestination = Navigations.RouteSelect.route,
             route = Navigations.MainRoute.route,
         ) {
-            composable(route = Navigations.Permission.route) {
+           /* composable(route = Navigations.Permission.route) {
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
                 PermissionScreen(nextNav = {
                     navController.navigate(Navigations.RouteSelect.route) {
                         popUpTo(Navigations.Permission.route) { inclusive = true }
                     }
                 })
-            }
+            }*/
 
             composable(route = Navigations.RouteSelect.route) {
                 val transportViewModel = it.sharedViewModel<TransportViewModel>(navController)
