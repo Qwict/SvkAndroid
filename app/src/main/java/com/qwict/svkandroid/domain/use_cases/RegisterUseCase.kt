@@ -1,7 +1,9 @@
 package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.util.Log
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.common.Resource
+import com.qwict.svkandroid.common.stringRes.ResourceProvider
 import com.qwict.svkandroid.data.remote.dto.LoginDto
 import com.qwict.svkandroid.data.remote.dto.asDomainModel
 import com.qwict.svkandroid.data.repository.SvkRepository
@@ -14,6 +16,8 @@ import javax.inject.Inject
 
 class RegisterUseCase @Inject constructor(
     private val repo: SvkRepository,
+    private val resourceProvider: ResourceProvider,
+
 ) {
     operator fun invoke(
         email: String,
@@ -31,20 +35,20 @@ class RegisterUseCase @Inject constructor(
             emit(Resource.Success(userDto.asDomainModel()))
         } catch (e: HttpException) {
             if (e.code() == 400) {
-                emit(Resource.Error("Make sure to fill out all fields."))
+                emit(Resource.Error(resourceProvider.getString(R.string.make_sure_to_fill_out_all_fields_err)))
             } else if (e.code() == 403) {
-                emit(Resource.Error(e.localizedMessage ?: "Registration is temporarily not available."))
+                emit(Resource.Error(e.localizedMessage ?: resourceProvider.getString(R.string.registration_is_temporarily_not_available_err)))
             } else if (e.code() == 409) {
-                emit(Resource.Error("$email is already in use."))
+                emit(Resource.Error(resourceProvider.getString(R.string.is_already_in_use_err, email)))
             } else {
-                emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred."))
+                emit(Resource.Error(e.localizedMessage ?: resourceProvider.getString(R.string.an_unexpected_error_occurred_err)))
             }
         } catch (e: IOException) {
             // No internet connection or whatever...
-            emit(Resource.Error("Couldn't reach server. Check your internet connection."))
+            emit(Resource.Error(resourceProvider.getString(R.string.couldn_t_reach_server_check_your_internet_connection_err)))
         } catch (e: Exception) {
             Log.e("LoginUseCase", "invoke: ${e.message}", e)
-            emit(Resource.Error("The developer didn't do his job..."))
+            emit(Resource.Error(resourceProvider.getString(R.string.the_developer_didn_t_do_his_job_err)))
         }
     }
 }

@@ -1,6 +1,9 @@
 package com.qwict.svkandroid.domain.validator
 
-class ValidateNotEmptyList {
+import com.qwict.svkandroid.R
+import com.qwict.svkandroid.common.stringRes.ResourceProvider
+
+class ValidateNotEmptyList(private val resourceProvider: ResourceProvider) {
     operator fun invoke(
         list: List<Any>,
         name: String,
@@ -8,7 +11,7 @@ class ValidateNotEmptyList {
         return if (list.isEmpty()) {
             ValidationResult(
                 successful = false,
-                errorMessage = "$name cannot be empty",
+                errorMessage = resourceProvider.getString(R.string.list_cannot_be_empty_err, name),
             )
         } else {
             ValidationResult(

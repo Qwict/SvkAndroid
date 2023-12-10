@@ -1,13 +1,11 @@
 <resources>
     <string name="app_name">SVK Android</string>
 
-    <string name="title_login_screen">Login</string>
+  <!--  <string name="title_login_screen">Login</string>
     <string name="title_loading_screen">Loading</string>
-    <string name="title_overview_screen">Overview</string>
     <string name="title_barcode_scanner_screen">Scan barcode</string>
     <string name="title_edit_screen">Edit screen</string>
-    <string name="title_uploading_screen">Uploading</string>
-    <string name="title_information_screen">Information</string>
+    <string name="title_information_screen">Information</string>-->
 
 
 
@@ -30,18 +28,23 @@
     -->
 
     <!-- Navigation Graph Routes -->
-    <string name="authentication_route">Authenticate</string>
+    <string name="authentication_route">Authenticeren</string>
+    <string name="logged_out_title">Je bent uitgelogd</string>
+    <string name="register_route">Validatieverzoek</string>
     <string name="main_route">Main</string>
+    <string name="camera_permission">Camera-toestemming</string>
+    <string name="title_photo_screen">Foto maken</string>
+    <string name="title_uploading_screen">Uploaden</string>
+    <string name="title_overview_screen">Overzicht</string>
+
 
     <!-- Title -->
-    <string name="initial_title">Sign in</string>
-    <string name="logged_in_title">You\'re logged in.</string>
-    <string name="logged_out_title">You\'re logged out.</string>
-    <string name="register_route">Request Validation</string>
+   <!-- <string name="initial_title">Sign in</string>
+    <string name="logged_in_title">You\'re logged in.</string>-->
 
     <!-- "Log in" and "Log out" buttons -->
-    <string name="button_login">Log in</string>
-    <string name="button_logout">Log out</string>
+ <!--   <string name="button_login">Log in</string>
+    <string name="button_logout">Log out</string>-->
 
     <!-- User profile -->
     <string name="user_profile">
@@ -54,27 +57,129 @@
     <string name="textview_metadata_info">Use the text box and buttons below to get and set the \'country\' field in the user\'s metadata.</string>
 
     <!-- "Get" and "Set" buttons -->
-    <string name="button_get">Get</string>
-    <string name="button_set">Set</string>
+  <!--  <string name="button_get">Get</string>
+    <string name="button_set">Set</string>-->
 
     <!-- SnackBar messages-->
-    <string name="login_success_message">Successfully logged in! %1$s</string>
+   <!-- <string name="login_success_message">Successfully logged in! %1$s</string>
     <string name="login_failure_message">Failed to log in. %1$s</string>
     <string name="general_failure_with_exception_code">Failed - exception code: %1$s</string>
-    <string name="general_success_message">Success!</string>
+    <string name="general_success_message">Success!</string>-->
+
+
 
 
     <!-- Strings for login screen -->
-    <string name="log_in_button">Login</string>
-    <string name="log_out_button">Log Out</string>
-    <string name="name_label">Name</string>
-    <string name="email_label">Email</string>
-    <string name="user_icon_url">https://images.ctfassets.net/23aumh6u8s0i/5hHkO5DxWMPxDjc2QZLXYf/403128092dedc8eb3395314b1d3545ad/icon-user.png</string>
-    <string name="permission">Permission</string>
+    <string name="sign_in_title">Inloggen</string>
+    <string name="email_txt_fld">E-mail</string>
+    <string name="password_txt_fld">Wachtwoord</string>
+    <string name="login_btn">Inloggen</string>
+    <string name="request_account_btn">Account aanvragen</string>
+
+    <!-- Strings for register screen -->
+    <string name="new_account_title">Nieuw Account</string>
+    <string name="reg_email_txt_fld">E-mail</string>
+    <string name="reg_password_txt_fld">Wachtwoord</string>
+    <string name="confirm_password_txt_fld">Bevestig Wachtwoord</string>
+    <string name="submit_btn">Indienen</string>
+    <string name="registration_successful_title">Registratie Succesvol</string>
+    <string name="you_have_successfully_requested_awaiting_txt">Je hebt succesvol een account aangevraagd, wachtend op validatie.</string>
+
+
+    <!-- Strings for permission screen -->
+    <string name="camera_permission_required_txt">Camera-toestemming vereist</string>
+    <string name="this_is_required_in_order_for_the_app_to_take_pictures_txt">Dit is vereist zodat de app foto\'s kan maken</string>
+    <string name="go_to_settings_btn">Ga naar instellingen</string>
+
+    <!-- Strings for photo screen -->
+
+    <!-- Strings for route edit screen -->
+    <string name="finish_transport_btn">Transport Afronden</string>
+    <string name="route_number_txt">Route Nummer: %1$s</string>
+    <string name="driver_name_txt_fld">Naam Bestuurder</string>
+    <string name="license_plate_txt_fld">Kenteken</string>
+    <string name="no_cargo_numbers_added_yet_txt">Nog geen vrachtnummers toegevoegd</string>
+    <string name="cargo_number_lst_itm_hdr">Vrachtnummer</string>
+    <string name="finish_transport_alrt_title">Transport Afronden</string>
+    <string name="are_you_sure_you_want_to_finish_this_transport_alrt_txt">Weet je zeker dat je dit transport wilt afronden?</string>
+    <string name="this_final_version_will_be_synced_online_alrt_txt">Deze definitieve versie wordt online gesynchroniseerd</string>
+    <string name="cancel_transport_alrt_title">Transport Annuleren</string>
+    <string name="this_transport_will_be_deleted_are_you_sure_alrt_txt">Dit transport wordt verwijderd, weet je zeker?</string>
+    <string name="image_btn_floating">Afbeelding</string>
+    <string name="cargo_btn_floating">Vracht</string>
+
+    <!-- Strings for route select screen -->
+    <string name="route_screen_title">Routescherm</string>
+    <string name="route_txt_fld">Route</string>
+    <string name="select_btn">Selecteer</string>
+    <string name="scan_qr_code_btn">Scan QR-code</string>
+
+
+    <!-- Strings for AddCargoNumberDialog component -->
+    <string name="add_cargo_number_alrt_title">Vrachtnummer Toevoegen</string>
+    <string name="cargo_number_alrt_txt">Vrachtnummer</string>
     <string name="btn_scan_barcode">Scan barcode</string>
-    <string name="btn_enter_manually">Enter Manually</string>
-    <string name="camera_permission">Camera permission</string>
-    <string name="title_photo_screen">Take Photo</string>
+    <string name="save_cargo_btn">Vracht Opslaan</string>
+    <string name="cancel_btn">Annuleren</string>
+
+
+    <!-- Strings for AlertDialog component -->
+    <string name="confirm_btn">Bevestigen</string>
+    <string name="dismiss_btn">Afwijzen</string>
+
+
+    <!-- Strings for LongPressButton component -->
+    <string name="press_long_to_delete_click_lbl">Houd ingedrukt om te verwijderen</string>
+
+
+    <!-- Strings for Navbar (SvkAndroidAppbar) component -->
+    <string name="log_out_question_alrt_title">Uitloggen?</string>
+    <string name="are_you_sure_you_want_to_log_out_alrt_txt">Weet je zeker dat je wilt uitloggen?</string>
+    <string name="any_transport_that_was_not_finished_will_not_be_synced_online_alrt_txt">Elk transport dat niet is voltooid, wordt niet online gesynchroniseerd.</string>
+
+
+    <!-- Strings for Validators -->
+    <string name="email_cannot_be_empty_err">E-mail mag niet leeg zijn</string>
+    <string name="email_is_not_valid_err">E-mail is niet geldig</string>
+    <string name="the_passwords_do_not_match_err">De wachtwoorden komen niet overeen</string>
+    <string name="_8_characters_err">8 tekens</string>
+    <string name="one_digit_err">één cijfer</string>
+    <string name="one_lowercase_letter_err">één kleine letter</string>
+    <string name="the_password_must_at_least_contain_err">Het wachtwoord moet minstens bevatten:</string>
+    <string name="list_cannot_be_empty_err">%1$s mag niet leeg zijn</string>
+    <string name="must_be_filled_in_err">%1$s moet ingevuld zijn</string>
+    <string name="password_cannot_be_empty_err">Wachtwoord mag niet leeg zijn</string>
+
+
+    <!-- Strings for UseCases -->
+    <string name="no_active_transport_was_found_err">Geen actief transport gevonden.</string>
+    <string name="failed_to_save_imagedata_locally_err">Kon imageData niet lokaal opslaan</string>
+    <string name="failed_to_delete_active_transport_err">Kon actief transport niet verwijderen: %1$s</string>
+    <string name="failed_to_delete_image_err">Kon afbeelding niet verwijderen</string>
+    <string name="there_was_an_error_with_inserting_the_cargo_in_the_local_db_err">Er trad een fout op bij het invoegen van de vracht in de lokale database</string>
+    <string name="something_went_wrong_while_validating_your_information_on_your_device_err">Er ging iets mis bij het valideren van je informatie op je apparaat.</string>
+    <string name="your_role_is_not_allowed_to_use_this_application_err">Je rol (%1$s) is niet toegestaan om deze applicatie te gebruiken.</string>
+    <string name="something_went_wrong_while_validating_your_information_on_the_server_err">Er ging iets mis bij het valideren van je informatie op de server.</string>
+    <string name="make_sure_to_fill_out_all_fields_err">Zorg ervoor dat je alle velden invult.</string>
+    <string name="invalid_credentials_err">Ongeldige inloggegevens.</string>
+    <string name="an_unexpected_error_occurred_err">Er is een onverwachte fout opgetreden</string>
+    <string name="couldn_t_reach_server_check_your_internet_connection_err">Kon server niet bereiken. Controleer je internetverbinding.</string>
+    <string name="registration_is_temporarily_not_available_err">Registratie is tijdelijk niet beschikbaar.</string>
+    <string name="is_already_in_use_err">%1$s is al in gebruik.</string>
+    <string name="the_developer_didn_t_do_his_job_err">De ontwikkelaar heeft zijn werk niet gedaan...</string>
+    <string name="failed_to_save_transport_locally_err">Kon transport niet lokaal opslaan</string>
+    <string name="failed_to_set_a_driver_and_licenseplatenumber_err">Kon bestuurder en kentekennummer niet instellen</string>
+    <string name="unexpected_error_while_updating_cargo_err">Onverwachte fout bij het bijwerken van de vracht: %1$s</string>
+
+
+
+    <!-- <string name="permission">Permission</string>
+     <string name="log_in_button">Login</string>
+     <string name="log_out_button">Log Out</string>
+     <string name="name_label">Name</string>
+     <string name="user_icon_url">https://images.ctfassets.net/23aumh6u8s0i/5hHkO5DxWMPxDjc2QZLXYf/403128092dedc8eb3395314b1d3545ad/icon-user.png</string>
+     <string name="btn_enter_manually">Enter Manually</string>
+     <string name="sign_in">Sign in</string>-->
 
 
 </resources>

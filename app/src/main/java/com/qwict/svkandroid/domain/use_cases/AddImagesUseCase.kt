@@ -2,8 +2,10 @@ package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.net.Uri
 import android.util.Log
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.common.getDecodedPayload
+import com.qwict.svkandroid.common.stringRes.ResourceProvider
 import com.qwict.svkandroid.data.local.getEncryptedPreference
 import com.qwict.svkandroid.data.repository.SvkRepository
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +15,7 @@ import javax.inject.Inject
 
 class AddImagesUseCase @Inject constructor(
     private val repo: SvkRepository,
+    private val resourceProvider: ResourceProvider,
 ) {
     operator fun invoke(
         uuid: UUID,
@@ -27,7 +30,7 @@ class AddImagesUseCase @Inject constructor(
             emit(Resource.Success(uuid))
         } catch (e: Exception) {
             Log.e("AddImageUseCase", "Failed to save imageData locally", e)
-            emit(Resource.Error("Failed to save imageData locally"))
+            emit(Resource.Error(resourceProvider.getString(R.string.failed_to_save_imagedata_locally_err)))
         }
     }
 }

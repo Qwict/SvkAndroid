@@ -26,12 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.components.AlertDialog
 import com.qwict.svkandroid.ui.components.AuthButton
 import com.qwict.svkandroid.ui.components.Loading
@@ -77,8 +79,8 @@ fun RegisterScreen(
                     clearValidationErrors()
                     navigateToLoginScreen()
                 },
-                dialogTitle = "Registration Successful",
-                dialogText = "You have successfully requested your account, awaiting validation.",
+                dialogTitle = stringResource(R.string.registration_successful_title),
+                dialogText = stringResource(R.string.you_have_successfully_requested_awaiting_txt),
                 icon = Icons.Default.Person,
             )
         }
@@ -95,14 +97,14 @@ fun RegisterScreen(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "New Account",
+                    text = stringResource(R.string.new_account_title),
                     style = MaterialTheme.typography.displayMedium,
                 )
 
                 ShakingTextFieldWithIcon(
                     textFieldValue = authFormState.email,
                     onValueChange = { onEvent(AuthenticationFormEvent.EmailChanged(it)) },
-                    label = "Email",
+                    label = stringResource(R.string.reg_email_txt_fld),
                     isError = authFormState.emailError.isNotEmpty(),
                     errorText = authFormState.emailError,
                     offsetX = offsetXEmail,
@@ -116,7 +118,7 @@ fun RegisterScreen(
                 ShakingPasswordTextField(
                     textFieldValue = authFormState.password,
                     onValueChange = { onEvent(AuthenticationFormEvent.PasswordChanged(it)) },
-                    label = "Password",
+                    label = stringResource(R.string.reg_password_txt_fld),
                     isError = authFormState.passwordError.isNotEmpty(),
                     errorText = authFormState.passwordError,
                     offsetX = offsetXPassword,
@@ -128,7 +130,7 @@ fun RegisterScreen(
                 ShakingPasswordTextField(
                     textFieldValue = authFormState.passwordConfirm,
                     onValueChange = { onEvent(AuthenticationFormEvent.ConfirmPasswordChanged(it)) },
-                    label = "Confirm Password",
+                    label = stringResource(R.string.confirm_password_txt_fld),
                     isError = authFormState.passwordConfirmError.isNotEmpty(),
                     errorText = authFormState.passwordConfirmError,
                     offsetX = offsetXConfirmPassword,
@@ -146,7 +148,7 @@ fun RegisterScreen(
                     modifier = Modifier.padding(8.dp),
                 )
                 AuthButton(
-                    text = "Submit",
+                    text = stringResource(R.string.submit_btn),
                     onClick = {
                         registerUser()
                         if (authFormState.emailError.isNotEmpty()) {

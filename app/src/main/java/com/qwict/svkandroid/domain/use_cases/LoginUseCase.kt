@@ -1,10 +1,12 @@
 package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.util.Log
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.common.AuthenticationSingleton
 import com.qwict.svkandroid.common.Constants.ROLE_LOADER
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.common.getDecodedPayload
+import com.qwict.svkandroid.common.stringRes.ResourceProvider
 import com.qwict.svkandroid.data.local.getEncryptedPreference
 import com.qwict.svkandroid.data.local.saveEncryptedPreference
 import com.qwict.svkandroid.data.local.schema.asDomainModel
@@ -19,6 +21,8 @@ import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
     private val repo: SvkRepository,
+    private val resourceProvider: ResourceProvider,
+
 ) {
     operator fun invoke(
         email: String,
@@ -44,28 +48,35 @@ class LoginUseCase @Inject constructor(
                         val userRoomEntity = repo.getLocalUserByEmail(email)
                         emit(Resource.Success(userRoomEntity.asDomainModel()))
                     } else {
-                        emit(Resource.Error("Something went wrong while validating your information on your device."))
+                        emit(Resource.Error(resourceProvider.getString(R.string.something_went_wrong_while_validating_your_information_on_your_device_err)))
                     }
                 } else {
-                    emit(Resource.Error("Your role (${userDto.role}) is not allowed to use this application."))
+                    emit(
+                        Resource.Error(
+                            resourceProvider.getString(
+                                R.string.your_role_is_not_allowed_to_use_this_application_err,
+                                userDto.role,
+                            ),
+                        ),
+                    )
                 }
             } else {
-                emit(Resource.Error("Something went wrong while validating your information on the server."))
+                emit(Resource.Error(resourceProvider.getString(R.string.something_went_wrong_while_validating_your_information_on_the_server_err)))
             }
         } catch (e: HttpException) {
             Log.e("LoginUseCase", "invoke: ${e.code()}", e)
             if (e.code() == 400) {
-                emit(Resource.Error("Make sure to fill out all fields."))
+                emit(Resource.Error(resourceProvider.getString(R.string.make_sure_to_fill_out_all_fields_err)))
             } else if (e.code() == 403) {
-                emit(Resource.Error(e.localizedMessage ?: "Invalid credentials."))
+                emit(Resource.Error(e.localizedMessage ?: resourceProvider.getString(R.string.invalid_credentials_err)))
 //                emit(Resource.Error("Invalid credentials."))
             } else {
-                emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+                emit(Resource.Error(e.localizedMessage ?: resourceProvider.getString(R.string.an_unexpected_error_occurred_err)))
             }
         } catch (e: IOException) {
             // No internet connection or whatever...
             Log.e("LoginUseCase", "invoke: ${e.message}", e)
-            emit(Resource.Error("Couldn't reach server. Check your internet connection."))
+            emit(Resource.Error(resourceProvider.getString(R.string.couldn_t_reach_server_check_your_internet_connection_err)))
         }
     }
 }

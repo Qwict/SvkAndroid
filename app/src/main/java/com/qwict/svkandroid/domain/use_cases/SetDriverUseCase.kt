@@ -1,7 +1,9 @@
 package com.qwict.svkandroid.domain.use_cases // ktlint-disable package-name
 
 import android.util.Log
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.common.Resource
+import com.qwict.svkandroid.common.stringRes.ResourceProvider
 import com.qwict.svkandroid.data.repository.SvkRepository
 import com.qwict.svkandroid.domain.model.Transport
 import kotlinx.coroutines.flow.Flow
@@ -10,6 +12,8 @@ import javax.inject.Inject
 
 class SetDriverUseCase @Inject constructor(
     private val repo: SvkRepository,
+    private val resourceProvider: ResourceProvider,
+
 ) {
     operator fun invoke(
         routeNumber: String,
@@ -31,7 +35,7 @@ class SetDriverUseCase @Inject constructor(
             emit(Resource.Success(transport))
         } catch (e: Exception) {
             Log.e("SetLoaderUseCase", "Failed to set a driver and licenseplatenumber", e)
-            emit(Resource.Error("Failed to set a driver and licenseplatenumber"))
+            emit(Resource.Error(resourceProvider.getString(R.string.failed_to_set_a_driver_and_licenseplatenumber_err)))
         }
     }
 }

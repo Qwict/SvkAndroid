@@ -1,9 +1,13 @@
 package com.qwict.svkandroid.common.di
 
+import android.app.Application
+import android.content.Context
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.AuthInterceptor
 import com.qwict.svkandroid.common.Constants.BLOB_URL
 import com.qwict.svkandroid.common.Constants.SVK_URL
+import com.qwict.svkandroid.common.stringRes.AndroidResourceProvider
+import com.qwict.svkandroid.common.stringRes.ResourceProvider
 import com.qwict.svkandroid.data.local.RoomContainer
 import com.qwict.svkandroid.data.local.RoomContainerImpl
 import com.qwict.svkandroid.data.remote.BlobApiService
@@ -77,8 +81,20 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideValidators(): Validators {
-        return Validators()
+    fun provideValidators(context: Context): Validators {
+        return Validators(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
+
+    @Provides
+    @Singleton
+    fun provideResourceProvider(context: Context): ResourceProvider {
+        return AndroidResourceProvider(context)
     }
 
     // TODO: To make testing work should probably inject authsingleton...

@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
+import com.qwict.svkandroid.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -27,7 +29,7 @@ fun LongPressButton(
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick()
                 },
-                onClickLabel = "Press long to delete",
+                onClickLabel = stringResource(R.string.press_long_to_delete_click_lbl),
             ),
     ) {
         content()

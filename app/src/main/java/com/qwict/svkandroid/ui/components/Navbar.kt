@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.navigation.Navigations
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,9 +84,9 @@ fun SvkAndroidAppbar(
                     onLogOutClicked()
                     openAlertDialog.value = false
                 },
-                dialogTitle = "Log out?",
-                dialogText = "Are you sure you want to log out? " +
-                    "Any transport that was not finished will not be synced online.",
+                dialogTitle = stringResource(R.string.log_out_question_alrt_title),
+                dialogText = stringResource(R.string.are_you_sure_you_want_to_log_out_alrt_txt) +
+                    stringResource(R.string.any_transport_that_was_not_finished_will_not_be_synced_online_alrt_txt),
                 icon = Icons.Default.Info,
             )
         }

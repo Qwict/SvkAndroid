@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.qwict.svkandroid.R
@@ -58,17 +59,15 @@ fun RouteScreen(
                 .fillMaxHeight(0.8f),
             contentAlignment = Alignment.Center,
         ) {
-
-
             Column(
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Image(modifier = Modifier.padding(20.dp),painter = painterResource(id = R.drawable.svk_logo_zonder_slogan), contentDescription = "SVK")
+                Image(modifier = Modifier.padding(20.dp), painter = painterResource(id = R.drawable.svk_logo_zonder_slogan), contentDescription = "SVK")
 
                 Text(
-                    text = "Route Screen",
+                    text = stringResource(R.string.route_screen_title),
                     color = MaterialTheme.colorScheme.onSurface,
 
                     style = MaterialTheme.typography.headlineLarge,
@@ -79,7 +78,7 @@ fun RouteScreen(
                         loaded = false
                         onUpdateTransportState(TransportChangeEvent.RouteNumberChanged(it))
                     },
-                    label = "Route",
+                    label = stringResource(R.string.route_txt_fld),
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword),
                     isError = transportUiState.routeNumberError.isNotEmpty(),
                     errorText = transportUiState.routeNumberError,
@@ -98,13 +97,13 @@ fun RouteScreen(
                         }
                     },
                 ) {
-                    Text(text = "Select")
+                    Text(text = stringResource(R.string.select_btn))
                 }
                 Button(
                     modifier = Modifier.padding(top = 8.dp),
                     onClick = { scanRouteNumber() },
                 ) {
-                    Text("Scan QR-code")
+                    Text(stringResource(R.string.scan_qr_code_btn))
                 }
             }
         }

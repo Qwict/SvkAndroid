@@ -21,12 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.components.AuthButton
 import com.qwict.svkandroid.ui.components.Loading
 import com.qwict.svkandroid.ui.components.ShakingPasswordTextField
@@ -67,14 +69,14 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Sign in",
+                    text = stringResource(R.string.sign_in_title),
                     style = MaterialTheme.typography.displayMedium,
                 )
 
                 ShakingTextFieldWithIcon(
                     textFieldValue = authFormState.email,
                     onValueChange = { onUpdateLoginState(AuthenticationFormEvent.EmailChanged(it)) },
-                    label = "Email",
+                    label = stringResource(R.string.email_txt_fld),
                     isError = authFormState.emailError.isNotEmpty(),
                     errorText = authFormState.emailError,
                     offsetX = offsetXEmail,
@@ -87,7 +89,7 @@ fun LoginScreen(
                 ShakingPasswordTextField(
                     textFieldValue = authFormState.password,
                     onValueChange = { onUpdateLoginState(AuthenticationFormEvent.PasswordChanged(it)) },
-                    label = "Password",
+                    label = stringResource(R.string.password_txt_fld),
                     isError = authFormState.passwordError.isNotEmpty(),
                     errorText = authFormState.passwordError,
                     offsetX = offsetXPassword,
@@ -104,7 +106,7 @@ fun LoginScreen(
                     modifier = Modifier.padding(8.dp),
                 )
                 AuthButton(
-                    text = "Login",
+                    text = stringResource(R.string.login_btn),
                     onClick = {
                         login()
                         if (authFormState.emailError.isNotEmpty()) {
@@ -121,7 +123,7 @@ fun LoginScreen(
                         navigateToRegisterScreen()
                         clearValidationErrors()
                     },
-                    text = "Request account",
+                    text = stringResource(R.string.request_account_btn),
                 )
             }
         }

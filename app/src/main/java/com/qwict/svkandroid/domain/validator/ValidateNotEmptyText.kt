@@ -1,11 +1,14 @@
 package com.qwict.svkandroid.domain.validator
 
-class ValidateNotEmptyText {
+import com.qwict.svkandroid.R
+import com.qwict.svkandroid.common.stringRes.ResourceProvider
+
+class ValidateNotEmptyText(private val resourceProvider: ResourceProvider) {
     operator fun invoke(text: String, name: String): ValidationResult {
         return if (text.isBlank()) {
             ValidationResult(
                 successful = false,
-                errorMessage = "$name must be filled in",
+                errorMessage = resourceProvider.getString(R.string.must_be_filled_in_err, name),
             )
         } else {
             ValidationResult(

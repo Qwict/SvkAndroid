@@ -48,7 +48,7 @@ fun AddCargoNumberDialog(
             Icon(Icons.Filled.LocalShipping, contentDescription = "Add a cargo number")
         },
         title = {
-            Text(text = "Add Cargo Number")
+            Text(text = stringResource(R.string.add_cargo_number_alrt_title))
         },
         text = {
             Column(
@@ -59,14 +59,14 @@ fun AddCargoNumberDialog(
                     textFieldValue = transportUiState.newCargoNumber,
                     onValueChange = { onUpdateTransportState(TransportChangeEvent.CargoNumberChanged(it)) },
 
-                    label = "Cargo Number",
+                    label = stringResource(R.string.cargo_number_alrt_txt),
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword),
 
                     errorText = transportUiState.cargoNumberError,
                     offsetX = offsetXCargoNumber,
                     isError = transportUiState.cargoNumberError.isNotEmpty(),
 
-                    )
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
@@ -92,7 +92,7 @@ fun AddCargoNumberDialog(
                     animateText(offsetXCargoNumber, coroutineScope, view)
                 }
             }) {
-                Text("Save Cargo")
+                Text(stringResource(R.string.save_cargo_btn))
             }
         },
         dismissButton = {
@@ -104,7 +104,7 @@ fun AddCargoNumberDialog(
                     onToggleDialogState(DialogToggleEvent.CargoDialog)
                 },
             ) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel_btn))
             }
         },
     )

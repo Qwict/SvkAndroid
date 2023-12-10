@@ -109,7 +109,7 @@ fun PhotoScreen(onTakePhoto: (Bitmap) -> Unit, capturedImages: List<Bitmap>, goB
                 isFlashOn = isFlashOn,
                 modifier = Modifier
                     .align(alignment = Alignment.TopEnd)
-                    .padding(16.dp), // Adjust padding as needed
+                    .padding(16.dp),
             )
         }
     }

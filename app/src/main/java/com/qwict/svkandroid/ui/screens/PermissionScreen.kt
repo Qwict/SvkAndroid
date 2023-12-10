@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import androidx.core.content.ContextCompat.startActivity
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -60,14 +62,14 @@ fun PermissionScreen(nextNav: () -> Unit) {
                 ) {
 //                    Column(horizontalAlignment = Alignment.Start) {
                     Text(
-                        "Camera permission required",
+                        stringResource(R.string.camera_permission_required_txt),
                         style = MaterialTheme.typography.headlineLarge,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.error,
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "This is required in order for the app to take pictures",
+                        stringResource(R.string.this_is_required_in_order_for_the_app_to_take_pictures_txt),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.error,
@@ -94,7 +96,7 @@ fun PermissionScreen(nextNav: () -> Unit) {
                             startActivity(context, intent, null)
                         },
                     ) {
-                        Text("Go to settings", fontSize = 20.sp)
+                        Text(stringResource(R.string.go_to_settings_btn), fontSize = 20.sp)
                     }
                     Spacer(modifier = Modifier.height(20.dp))
                 }

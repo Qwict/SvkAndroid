@@ -12,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.qwict.svkandroid.R
 
 @Composable
 fun AlertDialog(
@@ -68,7 +70,7 @@ fun AlertDialog(
                 },
 
             ) {
-                Text("Confirm")
+                Text(stringResource(R.string.confirm_btn))
             }
         },
         dismissButton = {
@@ -77,7 +79,7 @@ fun AlertDialog(
                     onDismissRequest()
                 },
             ) {
-                Text("Dismiss")
+                Text(stringResource(R.string.dismiss_btn))
             }
         },
     )

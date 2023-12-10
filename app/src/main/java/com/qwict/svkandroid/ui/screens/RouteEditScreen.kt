@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -125,13 +126,13 @@ fun RouteEditScreen(
     val items = listOf(
         MinFabItem(
             icon = ImageBitmap.imageResource(id = R.drawable.camerabitmap),
-            label = "Image",
+            label = stringResource(R.string.image_btn_floating),
             identifier = Identifier.CameraFab.name,
         ),
 
         MinFabItem(
             icon = ImageBitmap.imageResource(id = R.drawable.addbitmap),
-            label = "Cargo",
+            label = stringResource(R.string.cargo_btn_floating),
             identifier = Identifier.AddLoadFab.name,
 
         ),
@@ -182,7 +183,7 @@ fun RouteEditScreen(
                     },
                 ) {
                     Text(
-                        text = "Finish Transport",
+                        text = stringResource(R.string.finish_transport_btn),
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
@@ -198,7 +199,7 @@ fun RouteEditScreen(
         ) {
 //            Greeting(name = "RouteEditScreen")
             Text(
-                text = "Route Number: ${transportUiState.routeNumber}",
+                text = stringResource(R.string.route_number_txt, transportUiState.routeNumber),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineLarge,
             )
@@ -214,7 +215,7 @@ fun RouteEditScreen(
             ShakingTextFieldWithIcon(
                 textFieldValue = transportUiState.driverName,
                 onValueChange = { onUpdateTransportState(TransportChangeEvent.DriverChanged(it)) },
-                label = "Driver Name",
+                label = stringResource(R.string.driver_name_txt_fld),
                 errorText = transportUiState.driverNameError,
                 offsetX = offsetXDriverName,
                 isError = transportUiState.driverNameError.isNotEmpty(),
@@ -223,7 +224,7 @@ fun RouteEditScreen(
             ShakingTextFieldWithIcon(
                 textFieldValue = transportUiState.licensePlate,
                 onValueChange = { onUpdateTransportState(TransportChangeEvent.LicensePlateChanged(it)) },
-                label = "License Plate",
+                label = stringResource(R.string.license_plate_txt_fld),
                 errorText = transportUiState.licensePlateError,
                 offsetX = offsetXLicensePlate,
                 isError = transportUiState.licensePlateError.isNotEmpty(),
@@ -303,7 +304,7 @@ fun RouteEditScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .offset(offsetXCargoNumbers.value.dp, 0.dp),
-                            text = "No Cargo Numbers added yet",
+                            text = stringResource(R.string.no_cargo_numbers_added_yet_txt),
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.headlineMedium,
                             textAlign = TextAlign.Center,
@@ -320,7 +321,7 @@ fun RouteEditScreen(
                 } else {
                     items(transportUiState.cargoNumbers.size) { index ->
                         ListItem(
-                            headlineText = { Text(text = "Cargo number") },
+                            headlineText = { Text(text = stringResource(R.string.cargo_number_lst_itm_hdr)) },
                             supportingText = {
                                 Row {
                                     Text(
@@ -384,9 +385,9 @@ fun RouteEditScreen(
         dialogUiState.isFinishTransportDialogOpen -> {
             AlertDialog(
                 onDismissRequest = { onToggleDialogState(DialogToggleEvent.FinishTransportDialog) },
-                dialogTitle = "Finish Transport",
-                dialogText = "Are you sure you want to finish this transport? " +
-                    "This final version will be synced online",
+                dialogTitle = stringResource(R.string.finish_transport_alrt_title),
+                dialogText = stringResource(R.string.are_you_sure_you_want_to_finish_this_transport_alrt_txt) +
+                    stringResource(R.string.this_final_version_will_be_synced_online_alrt_txt),
                 onConfirmation = {
                     finishTransport()
                     onToggleDialogState(DialogToggleEvent.FinishTransportDialog)
@@ -406,8 +407,8 @@ fun RouteEditScreen(
                     deleteActiveTransport()
                     onToggleDialogState(DialogToggleEvent.BackAlertDialog)
                 },
-                dialogTitle = "Cancel Transport",
-                dialogText = "This transport will be deleted, are you sure?",
+                dialogTitle = stringResource(R.string.cancel_transport_alrt_title),
+                dialogText = stringResource(R.string.this_transport_will_be_deleted_are_you_sure_alrt_txt),
                 icon = Icons.Default.Info,
             )
         }
