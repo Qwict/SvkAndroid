@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.qwict.svkandroid.data.remote.dto.ImageDto
+import com.qwict.svkandroid.domain.model.Image
 import java.util.UUID
 
 @Entity(tableName = "image")
@@ -32,3 +33,10 @@ fun ImageRoomEntity.asImageDto(): ImageDto {
         routeNumber = routeNumber,
     )
 }
+
+fun ImageRoomEntity.asDomainModel() = Image(
+    imageUuid = imageUuid,
+    localUri = localUri,
+    loaderId = loaderId,
+    routeNumber = routeNumber
+)

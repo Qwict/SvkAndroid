@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import com.qwict.svkandroid.data.local.RoomContainer
 import com.qwict.svkandroid.data.local.schema.CargoRoomEntity
 import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
+import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.local.schema.asDomainModel
 import com.qwict.svkandroid.data.remote.SvkApiService
@@ -126,11 +127,11 @@ class SvkRepositoryImpl @Inject constructor(
     override suspend fun getActiveTransport(): Transport {
         // TODO: this is the wrong way to do this... need to fix this; should be a single call to the database
         // that returns the transport with the cargos (and images) attached
-
         val transportWithoutCargos = roomContainer.transportDatabase.getActiveTransport()
-        val cargos = roomContainer.cargoDatabase.getCargosByRouteNumber(transportWithoutCargos.routeNumber)
-            .map { it.asDomainModel() }
-        return transportWithoutCargos.asDomainModel().copy(cargos = cargos)
+
+        Log.d("ActiveTransport", "Current active transport: ${transportWithoutCargos.asDomainModel()}")
+
+        return transportWithoutCargos.asDomainModel()
     }
 
     override suspend fun syncTransports() {
@@ -143,8 +144,16 @@ class SvkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteImage(imageUuid: UUID) {
-        val imageRoomEntry = roomContainer.imageDatabase.getImageByImageUuid(imageUuid)
-        roomContainer.imageDatabase.delete(imageRoomEntry)
+        withContext(Dispatchers.IO) {
+            try {
+                val imageRoomEntry = roomContainer.imageDatabase.getImageByImageUuid(imageUuid)
+                Log.d("Log", "image gotten from room on $imageUuid: $imageRoomEntry")
+                roomContainer.imageDatabase.delete(imageRoomEntry)
+            } catch (e: Exception) {
+                Log.e("Error", "error in deleteImage : ${e.message!!}")
+            }
+        }
+
     }
 
     override suspend fun updateCargo(oldCargoNumber: String, newCargoNumber: String) {
@@ -163,13 +172,23 @@ class SvkRepositoryImpl @Inject constructor(
 
     override suspend fun deleteActiveTransport() {
         roomContainer.transportDatabase.getActiveTransport().let { transport ->
-            roomContainer.transportDatabase.delete(transport)
+            val tr = TransportRoomEntity(
+                routeNumber = transport.transport.routeNumber,
+                driverName = transport.transport.driverName,
+                licensePlate = transport.transport.licensePlate
+            )
+            roomContainer.transportDatabase.delete(tr)
         }
     }
 
     override suspend fun finishTransport() {
         roomContainer.transportDatabase.getActiveTransport().let { transport ->
-            roomContainer.transportDatabase.update(transport.copy(isActive = false))
+            val tr = TransportRoomEntity(
+                routeNumber = transport.transport.routeNumber,
+                driverName = transport.transport.driverName,
+                licensePlate = transport.transport.licensePlate
+            )
+            roomContainer.transportDatabase.update(tr.copy(isActive = false))
         }
     }
 }

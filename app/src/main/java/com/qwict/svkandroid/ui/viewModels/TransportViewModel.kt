@@ -1,19 +1,16 @@
 package com.qwict.svkandroid.ui.viewModels
 
-import android.content.ContentUris
 import android.content.ContentValues
-import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.useCursor
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.Resource
 import com.qwict.svkandroid.common.getDecodedPayload
@@ -39,7 +36,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
 
@@ -68,7 +64,8 @@ class TransportViewModel @Inject constructor(
         getActiveTransportUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    Log.d("TransportViewModel", "init: ${result.data}")
+                    Log.d("TransportViewModel", "init transportviewmodel: ${result.data}")
+                    getImagesOnInit(result.data!!.images)
                     transportUiState = transportUiState.copy(
                         routeNumber = result.data!!.routeNumber,
                         licensePlate = result.data.licensePlate,
@@ -76,8 +73,9 @@ class TransportViewModel @Inject constructor(
                         cargoNumbers = result.data.cargos.toMutableList().map { cargo -> cargo.cargoNumber },
                         isLoading = false,
 //                        images = result.data.images.toMutableList().map { image -> image.imageUuid.toString() },
+                        images = getImagesOnInit(result.data.images)
                     )
-                    getImagesOnInit()
+
                 }
 
                 is Resource.Error -> {
@@ -94,46 +92,32 @@ class TransportViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-//: Map<UUID, Bitmap>
-    fun getImagesOnInit()  {
-        val resolver = SvkAndroidApplication.appContext.contentResolver
+//
+private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
+        try {
+            val images = mutableMapOf<UUID, Bitmap>()
+            imagesTransport.forEach { img ->
+                val resolver = SvkAndroidApplication.appContext.contentResolver
 
-        val projection = arrayOf(
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DISPLAY_NAME,
-        )
+                val projection = arrayOf(MediaStore.Images.Media.DATA)
 
-        val millis = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_YEAR, -1)
-        }.timeInMillis
-        val selection = "${MediaStore.Images.Media.ARTIST} LIKE ?"
-        val selectionArgs = arrayOf(
-           transportUiState.routeNumber
-        )
+                val cursor = resolver.query(img.localUri, projection, null, null, null)
 
-        resolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            selection,
-            selectionArgs,
-            null
-        )?.use {cursor ->
-            val idColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-            val nameColumn = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
+                cursor?.use {
+                    val columnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
 
-            val images = mutableListOf<StoredImage>()
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idColumn)
-                val name = cursor.getString(nameColumn)
-                val uri = ContentUris.withAppendedId(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    id
-                )
-
-                images.add(StoredImage(id, name, uri))
+                    while (it.moveToNext()){
+                        val filePath = it.getString(columnIndex)
+                        val bitmap = BitmapFactory.decodeFile(filePath)
+                        images[img.imageUuid] = bitmap
+                    }
+                }
+                println("test for images size: $images")
             }
-            println("test for images size: ${images.size}")
+            return images
+        } catch (e: Exception) {
+            Log.e("Error", "Error converting image data to images: ${e.message!!}")
+            return emptyMap()
         }
     }
 
@@ -142,11 +126,9 @@ class TransportViewModel @Inject constructor(
         val uuid = UUID.randomUUID()
 
         val values = ContentValues().apply {
-            //put(MediaStore.Images.Media._ID, uuid.toString())
             put(MediaStore.Images.Media.DESCRIPTION, uuid.toString())
             put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.ARTIST, transportUiState.routeNumber)
         }
 
         val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -182,9 +164,10 @@ class TransportViewModel @Inject constructor(
 
     fun deleteImageOnIndex(imageUuid: UUID) {
         Log.i("TransportViewModel", "deleteImageOnIndex: $imageUuid")
+        val imgUri = transportUiState.imageUris[imageUuid]
         if (!imageUuid.equals(null)) {
 //      if (imageIndex >= 0 && imageIndex < transportUiState.images.size) {
-            deleteImageUseCase(imageUuid).onEach { result ->
+            deleteImageUseCase(imageUuid, imgUri!!).onEach { result ->
                 when (result) {
                     is Resource.Success -> {
                     }
