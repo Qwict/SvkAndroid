@@ -149,6 +149,7 @@
     <string name="list_cannot_be_empty_err">%1$s mag niet leeg zijn</string>
     <string name="must_be_filled_in_err">%1$s moet ingevuld zijn</string>
     <string name="password_cannot_be_empty_err">Wachtwoord mag niet leeg zijn</string>
+    <string name="not_validated_err">Dit account is nog niet gevalideerd</string>
 
 
     <!-- Strings for UseCases -->

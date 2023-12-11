@@ -65,13 +65,11 @@ class LoginUseCase @Inject constructor(
             }
         } catch (e: HttpException) {
             Log.e("LoginUseCase", "invoke: ${e.code()}", e)
-            if (e.code() == 400) {
-                emit(Resource.Error(resourceProvider.getString(R.string.make_sure_to_fill_out_all_fields_err)))
-            } else if (e.code() == 403) {
-                emit(Resource.Error(e.localizedMessage ?: resourceProvider.getString(R.string.invalid_credentials_err)))
-//                emit(Resource.Error("Invalid credentials."))
-            } else {
-                emit(Resource.Error(e.localizedMessage ?: resourceProvider.getString(R.string.an_unexpected_error_occurred_err)))
+            when (e.code()) {
+                400 -> emit(Resource.Error(resourceProvider.getString(R.string.make_sure_to_fill_out_all_fields_err)))
+                401 -> emit(Resource.Error(resourceProvider.getString(R.string.invalid_credentials_err)))
+                403 -> emit(Resource.Error(resourceProvider.getString(R.string.not_validated_err)))
+                else -> emit(Resource.Error(e.localizedMessage ?: resourceProvider.getString(R.string.an_unexpected_error_occurred_err)))
             }
         } catch (e: IOException) {
             // No internet connection or whatever...
