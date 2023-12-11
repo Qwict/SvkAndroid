@@ -1,6 +1,7 @@
 package com.qwict.svkandroid.data.repository
 
 import android.net.Uri
+import com.qwict.svkandroid.data.local.schema.ImageRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import com.qwict.svkandroid.data.remote.dto.HealthDto
 import com.qwict.svkandroid.data.remote.dto.LoginDto

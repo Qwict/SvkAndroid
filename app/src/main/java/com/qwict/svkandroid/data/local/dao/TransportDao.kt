@@ -28,8 +28,13 @@ interface TransportDao {
     fun getTransportByRouteNumber(routeNumber: String): TransportRoomEntity
     // TODO: Figure out how to get this to work
 
+
+//    @Query("SELECT * FROM transport WHERE is_active = 1")
+//    suspend fun getActiveTransport(): TransportRoomEntity
+
+    @Transaction
     @Query("SELECT * FROM transport WHERE is_active = 1")
-    suspend fun getActiveTransport(): TransportRoomEntity
+    suspend fun getActiveTransport(): TransportRoomEntityWithCargosAndImages
 
     @Transaction
     @Query("SELECT * FROM transport WHERE is_synced = 0 AND is_active = 0")

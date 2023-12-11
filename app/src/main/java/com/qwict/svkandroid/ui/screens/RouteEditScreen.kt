@@ -250,7 +250,11 @@ fun RouteEditScreen(
                                 .fillMaxSize()
                                 .padding(2.dp)
                                 .clickable {
-                                    onUpdateTransportState(TransportChangeEvent.SelectedImageChanged(image.value))
+                                    onUpdateTransportState(
+                                        TransportChangeEvent.SelectedImageChanged(
+                                            image.value
+                                        )
+                                    )
                                     onToggleDialogState(DialogToggleEvent.ImageDialog)
                                 },
 
@@ -291,7 +295,6 @@ fun RouteEditScreen(
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.size(32.dp))
-
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier

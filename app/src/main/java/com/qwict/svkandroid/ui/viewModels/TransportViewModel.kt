@@ -2,6 +2,8 @@ package com.qwict.svkandroid.ui.viewModels
 
 import android.content.ContentValues
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -56,11 +58,14 @@ class TransportViewModel @Inject constructor(
     var dialogUiState by mutableStateOf(DialogUiState())
         private set
 
+
     init {
+
         getActiveTransportUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     Log.d("TransportViewModel", "init: ${result.data}")
+                    getImagesOnInit(result.data!!.images)
                     transportUiState = transportUiState.copy(
                         routeNumber = result.data!!.routeNumber,
                         licensePlate = result.data.licensePlate,
@@ -68,7 +73,9 @@ class TransportViewModel @Inject constructor(
                         cargoNumbers = result.data.cargos.toMutableList().map { cargo -> cargo.cargoNumber },
                         isLoading = false,
 //                        images = result.data.images.toMutableList().map { image -> image.imageUuid.toString() },
+                        images = getImagesOnInit(result.data.images)
                     )
+
                 }
 
                 is Resource.Error -> {
@@ -85,16 +92,42 @@ class TransportViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
+//
+private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
+        try {
+            val images = mutableMapOf<UUID, Bitmap>()
+            imagesTransport.forEach { img ->
+                val resolver = SvkAndroidApplication.appContext.contentResolver
+
+                val projection = arrayOf(MediaStore.Images.Media.DATA)
+
+                val cursor = resolver.query(img.localUri, projection, null, null, null)
+
+                cursor?.use {
+                    val columnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
+
+                    while (it.moveToNext()){
+                        val filePath = it.getString(columnIndex)
+                        val bitmap = BitmapFactory.decodeFile(filePath)
+                        images[img.imageUuid] = bitmap
+                    }
+                }
+            }
+            return images
+        } catch (e: Exception) {
+            Log.e("Error", "Error converting image data to images: ${e.message!!}")
+            return emptyMap()
+        }
+    }
 
     fun onTakePhoto(bitmap: Bitmap) {
         val resolver = SvkAndroidApplication.appContext.contentResolver
         val uuid = UUID.randomUUID()
 
         val values = ContentValues().apply {
-            put(MediaStore.Images.Media._ID, uuid.toString())
+            put(MediaStore.Images.Media.DESCRIPTION, uuid.toString())
             put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.DATA, transportUiState.routeNumber)
         }
 
         val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -131,9 +164,10 @@ class TransportViewModel @Inject constructor(
 
     fun deleteImageOnIndex(imageUuid: UUID) {
         Log.i("TransportViewModel", "deleteImageOnIndex: $imageUuid")
+        val imgUri = transportUiState.imageUris[imageUuid]
         if (!imageUuid.equals(null)) {
 //      if (imageIndex >= 0 && imageIndex < transportUiState.images.size) {
-            deleteImageUseCase(imageUuid).onEach { result ->
+            deleteImageUseCase(imageUuid, imgUri!!).onEach { result ->
                 when (result) {
                     is Resource.Success -> {
                     }
@@ -472,3 +506,9 @@ sealed class DialogToggleEvent {
     data object CargoDialog : DialogToggleEvent()
     data object FinishTransportDialog : DialogToggleEvent()
 }
+
+data class StoredImage(
+    val id : Long,
+    val displayName : String,
+    val uri : Uri
+)
