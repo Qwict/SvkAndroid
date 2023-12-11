@@ -224,13 +224,15 @@ class TransportViewModel @Inject constructor(
         var cargoNumbers = transportUiState.cargoNumbers
 
         if (cargoNumbers.contains(transportUiState.newCargoNumber)) {
+            cargoNumbers = cargoNumbers.filter { it != transportUiState.originalCargoNumber }
             transportUiState = transportUiState.copy(
                 cargoNumberError = "Cargo number was all ready added to this route",
                 cargoNumbers = if (dialogUiState.isCargoDialogOpen) {
                     cargoNumbers.toMutableList().apply {
                         add(transportUiState.originalCargoNumber)
                     }
-                } else {
+                }
+                else {
                     transportUiState.cargoNumbers
                 },
             )
