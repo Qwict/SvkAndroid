@@ -46,6 +46,15 @@ fun TransportRoomEntity.asDomainModel() = Transport(
     licensePlate = licensePlate,
 )
 
+fun TransportRoomEntityWithCargosAndImages.asDomainModel() = Transport(
+    routeNumber = transport.routeNumber,
+    driverName = transport.driverName,
+    licensePlate = transport.licensePlate,
+    images = images.map { it.asDomainModel() },
+    cargos = cargos.map { it.asDomainModel() }
+
+)
+
 fun TransportRoomEntityWithCargosAndImages.asTransportDto() = TransportDto(
     routeNumber = transport.routeNumber,
     createdAt = transport.createdAt,

@@ -30,7 +30,11 @@ class TransportDatabaseImpl(private val transportDao: TransportDao) : TransportD
         transportDao.delete(transport)
     }
 
-    override suspend fun getActiveTransport(): TransportRoomEntity {
+//    override suspend fun getActiveTransport(): TransportRoomEntity {
+//        return transportDao.getActiveTransport()
+//    }
+
+    override suspend fun getActiveTransport(): TransportRoomEntityWithCargosAndImages {
         return transportDao.getActiveTransport()
     }
 
