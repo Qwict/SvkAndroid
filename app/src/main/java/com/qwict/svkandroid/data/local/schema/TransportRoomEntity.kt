@@ -3,6 +3,7 @@ package com.qwict.svkandroid.data.local.schema
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.qwict.svkandroid.data.remote.dto.TransportDto
@@ -31,11 +32,13 @@ data class TransportRoomEntityWithCargosAndImages(
     @Relation(
         parentColumn = "route_number",
         entityColumn = "route_number",
+        entity = CargoRoomEntity::class
     )
     val cargos: List<CargoRoomEntity>,
     @Relation(
         parentColumn = "route_number",
         entityColumn = "route_number",
+        entity = ImageRoomEntity::class
     )
     val images: List<ImageRoomEntity>,
 )

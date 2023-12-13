@@ -2,11 +2,19 @@ package com.qwict.svkandroid.data.local.schema
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.qwict.svkandroid.data.remote.dto.CargoDto
 import com.qwict.svkandroid.domain.model.Cargo
 
-@Entity(tableName = "cargo")
+@Entity(tableName = "cargo", foreignKeys = [
+    ForeignKey(
+        entity = TransportRoomEntity::class,
+        parentColumns = ["route_number"],
+        childColumns = ["route_number"],
+        onDelete = ForeignKey.CASCADE
+    )
+])
 data class CargoRoomEntity(
     @ColumnInfo(name = "cargo_number")
     @PrimaryKey
