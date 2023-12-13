@@ -3,7 +3,6 @@ package com.qwict.svkandroid.ui.viewModels
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -60,7 +59,6 @@ class TransportViewModel @Inject constructor(
 
 
     init {
-
         getActiveTransportUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
@@ -72,7 +70,6 @@ class TransportViewModel @Inject constructor(
                         driverName = result.data.driverName,
                         cargoNumbers = result.data.cargos.toMutableList().map { cargo -> cargo.cargoNumber },
                         isLoading = false,
-//                        images = result.data.images.toMutableList().map { image -> image.imageUuid.toString() },
                         images = getImagesOnInit(result.data.images)
                     )
 
@@ -240,7 +237,7 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
         }
 
         if (!hasErrors) {
-            updateLocalRoute()
+            updateLocalTransport()
             return true
         }
         transportUiState = transportUiState.copy(
@@ -250,6 +247,30 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
             imagesError = imagesResult.errorMessage,
         )
         return false
+    }
+
+    fun isDriverNameValid(hasDriverName : Boolean, hasLicensePlate: Boolean) {
+        val driverNameResult = validators.validateNotEmptyText(transportUiState.driverName, "Driver name")
+        val licensePlateResult = validators.validateNotEmptyText(transportUiState.licensePlate, "License plate")
+
+        val hasErrors = when {
+            hasDriverName && !hasLicensePlate-> listOf(driverNameResult).any { !it.successful }
+            !hasDriverName && hasLicensePlate -> listOf(licensePlateResult).any { !it.successful }
+            else -> false
+        }
+
+        Log.d("Update", "hasErrors = $hasErrors")
+        if (!hasErrors) {
+            Log.d("Update", "Updating the licenseplate in local room : ${transportUiState.licensePlate}")
+            Log.d("Update", "Updating the drivername in local room : ${transportUiState.driverName}")
+
+            updateLocalTransport()
+        }
+
+        transportUiState = transportUiState.copy(
+            driverNameError = driverNameResult.errorMessage,
+            licensePlateError = licensePlateResult.errorMessage,
+        )
     }
 
     fun isCargoNumberValidThenSave(): Boolean {
@@ -398,7 +419,7 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
         transportUiState = TransportUiState()
     }
 
-    private fun updateLocalRoute() {
+    private fun updateLocalTransport() {
         Log.i("Update", "Updating route in local db")
         setDriverUseCase(
             routeNumber = transportUiState.routeNumber,
@@ -431,9 +452,11 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
     fun onUpdateTransportState(event: TransportChangeEvent) {
         transportUiState = when (event) {
             is TransportChangeEvent.LicensePlateChanged -> {
+                //updateLocalRoute()
                 transportUiState.copy(licensePlate = event.licensePlate)
             }
             is TransportChangeEvent.DriverChanged -> {
+                //updateLocalRoute()
                 transportUiState.copy(driverName = event.driverName)
             }
             is TransportChangeEvent.RouteNumberChanged -> {
@@ -506,9 +529,3 @@ sealed class DialogToggleEvent {
     data object CargoDialog : DialogToggleEvent()
     data object FinishTransportDialog : DialogToggleEvent()
 }
-
-data class StoredImage(
-    val id : Long,
-    val displayName : String,
-    val uri : Uri
-)

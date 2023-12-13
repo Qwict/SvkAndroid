@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import com.qwict.svkandroid.common.AuthenticationSingleton
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         val launcher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions(),

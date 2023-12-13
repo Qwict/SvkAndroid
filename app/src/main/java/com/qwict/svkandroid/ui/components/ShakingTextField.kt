@@ -24,7 +24,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -76,6 +81,117 @@ fun ShakingTextFieldWithIcon(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShakingTextFieldWithIconAndFocus(
+    key : String,
+    textFieldValue: String,
+    onValueChange: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
+    label: String,
+    isError: Boolean,
+    errorText: String,
+    offsetX: Animatable<Float, AnimationVector1D>,
+    leadingIcon: ImageVector = Icons.Default.LocalShipping,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+) {
+    var isInitialized by remember { mutableStateOf(false) }
+
+    SVKTextField {
+        Column() {
+            OutlinedTextField(
+                value = textFieldValue,
+                onValueChange = {
+                    onValueChange(it)
+                    isInitialized = true
+                    },
+                label = { Text(label) },
+                isError = if (isInitialized) isError else false,
+                keyboardOptions = keyboardOptions,
+                visualTransformation = visualTransformation,
+                modifier = Modifier.offset(offsetX.value.dp, 0.dp).onFocusChanged{
+                    if(isInitialized){
+                        onFocusChanged(it.isFocused)
+                    }
+                },
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                },
+            )
+            if(isInitialized && isError) {
+                Text(
+                    text = errorText,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.offset(offsetX.value.dp, 0.dp),
+                )
+            }
+        }
+    }
+}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun ShakingTextFieldWithIconAndFocus(
+//    key: String,
+//    textFieldValue: String,
+//    onValueChange: (String) -> Unit,
+//    onFocusChanged: (Boolean) -> Unit,
+//    label: String,
+//    isError: Boolean,
+//    errorText: String,
+//    offsetX: Animatable<Float, AnimationVector1D>,
+//    leadingIcon: ImageVector = Icons.Default.LocalShipping,
+//    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+//    visualTransformation: VisualTransformation = VisualTransformation.None,
+//) {
+//    var isInitialized by remember(key) { mutableStateOf(false) }
+//    var localIsError by remember(key) { mutableStateOf(isError) }
+//
+//    SVKTextField {
+//        Column {
+//            OutlinedTextField(
+//                value = textFieldValue,
+//                onValueChange = {
+//                    onValueChange(it)
+//                    isInitialized = true
+//                    if (!isInitialized) {
+//                        localIsError = false
+//                    }
+//                },
+//                label = { Text(label) },
+//                isError = localIsError,
+//                keyboardOptions = keyboardOptions,
+//                visualTransformation = visualTransformation,
+//                modifier = Modifier.offset(offsetX.value.dp, 0.dp).onFocusChanged {
+//                    if (isInitialized) {
+//                        onFocusChanged(it.isFocused)
+//                    }
+//                },
+//                singleLine = true,
+//                leadingIcon = {
+//                    Icon(
+//                        imageVector = leadingIcon,
+//                        contentDescription = null,
+//                        tint = MaterialTheme.colorScheme.primary,
+//                    )
+//                },
+//            )
+//            if (isInitialized && localIsError) {
+//                Text(
+//                    text = errorText,
+//                    color = MaterialTheme.colorScheme.error,
+//                    modifier = Modifier.offset(offsetX.value.dp, 0.dp),
+//                )
+//            }
+//        }
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

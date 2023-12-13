@@ -106,6 +106,10 @@ fun NavGraph(
 
                     isTransportValid = { transportViewModel.isTransportValid() },
                     isCargoNumberValidThenSave = { transportViewModel.isCargoNumberValidThenSave() },
+//                    updateLocalTransport = { transportViewModel.isTransportValid() },
+                    isDriverNameLicenseplateValid = { hasDriverName, hasLicensePlate ->
+                        transportViewModel.isDriverNameValid(hasDriverName, hasLicensePlate)
+                    },
 
                     deleteImageOnIndex = { transportViewModel.deleteImageOnIndex(it) },
                     deleteActiveTransport = { transportViewModel.deleteActiveTransport() },
