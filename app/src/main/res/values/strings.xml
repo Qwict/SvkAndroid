@@ -119,13 +119,13 @@
     <string name="add_cargo_number_alrt_title">Vrachtnummer Toevoegen</string>
     <string name="cargo_number_alrt_txt">Vrachtnummer</string>
     <string name="btn_scan_barcode">Scan barcode</string>
-    <string name="save_cargo_btn">Vracht Opslaan</string>
+    <string name="save_cargo_btn">Opslaan</string>
     <string name="cancel_btn">Annuleren</string>
 
 
     <!-- Strings for AlertDialog component -->
     <string name="confirm_btn">Bevestigen</string>
-    <string name="dismiss_btn">Afwijzen</string>
+    <string name="dismiss_btn">Annuleren</string>
 
 
     <!-- Strings for LongPressButton component -->
@@ -134,8 +134,8 @@
 
     <!-- Strings for Navbar (SvkAndroidAppbar) component -->
     <string name="log_out_question_alrt_title">Uitloggen?</string>
-    <string name="are_you_sure_you_want_to_log_out_alrt_txt">Weet je zeker dat je wilt uitloggen?</string>
-    <string name="any_transport_that_was_not_finished_will_not_be_synced_online_alrt_txt">Elk transport dat niet is voltooid, wordt niet online gesynchroniseerd.</string>
+    <string name="are_you_sure_you_want_to_log_out_alrt_txt">Weet je zeker dat je wilt uitloggen? </string>
+    <string name="any_transport_that_was_not_finished_will_not_be_synced_online_alrt_txt">Transporten die nog niet zijn gesyncroniseerd kunnen verloren gaan.</string>
 
 
     <!-- Strings for Validators -->
