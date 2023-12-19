@@ -493,6 +493,7 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
     }
 
     fun deleteActiveTransport() {
+        transportUiState.images.forEach { img -> deleteImageOnIndex(img.key)}
         viewModelScope.launch {
             deleteActiveTransportUseCase().onEach { result ->
                 when (result) {
