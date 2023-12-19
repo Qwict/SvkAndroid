@@ -237,7 +237,6 @@ private fun getImagesOnInit(imagesTransport : List<Image>) : Map<UUID, Bitmap> {
         }
 
         if (!hasErrors) {
-            updateLocalTransport()
             return true
         }
         transportUiState = transportUiState.copy(

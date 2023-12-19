@@ -17,7 +17,7 @@ class FinishTransportUseCase @Inject constructor(
     operator fun invoke(trans: Transport): Flow<Resource<Boolean>> = flow {
         try {
             emit(Resource.Loading())
-            repo.insertTransport(trans)
+            //repo.insertTransport(trans) -> if not commented empties the local db for the cargos and images
             repo.finishTransport()
             repo.syncTransports()
             emit(Resource.Success(true))
