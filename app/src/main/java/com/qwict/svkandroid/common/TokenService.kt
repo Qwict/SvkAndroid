@@ -3,19 +3,6 @@ package com.qwict.svkandroid.common
 import android.util.Log
 import com.auth0.android.jwt.JWT
 import com.qwict.svkandroid.data.local.removeEncryptedPreference
-import com.qwict.svkandroid.data.local.saveEncryptedPreference
-
-fun getDecodedHeader(token: String): DecodedHeader {
-    val jwt = JWT(token)
-    try {
-        return DecodedHeader(
-            alg = jwt.getClaim("alg").asString()!!,
-            typ = jwt.getClaim("typ").asString()!!,
-        )
-    } catch (e: NullPointerException) {
-        throw IllegalArgumentException("JWT is not valid")
-    }
-}
 
 fun getDecodedPayload(token: String): DecodedPayload {
     val jwt = JWT(token)
@@ -45,5 +32,4 @@ fun tokenIsValid(token: String): Boolean {
         }
     }
     return false
-    saveEncryptedPreference("token", "expired")
 }

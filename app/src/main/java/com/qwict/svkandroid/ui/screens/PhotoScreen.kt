@@ -75,12 +75,14 @@ fun PhotoScreen(onTakePhoto: (Bitmap) -> Unit, capturedImages: List<Bitmap>, goB
         },
 
     ) { innerPadding ->
+        innerPadding.let { innerPadding ->
+            Log.i("PhotoScreen", "innerPadding: $innerPadding, Used here to make linter shut up!")
+        }
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(innerPadding)
+//                .padding(innerPadding)
                 .fillMaxWidth(),
-            // .padding(paddingValues),
         ) {
             CameraPreview(
                 controller = controller,
