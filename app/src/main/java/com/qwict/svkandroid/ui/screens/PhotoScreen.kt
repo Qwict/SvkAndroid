@@ -41,11 +41,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,10 +74,11 @@ fun PhotoScreen(onTakePhoto: (Bitmap) -> Unit, capturedImages: List<Bitmap>, goB
             }
         },
 
-    ) { paddingValues ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxHeight()
+                .padding(innerPadding)
                 .fillMaxWidth(),
             // .padding(paddingValues),
         ) {
@@ -214,4 +213,3 @@ fun FlashButton(
         )
     }
 }
-

@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,12 +39,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,21 +50,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.components.AddCargoNumberDialog
 import com.qwict.svkandroid.ui.components.AlertDialog
 import com.qwict.svkandroid.ui.components.ImageListItem
 import com.qwict.svkandroid.ui.components.MultiFloatingButton
-import com.qwict.svkandroid.ui.components.ShakingTextFieldWithIcon
 import com.qwict.svkandroid.ui.components.ShakingTextFieldWithIconAndFocus
 import com.qwict.svkandroid.ui.components.animateText
 import com.qwict.svkandroid.ui.viewModels.DialogToggleEvent
@@ -113,7 +104,7 @@ fun RouteEditScreen(
     deleteActiveTransport: () -> Unit,
     deleteImageOnIndex: (UUID) -> Unit,
     scanCargoNumber: () -> Unit,
-    isDriverNameLicenseplateValid : (Boolean, Boolean) -> Unit
+    isDriverNameLicenseplateValid: (Boolean, Boolean) -> Unit,
 //    updateLocalTransport : () -> Unit
 ) {
     var multiFloatingState by remember {
@@ -127,7 +118,6 @@ fun RouteEditScreen(
     val offsetXDriverName = remember { Animatable(0f) }
     val offsetXImageButton = remember { Animatable(0f) }
     val offsetXCargoNumbers = remember { Animatable(0f) }
-
 
     BackHandler {
         onToggleDialogState(DialogToggleEvent.BackAlertDialog)
@@ -218,7 +208,7 @@ fun RouteEditScreen(
                 key = "DriverNameTextField",
                 textFieldValue = transportUiState.driverName,
                 onValueChange = {
-                        onUpdateTransportState(TransportChangeEvent.DriverChanged(it))
+                    onUpdateTransportState(TransportChangeEvent.DriverChanged(it))
                 },
                 onFocusChanged = { isFocused ->
                     if (!isFocused) {
@@ -235,7 +225,7 @@ fun RouteEditScreen(
                 key = "LicensePlateTextField",
                 textFieldValue = transportUiState.licensePlate,
                 onValueChange = {
-                        onUpdateTransportState(TransportChangeEvent.LicensePlateChanged(it))
+                    onUpdateTransportState(TransportChangeEvent.LicensePlateChanged(it))
                 },
                 onFocusChanged = { isFocused ->
                     if (!isFocused) {
@@ -270,8 +260,8 @@ fun RouteEditScreen(
                                 .clickable {
                                     onUpdateTransportState(
                                         TransportChangeEvent.SelectedImageChanged(
-                                            image.value
-                                        )
+                                            image.value,
+                                        ),
                                     )
                                     onToggleDialogState(DialogToggleEvent.ImageDialog)
                                 },
