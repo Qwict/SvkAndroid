@@ -1,6 +1,5 @@
 package com.qwict.svkandroid.ui.screens
 
-import ImageDialog
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
@@ -58,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.components.AddCargoNumberDialog
 import com.qwict.svkandroid.ui.components.AlertDialog
+import com.qwict.svkandroid.ui.components.ImageDialog
 import com.qwict.svkandroid.ui.components.ImageListItem
 import com.qwict.svkandroid.ui.components.MultiFloatingButton
 import com.qwict.svkandroid.ui.components.ShakingTextFieldWithIconAndFocus
