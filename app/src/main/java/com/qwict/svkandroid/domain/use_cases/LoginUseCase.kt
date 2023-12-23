@@ -41,7 +41,7 @@ class LoginUseCase @Inject constructor(
         email: String,
         password: String,
     ): Flow<Resource<User>> = flow {
-        Log.i("LoginUseCase", "invoke: $email, $password")
+//        Log.i("LoginUseCase", "invoke: $email, $password")
         try {
             emit(Resource.Loading())
             val userDto = repo.login(loginDto = LoginDto(email = email, password = password))
@@ -77,7 +77,7 @@ class LoginUseCase @Inject constructor(
                 emit(Resource.Error(resourceProvider.getString(R.string.something_went_wrong_while_validating_your_information_on_the_server_err)))
             }
         } catch (e: HttpException) {
-            Log.e("LoginUseCase", "invoke: ${e.code()}", e)
+//            Log.e("LoginUseCase", "invoke: ${e.code()}", e)
             when (e.code()) {
                 400 -> emit(Resource.Error(resourceProvider.getString(R.string.make_sure_to_fill_out_all_fields_err)))
                 401 -> emit(Resource.Error(resourceProvider.getString(R.string.invalid_credentials_err)))
@@ -86,7 +86,7 @@ class LoginUseCase @Inject constructor(
             }
         } catch (e: IOException) {
             // No internet connection or whatever...
-            Log.e("LoginUseCase", "invoke: ${e.message}", e)
+//            Log.e("LoginUseCase", "invoke: ${e.message}", e)
             emit(Resource.Error(resourceProvider.getString(R.string.couldn_t_reach_server_check_your_internet_connection_err)))
         }
     }
