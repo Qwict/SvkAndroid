@@ -61,4 +61,31 @@ class AuthenticationTest {
             }
         }
     }
+
+    @Test
+    fun `registerUseCase should return Resource Error for empty email`() {
+        runTest {
+            registerUseCase("", "test").onEach { result ->
+                assertTrue(result is Resource.Error)
+            }
+        }
+    }
+
+    @Test
+    fun `registerUseCase should return Resource Error for empty password`() {
+        runTest {
+            registerUseCase("test2@test.com", "").onEach { result ->
+                assertTrue(result is Resource.Error)
+            }
+        }
+    }
+
+    @Test
+    fun `registerUseCase should return Resource Error for invalid email format`() {
+        runTest {
+            registerUseCase("invalid_email", "test").onEach { result ->
+                assertTrue(result is Resource.Error)
+            }
+        }
+    }
 }
