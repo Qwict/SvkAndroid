@@ -3,6 +3,12 @@ package com.qwict.svkandroid.ui.navigation
 import androidx.annotation.StringRes
 import com.qwict.svkandroid.R
 
+/**
+ * Enumeration class representing different screens and their corresponding routes in the application.
+ *
+ * @property route The route associated with the screen.
+ * @property title The resource ID of the screen title.
+ */
 enum class Navigations(val route: String, @StringRes val title: Int) {
     AuthenticationRoute(
         route = "Authentication",

@@ -82,6 +82,23 @@ enum class Identifier {
     CameraFab, AddLoadFab
 }
 
+/**
+ * Composable function to display the route edit screen.
+ *
+ * @param navigateToRouteScreen Callback function for navigating to the route screen.
+ * @param navigateToPhotoRoute Callback function for navigating to the photo route screen.
+ * @param transportUiState Transport UI state.
+ * @param onUpdateTransportState Callback function for updating the transport UI state.
+ * @param dialogUiState Dialog UI state.
+ * @param onToggleDialogState Callback function for toggling dialog states.
+ * @param isCargoNumberValidThenSave Callback function to check if cargo number is valid and then save.
+ * @param isTransportValid Callback function to check if transport details are valid.
+ * @param finishTransport Callback function for finishing the transport.
+ * @param deleteActiveTransport Callback function for deleting the active transport.
+ * @param deleteImageOnIndex Callback function for deleting an image at a specific index.
+ * @param scanCargoNumber Callback function for scanning a cargo number.
+ * @param isDriverNameLicenseplateValid Callback function to check if driver name and license plate are valid.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteEditScreen(

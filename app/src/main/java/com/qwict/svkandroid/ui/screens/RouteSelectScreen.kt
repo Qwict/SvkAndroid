@@ -35,6 +35,15 @@ import com.qwict.svkandroid.ui.components.animateText
 import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 
+/**
+ * Composable function to display the route screen.
+ *
+ * @param isRouteNumberValid Callback function to check if the route number is valid.
+ * @param onUpdateTransportState Callback function for updating the transport UI state.
+ * @param transportUiState Transport UI state.
+ * @param navigateToRouteEditRoute Callback function for navigating to the route edit route screen.
+ * @param scanRouteNumber Callback function for scanning a route number.
+ */
 @Composable
 fun RouteScreen(
     isRouteNumberValid: () -> Boolean,

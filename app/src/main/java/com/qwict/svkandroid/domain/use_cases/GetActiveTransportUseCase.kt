@@ -10,11 +10,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Use case responsible for retrieving the active transport.
+ *
+ * @param repo The repository providing access to data sources.
+ * @param resourceProvider The resource provider for accessing application resources.
+ */
 class GetActiveTransportUseCase @Inject constructor(
     private val repo: SvkRepository,
     private val resourceProvider: ResourceProvider,
 ) {
-
+    /**
+     * Invokes the use case to retrieve the active transport.
+     *
+     * @return A [Flow] emitting [Resource] states containing the active [Transport] or an error.
+     */
     operator fun invoke(): Flow<Resource<Transport?>> = flow {
         emit(Resource.Loading())
         try {

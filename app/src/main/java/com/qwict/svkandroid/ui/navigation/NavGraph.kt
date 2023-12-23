@@ -12,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.qwict.svkandroid.common.AuthenticationSingleton.isUserAuthenticated
 import com.qwict.svkandroid.ui.screens.LoginScreen
-import com.qwict.svkandroid.ui.screens.PermissionScreen
 import com.qwict.svkandroid.ui.screens.PhotoScreen
 import com.qwict.svkandroid.ui.screens.RegisterScreen
 import com.qwict.svkandroid.ui.screens.RouteEditScreen
@@ -20,6 +19,26 @@ import com.qwict.svkandroid.ui.screens.RouteScreen
 import com.qwict.svkandroid.ui.viewModels.AuthViewModel
 import com.qwict.svkandroid.ui.viewModels.TransportViewModel
 
+/**
+ * Retrieves or creates a shared ViewModel of type [T] associated with the navigation graph route.
+ *
+ * @param navController The navigation controller for handling navigation events.
+ * @return The shared ViewModel of type [T].
+ */
+@Composable
+inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
+    val navGraphRoute = destination.parent?.route ?: return hiltViewModel()
+    val parentEntry = remember(this) {
+        navController.getBackStackEntry(navGraphRoute)
+    }
+    return hiltViewModel(parentEntry)
+}
+
+/**
+ * Composable function to define the navigation graph for the application.
+ *
+ * @param navController The navigation controller for handling navigation events.
+ */
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -127,13 +146,4 @@ fun NavGraph(
             }
         }
     }
-}
-
-@Composable
-inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
-    val navGraphRoute = destination.parent?.route ?: return hiltViewModel()
-    val parentEntry = remember(this) {
-        navController.getBackStackEntry(navGraphRoute)
-    }
-    return hiltViewModel(parentEntry)
 }

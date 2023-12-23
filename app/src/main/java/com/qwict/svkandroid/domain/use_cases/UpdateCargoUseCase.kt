@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Use case responsible for updating a cargo with a new cargo number.
+ *
+ * @param repo The repository providing access to data sources.
+ * @param resourceProvider The resource provider for accessing application resources.
+ */
 class UpdateCargoUseCase @Inject constructor(
     private val repo: SvkRepository,
     private val resourceProvider: ResourceProvider,

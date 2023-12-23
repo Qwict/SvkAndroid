@@ -19,12 +19,18 @@ import androidx.compose.ui.res.stringResource
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.navigation.Navigations
 
+/**
+ * Composable function for rendering a custom app bar with specific actions based on the current screen.
+ *
+ * @param currentScreen The current screen represented by the `Navigations` enum.
+ * @param isRouteSelectScreen Flag indicating whether the current screen is the route selection screen.
+ * @param modifier The modifier for customization.
+ * @param onLogOutClicked Callback for the log out action.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SvkAndroidAppbar(
     currentScreen: Navigations,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
     isRouteSelectScreen: Boolean = false,
     modifier: Modifier = Modifier,
     onLogOutClicked: () -> Unit = {},
@@ -43,9 +49,7 @@ fun SvkAndroidAppbar(
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         modifier = modifier,
-        // TODO: To be honest this button is sh*t,
-        //  the user can just press the back button on the phone (or back action) and it would be the same
-        //  otherwise... we need to find a way to overwrite this back button action
+        // TODO: To be honest this button is not needed, here for reference
 //        navigationIcon = {
 //            if (canNavigateBack) {
 //                IconButton(

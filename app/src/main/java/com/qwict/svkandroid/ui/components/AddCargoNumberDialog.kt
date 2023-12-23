@@ -29,6 +29,16 @@ import com.qwict.svkandroid.ui.viewModels.DialogToggleEvent
 import com.qwict.svkandroid.ui.viewModels.TransportChangeEvent
 import com.qwict.svkandroid.ui.viewModels.states.TransportUiState
 
+/**
+ * Displays an AlertDialog for adding a cargo number.
+ *
+ * @param onConfirmation Callback invoked when the user confirms the cargo number.
+ * @param scanCargoNumber Callback to initiate barcode scanning for cargo numbers.
+ * @param transportUiState The current state of the transport UI.
+ * @param onUpdateTransportState Callback to update the transport UI state.
+ * @param onToggleDialogState Callback to toggle the visibility of the cargo number dialog.
+ * @param isValidAndAddCargoNumber Callback to validate and add the cargo number.
+ */
 @Composable
 fun AddCargoNumberDialog(
     onConfirmation: () -> Unit,

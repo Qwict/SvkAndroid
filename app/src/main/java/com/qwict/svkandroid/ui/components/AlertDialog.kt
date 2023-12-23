@@ -15,6 +15,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.qwict.svkandroid.R
 
+/**
+ * Displays a custom AlertDialog with an icon, title, text, and confirmation/dismiss buttons.
+ *
+ * @param onDismissRequest Callback invoked when the user dismisses the dialog.
+ * @param onConfirmation Callback invoked when the user confirms the action.
+ * @param dialogTitle The title of the dialog.
+ * @param dialogText The text content of the dialog.
+ * @param icon The ImageVector representing the icon for the dialog.
+ */
 @Composable
 fun AlertDialog(
     onDismissRequest: () -> Unit,
