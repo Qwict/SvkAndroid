@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.devtools.ksp") version "1.9.10-1.0.13"
+    id("org.jetbrains.dokka") version "1.9.10"
 }
 
 android {
