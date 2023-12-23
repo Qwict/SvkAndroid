@@ -11,12 +11,23 @@ import com.qwict.svkandroid.data.local.database.UserDatabase
 import com.qwict.svkandroid.data.local.database.UserDatabaseImpl
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * The `RoomContainer` interface provides access to various databases used in the application.
+ */
 interface RoomContainer {
     val transportDatabase: TransportDatabase
     val userDatabase: UserDatabase
     val imageDatabase: ImageDatabase
     val cargoDatabase: CargoDatabase
 }
+
+/**
+ * The `RoomContainerImpl` class implements the [RoomContainer] interface and provides instances
+ * of different databases.
+ *
+ * @property context The application context.
+ * @property scope The CoroutineScope for handling asynchronous tasks.
+ */
 class RoomContainerImpl(private val context: Context, private val scope: CoroutineScope) : RoomContainer {
     override val transportDatabase: TransportDatabase by lazy {
         TransportDatabaseImpl(SvkRoomDatabase.getDatabase(context, scope).transportDao())

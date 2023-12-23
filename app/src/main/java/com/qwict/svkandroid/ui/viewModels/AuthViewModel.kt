@@ -18,6 +18,16 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+/**
+ * ViewModel for managing authentication-related logic and data.
+ *
+ * This ViewModel is annotated with [HiltViewModel] for Dagger-Hilt integration.
+ *
+ * @property loginUseCase The use case responsible for handling user login.
+ * @property registerUseCase The use case responsible for handling user registration.
+ * @property validators The validators used for input validation.
+ * @constructor Creates an instance of [AuthViewModel].
+ */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
@@ -50,6 +60,12 @@ class AuthViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Initiates the user login process using the provided credentials.
+     *
+     * Validates the email and password, and triggers the [LoginUseCase].
+     * Updates the [AuthUiState] based on the result of the login attempt.
+     */
     fun login() {
         val email = authFormState.email
         val password = authFormState.password
@@ -93,6 +109,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Initiates the user registration process using the provided registration details.
+     *
+     * Validates the email and password, triggers the [RegisterUseCase], and updates the [AuthUiState]
+     * based on the result of the registration attempt.
+     */
     fun registerUser() {
         val emailResult = validators.emailValidator(authFormState.email)
         val passwordResult =
@@ -139,6 +161,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Logs out the current user.
+     *
+     * Invokes the logout method from [AuthenticationSingleton] and clears sensitive information
+     * from the [AuthFormState]. Additionally, resets the [AuthUiState] to its initial state.
+     */
     fun logout() {
         AuthenticationSingleton.logout()
         // Will remember the email address on logout
@@ -146,10 +174,20 @@ class AuthViewModel @Inject constructor(
         // Clear the authentication ui sate on logout
     }
 
+    /**
+     * Toggles the visibility of the password input field.
+     *
+     * Updates the [AuthUiState] to change the visibility state of the password input field.
+     */
     fun switchPasswordVisibility() {
         authUiState = authUiState.copy(isPasswordVisible = !authUiState.isPasswordVisible)
     }
 
+    /**
+     * Handles updates to the authentication form state based on the provided [AuthenticationFormEvent].
+     *
+     * @param event The event representing a change in the authentication form.
+     */
     fun onUpdateLoginState(event: AuthenticationFormEvent) {
         when (event) {
             is AuthenticationFormEvent.EmailChanged -> {
@@ -165,6 +203,9 @@ class AuthViewModel @Inject constructor(
     }
 }
 
+/**
+ * Sealed class representing events that trigger changes in the authentication form state.
+ */
 sealed class AuthenticationFormEvent {
     data class EmailChanged(val email: String) : AuthenticationFormEvent()
     data class PasswordChanged(val password: String) : AuthenticationFormEvent()

@@ -45,6 +45,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 
+/**
+ * Composable function representing the photo screen of the application.
+ *
+ * @param onTakePhoto Callback function to handle the capture of a photo.
+ * @param capturedImages List of captured images to display on the screen.
+ * @param goBack Callback to navigate back.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhotoScreen(onTakePhoto: (Bitmap) -> Unit, capturedImages: List<Bitmap>, goBack: () -> Unit) {
@@ -139,6 +146,13 @@ fun CameraPreview(
     )
 }
 
+/**
+ * Function to capture a photo using the provided [LifecycleCameraController].
+ *
+ * @param controller The [LifecycleCameraController] used to capture the photo.
+ * @param onPhotoTaken Callback function invoked when the photo is successfully taken.
+ * @param applicationContext The context of the application.
+ */
 private fun takePhoto(
     controller: LifecycleCameraController,
     onPhotoTaken: (Bitmap) -> Unit,
@@ -174,6 +188,13 @@ private fun takePhoto(
     )
 }
 
+/**
+ * Composable function to display the last captured photo.
+ *
+ * @param modifier Modifier for customizing the appearance of the component.
+ * @param lastCapturedPhoto Bitmap representing the last captured photo.
+ * @param viewPhotos Callback function invoked when the user clicks on the displayed photo.
+ */
 @Composable
 private fun LastPhotoComponent(
     modifier: Modifier = Modifier,
@@ -198,6 +219,13 @@ private fun LastPhotoComponent(
     }
 }
 
+/**
+ * Composable function to display a button for toggling the camera flash.
+ *
+ * @param onFlashChange Callback function invoked when the flash state is toggled.
+ * @param isFlashOn Boolean indicating whether the flash is currently turned on.
+ * @param modifier Modifier for customizing the appearance and layout of the button.
+ */
 @Composable
 fun FlashButton(
     onFlashChange: () -> Unit,

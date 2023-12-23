@@ -39,6 +39,17 @@ import com.qwict.svkandroid.ui.viewModels.AuthenticationFormEvent
 import com.qwict.svkandroid.ui.viewModels.states.AuthFormState
 import com.qwict.svkandroid.ui.viewModels.states.AuthUiState
 
+/**
+ * Composable function representing the login screen of the application.
+ *
+ * @param onUpdateLoginState Callback to update the authentication form state.
+ * @param login Callback to initiate the login process.
+ * @param authFormState Current authentication form state.
+ * @param authUiState Current authentication UI state.
+ * @param switchPasswordVisibility Callback to toggle password visibility.
+ * @param navigateToRegisterScreen Callback to navigate to the register screen.
+ * @param clearValidationErrors Callback to clear validation errors.
+ */
 @Composable
 fun LoginScreen(
     onUpdateLoginState: (AuthenticationFormEvent) -> Unit,

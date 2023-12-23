@@ -27,10 +27,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+/**
+ * Dagger Hilt module that provides dependency injection for the application.
+ * This module is installed in the [SingletonComponent], making the provided dependencies
+ * available as singletons throughout the application.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    /**
+     * Provides the SvkApiService using Retrofit.
+     *
+     * @return The instance of [SvkApiService].
+     */
     @Provides
     @Singleton
     fun provideSvkApiService(): SvkApiService {
@@ -42,6 +52,11 @@ object AppModule {
             .create(SvkApiService::class.java)
     }
 
+    /**
+     * Provides the BlobApiService using Retrofit.
+     *
+     * @return The instance of [BlobApiService].
+     */
     @Provides
     @Singleton
     fun provideBlobService(): BlobApiService {
@@ -53,6 +68,11 @@ object AppModule {
             .create(BlobApiService::class.java)
     }
 
+    /**
+     * Provides the OkHttpClient with an added [AuthInterceptor].
+     *
+     * @return The instance of [OkHttpClient].
+     */
     @Provides
     @Singleton
     fun okhttpClient(): OkHttpClient {
@@ -61,6 +81,11 @@ object AppModule {
             .build()
     }
 
+    /**
+     * Provides the RoomContainer implementation.
+     *
+     * @return The instance of [RoomContainer].
+     */
     @Provides
     @Singleton
     fun provideRoomContainer(): RoomContainer {
@@ -70,6 +95,13 @@ object AppModule {
         )
     }
 
+    /**
+     * Provides the SvkRepository implementation.
+     *
+     * @param api The instance of [SvkApiService].
+     * @param roomContainer The instance of [RoomContainer].
+     * @return The instance of [SvkRepository].
+     */
     @Provides
     @Singleton
     fun provideRepository(
@@ -79,18 +111,36 @@ object AppModule {
         return SvkRepositoryImpl(api, roomContainer, SvkAndroidApplication.appContext)
     }
 
+    /**
+     * Provides the Validators instance.
+     *
+     * @param context The application [Context].
+     * @return The instance of [Validators].
+     */
     @Provides
     @Singleton
     fun provideValidators(context: Context): Validators {
         return Validators(context)
     }
 
+    /**
+     * Provides the application [Context].
+     *
+     * @param application The [Application] instance.
+     * @return The application [Context].
+     */
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
         return application.applicationContext
     }
 
+    /**
+     * Provides the [ResourceProvider] implementation.
+     *
+     * @param context The application [Context].
+     * @return The instance of [ResourceProvider].
+     */
     @Provides
     @Singleton
     fun provideResourceProvider(context: Context): ResourceProvider {
