@@ -75,8 +75,8 @@ dependencies {
     implementation("androidx.camera:camera-core:1.3.1")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     testImplementation("junit:junit:4.13.2")
-    testImplementation ("io.mockk:mockk:1.13.8")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -110,7 +110,8 @@ dependencies {
 
     // Use for hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.48.1")
+    kapt("com.google.dagger:hilt-compiler:2.48.1")
+
 
     // For room: local database
     implementation("androidx.room:room-runtime:2.6.1")

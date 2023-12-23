@@ -26,13 +26,13 @@ class FakeSvkRepository : SvkRepository {
             remoteId = 1,
             email = "test@test.com",
             role = "Loader",
-    ),
+        ),
     )
     private var transports = emptyList<TransportRoomEntity>()
     private var cargos = emptyList<CargoRoomEntity>()
     private var images = emptyList<ImageRoomEntity>()
     override suspend fun getHealth(): HealthDto {
-       return HealthDto(
+        return HealthDto(
             env = "TEST",
             name = "svk-api",
             version = "1.0.0",
@@ -71,7 +71,7 @@ class FakeSvkRepository : SvkRepository {
             driverName = transport.driverName,
             licensePlate = transport.licensePlate,
 
-        )
+            )
     }
 
     override suspend fun patchTransport(transport: Transport): TransportDto {
@@ -98,8 +98,11 @@ class FakeSvkRepository : SvkRepository {
     }
 
     override suspend fun finishTransportByRouteNumber(routeNumber: String) {
+        if (routeNumber.isBlank()) {
+            throw Exception("Route number is blank")
+        }
         var transport = transports.first { it.routeNumber == routeNumber }
-        
+
         transports = transports.minus(transport).plus(transport.copy(isActive = false))
     }
 
@@ -111,12 +114,12 @@ class FakeSvkRepository : SvkRepository {
     ) {
         images = images.plus(
             ImageRoomEntity(
-            imageUuid = imageUuid,
-            routeNumber = routeNumber,
-            localUri = localUri,
-            createdAt = LocalDate.now().toEpochDay(),
-            loaderId = userId,
-        ),
+                imageUuid = imageUuid,
+                routeNumber = routeNumber,
+                localUri = localUri,
+                createdAt = LocalDate.now().toEpochDay(),
+                loaderId = userId,
+            ),
         )
     }
 
@@ -149,5 +152,13 @@ class FakeSvkRepository : SvkRepository {
     }
 
     override suspend fun finishTransport() {
+        if (transports.isEmpty()) {
+            throw Exception("No active transport")
+        }
+        if (transports.first().routeNumber.isBlank()) {
+            throw Exception("Route number is blank")
+        }
+
+
     }
 }
