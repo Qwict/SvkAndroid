@@ -19,6 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Composable function for rendering an image list item.
+ *
+ * @param navigateToPhotoRoute Callback function to navigate to the photo route.
+ * @param offsetX Animatable property to control the X-axis offset for animation.
+ */
 @Composable
 fun ImageListItem(
     navigateToPhotoRoute: () -> Unit,

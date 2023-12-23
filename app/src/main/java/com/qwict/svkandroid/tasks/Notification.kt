@@ -27,6 +27,14 @@ const val NOTIFICATION_NAME = "appName"
 const val NOTIFICATION_CHANNEL = "appName_channel_01"
 // const val NOTIFICATION_WORK = "appName_notification_work"
 
+/**
+ * Creates and displays a status notification with the given parameters.
+ *
+ * @param id The unique identifier for the notification.
+ * @param title The title of the notification.
+ * @param message The content text of the notification.
+ * @param context The context in which the notification will be displayed.
+ */
 fun makeStatusNotification(id: Int, title: String, message: String, context: Context) {
     val intent = Intent(context, MainActivity::class.java)
     intent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK

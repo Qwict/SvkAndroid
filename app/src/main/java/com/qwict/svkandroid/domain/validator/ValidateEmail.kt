@@ -4,7 +4,18 @@ import android.util.Patterns
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.common.stringRes.ResourceProvider
 
+/**
+ * Validator class for email addresses.
+ *
+ * @param resourceProvider The resource provider for accessing application resources.
+ */
 class ValidateEmail(private val resourceProvider: ResourceProvider) {
+    /**
+     * Validates the provided email address.
+     *
+     * @param email The email address to be validated.
+     * @return A [ValidationResult] object indicating the success or failure of the validation.
+     */
     operator fun invoke(email: String): ValidationResult {
         return if (email.isEmpty()) {
             ValidationResult(

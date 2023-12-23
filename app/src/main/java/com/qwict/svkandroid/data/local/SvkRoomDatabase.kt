@@ -19,6 +19,15 @@ import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.UserRoomEntity
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * SvkRoomDatabase is the main database class for the Svk application. It extends RoomDatabase
+ * and defines entities and their corresponding Data Access Objects (DAOs).
+ *
+ * @property transportDao The Data Access Object for the [TransportRoomEntity].
+ * @property cargoDao The Data Access Object for the [CargoRoomEntity].
+ * @property userDao The Data Access Object for the [UserRoomEntity].
+ * @property imageDao The Data Access Object for the [ImageRoomEntity].
+ */
 @Database(
     entities = [TransportRoomEntity::class, CargoRoomEntity::class, UserRoomEntity::class, ImageRoomEntity::class],
     // change this to version+1 when you change the schema
@@ -37,6 +46,13 @@ abstract class SvkRoomDatabase : RoomDatabase() {
         @Volatile
         private var Instance: SvkRoomDatabase? = null
 
+        /**
+         * Gets the instance of the database using the singleton pattern.
+         *
+         * @param context The application context.
+         * @param scope The CoroutineScope for handling asynchronous tasks.
+         * @return The instance of [SvkRoomDatabase].
+         */
         fun getDatabase(context: Context, scope: CoroutineScope): SvkRoomDatabase {
             Log.d("SvkRoomDatabase", "Creating database")
             return Instance ?: synchronized(this) {

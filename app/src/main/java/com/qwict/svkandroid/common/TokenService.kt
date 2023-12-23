@@ -4,6 +4,13 @@ import android.util.Log
 import com.auth0.android.jwt.JWT
 import com.qwict.svkandroid.data.local.removeEncryptedPreference
 
+/**
+ * Decodes the payload of a JWT (JSON Web Token) and returns a [DecodedPayload] object.
+ *
+ * @param token The JWT to decode.
+ * @return The decoded payload as a [DecodedPayload] object.
+ * @throws IllegalArgumentException If the JWT is not valid or contains missing claims.
+ */
 fun getDecodedPayload(token: String): DecodedPayload {
     val jwt = JWT(token)
     try {
@@ -20,6 +27,12 @@ fun getDecodedPayload(token: String): DecodedPayload {
     }
 }
 
+/**
+ * Checks whether a given JWT is valid based on its expiration time.
+ *
+ * @param token The JWT to validate.
+ * @return `true` if the JWT is valid; `false` otherwise.
+ */
 fun tokenIsValid(token: String): Boolean {
     if (token != "") {
         val decodedToken = getDecodedPayload(token)

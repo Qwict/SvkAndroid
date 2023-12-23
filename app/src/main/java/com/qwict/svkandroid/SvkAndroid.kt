@@ -24,10 +24,24 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+/**
+ * Custom [Application] class for the SVK Android application.
+ *
+ * This class is annotated with [HiltAndroidApp] for Dagger-Hilt integration.
+ * It initializes necessary components such as [CoroutineScope] and [RoomContainer] on application startup.
+ *
+ * @constructor Creates an instance of [SvkAndroidApplication].
+ */
 @HiltAndroidApp
 class SvkAndroidApplication : Application() {
     private lateinit var appScope: CoroutineScope
     private lateinit var container: RoomContainer
+
+    /**
+     * Called when the application is created.
+     *
+     * Initializes the application scope, [RoomContainer], and sets the application context.
+     */
     override fun onCreate() {
         super.onCreate()
         appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -40,6 +54,12 @@ class SvkAndroidApplication : Application() {
     }
 }
 
+/**
+ * Composable function representing the main structure of the SVK Android application.
+ *
+ * @param navController The navigation controller used for navigating between screens.
+ * @param viewModel The authentication view model for managing authentication state.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SvkAndroidApp(
@@ -54,8 +74,6 @@ fun SvkAndroidApp(
         topBar = {
             SvkAndroidAppbar(
                 currentScreen = currentScreen,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() },
                 isRouteSelectScreen = currentScreen == Navigations.RouteSelect,
                 onLogOutClicked = {
                     viewModel.logout()

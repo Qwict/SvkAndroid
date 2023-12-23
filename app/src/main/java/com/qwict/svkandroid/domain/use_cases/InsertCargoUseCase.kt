@@ -10,10 +10,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Use case responsible for inserting a new cargo into the local database.
+ *
+ * @param repo The repository providing access to data sources.
+ * @param resourceProvider The resource provider for accessing application resources.
+ */
 class InsertCargoUseCase @Inject constructor(
     private val repo: SvkRepository,
     private val resourceProvider: ResourceProvider,
 ) {
+    /**
+     * Invokes the use case to insert a new cargo into the local database.
+     *
+     * @param cargo The [Cargo] object representing the cargo to be inserted.
+     * @return A [Flow] emitting [Resource] states containing the cargo number or an error.
+     */
     operator fun invoke(
         cargo: Cargo,
     ): Flow<Resource<String>> = flow {

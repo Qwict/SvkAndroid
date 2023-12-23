@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -41,6 +40,19 @@ import com.qwict.svkandroid.ui.viewModels.states.AuthUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Composable function for rendering a shaking text field with an icon.
+ *
+ * @param textFieldValue The current value of the text field.
+ * @param onValueChange Callback for handling changes in the text field value.
+ * @param label The label of the text field.
+ * @param isError Flag indicating whether there is an error in the text field.
+ * @param errorText The error text to display.
+ * @param offsetX Animatable for applying a shaking animation to the text field.
+ * @param leadingIcon The leading icon for the text field.
+ * @param keyboardOptions Keyboard options for the text field.
+ * @param visualTransformation Visual transformation for the text field.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShakingTextFieldWithIcon(
@@ -82,10 +94,25 @@ fun ShakingTextFieldWithIcon(
     }
 }
 
+/**
+ * Composable function for rendering a shaking text field with an icon and focus-related features.
+ *
+ * @param key A unique key for identifying the text field.
+ * @param textFieldValue The current value of the text field.
+ * @param onValueChange Callback for handling changes in the text field value.
+ * @param onFocusChanged Callback for handling changes in the focus state of the text field.
+ * @param label The label of the text field.
+ * @param isError Flag indicating whether there is an error in the text field.
+ * @param errorText The error text to display.
+ * @param offsetX Animatable for applying a shaking animation to the text field.
+ * @param leadingIcon The leading icon for the text field.
+ * @param keyboardOptions Keyboard options for the text field.
+ * @param visualTransformation Visual transformation for the text field.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShakingTextFieldWithIconAndFocus(
-    key : String,
+    key: String,
     textFieldValue: String,
     onValueChange: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
@@ -106,13 +133,13 @@ fun ShakingTextFieldWithIconAndFocus(
                 onValueChange = {
                     onValueChange(it)
                     isInitialized = true
-                    },
+                },
                 label = { Text(label) },
                 isError = if (isInitialized) isError else false,
                 keyboardOptions = keyboardOptions,
                 visualTransformation = visualTransformation,
-                modifier = Modifier.offset(offsetX.value.dp, 0.dp).onFocusChanged{
-                    if(isInitialized){
+                modifier = Modifier.offset(offsetX.value.dp, 0.dp).onFocusChanged {
+                    if (isInitialized) {
                         onFocusChanged(it.isFocused)
                     }
                 },
@@ -125,7 +152,7 @@ fun ShakingTextFieldWithIconAndFocus(
                     )
                 },
             )
-            if(isInitialized && isError) {
+            if (isInitialized && isError) {
                 Text(
                     text = errorText,
                     color = MaterialTheme.colorScheme.error,
@@ -135,64 +162,20 @@ fun ShakingTextFieldWithIconAndFocus(
         }
     }
 }
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ShakingTextFieldWithIconAndFocus(
-//    key: String,
-//    textFieldValue: String,
-//    onValueChange: (String) -> Unit,
-//    onFocusChanged: (Boolean) -> Unit,
-//    label: String,
-//    isError: Boolean,
-//    errorText: String,
-//    offsetX: Animatable<Float, AnimationVector1D>,
-//    leadingIcon: ImageVector = Icons.Default.LocalShipping,
-//    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-//    visualTransformation: VisualTransformation = VisualTransformation.None,
-//) {
-//    var isInitialized by remember(key) { mutableStateOf(false) }
-//    var localIsError by remember(key) { mutableStateOf(isError) }
-//
-//    SVKTextField {
-//        Column {
-//            OutlinedTextField(
-//                value = textFieldValue,
-//                onValueChange = {
-//                    onValueChange(it)
-//                    isInitialized = true
-//                    if (!isInitialized) {
-//                        localIsError = false
-//                    }
-//                },
-//                label = { Text(label) },
-//                isError = localIsError,
-//                keyboardOptions = keyboardOptions,
-//                visualTransformation = visualTransformation,
-//                modifier = Modifier.offset(offsetX.value.dp, 0.dp).onFocusChanged {
-//                    if (isInitialized) {
-//                        onFocusChanged(it.isFocused)
-//                    }
-//                },
-//                singleLine = true,
-//                leadingIcon = {
-//                    Icon(
-//                        imageVector = leadingIcon,
-//                        contentDescription = null,
-//                        tint = MaterialTheme.colorScheme.primary,
-//                    )
-//                },
-//            )
-//            if (isInitialized && localIsError) {
-//                Text(
-//                    text = errorText,
-//                    color = MaterialTheme.colorScheme.error,
-//                    modifier = Modifier.offset(offsetX.value.dp, 0.dp),
-//                )
-//            }
-//        }
-//    }
-//}
 
+/**
+ * Composable function for rendering a shaking password text field with specific features.
+ *
+ * @param textFieldValue The current value of the password text field.
+ * @param onValueChange Callback for handling changes in the text field value.
+ * @param label The label of the text field.
+ * @param isError Flag indicating whether there is an error in the text field.
+ * @param errorText The error text to display.
+ * @param offsetX Animatable for applying a shaking animation to the text field.
+ * @param leadingIcon The leading icon for the text field.
+ * @param authState The authentication UI state containing information about password visibility.
+ * @param switchPasswordVisibility Callback for toggling password visibility.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShakingPasswordTextField(
@@ -252,6 +235,17 @@ fun ShakingPasswordTextField(
     }
 }
 
+/**
+ * Composable function for rendering a shaking text field.
+ *
+ * @param textFieldValue The current value of the text field.
+ * @param onValueChange Callback for handling changes in the text field value.
+ * @param label The label of the text field.
+ * @param isError Flag indicating whether there is an error in the text field.
+ * @param errorText The error text to display.
+ * @param keyboardOptions Keyboard options for the text field.
+ * @param offsetX Animatable for applying a shaking animation to the text field.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShakingTextField(
@@ -284,6 +278,9 @@ fun ShakingTextField(
     }
 }
 
+/**
+ * Keyframes for shaking animation.
+ */
 private val shakeKeyframes: AnimationSpec<Float> = keyframes {
     durationMillis = 800
     val easing = FastOutLinearInEasing
@@ -299,6 +296,13 @@ private val shakeKeyframes: AnimationSpec<Float> = keyframes {
     }
 }
 
+/**
+ * Function to animate a shaking text field.
+ *
+ * @param offset Animatable for applying a shaking animation.
+ * @param coroutineScope CoroutineScope for launching the animation.
+ * @param view Optional View for performing haptic feedback.
+ */
 fun animateText(
     offset: Animatable<Float, AnimationVector1D>,
     coroutineScope: CoroutineScope,

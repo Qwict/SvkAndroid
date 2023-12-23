@@ -19,11 +19,24 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+/**
+ * Use case responsible for handling user login.
+ *
+ * @param repo The repository providing access to data sources.
+ * @param resourceProvider The resource provider for accessing application resources.
+ */
 class LoginUseCase @Inject constructor(
     private val repo: SvkRepository,
     private val resourceProvider: ResourceProvider,
 
 ) {
+    /**
+     * Invokes the use case to perform user login.
+     *
+     * @param email The user's email address.
+     * @param password The user's password.
+     * @return A [Flow] emitting [Resource] states containing the user data or an error.
+     */
     operator fun invoke(
         email: String,
         password: String,
@@ -79,6 +92,12 @@ class LoginUseCase @Inject constructor(
     }
 }
 
+/**
+ * Checks if the user role is valid for using the application.
+ *
+ * @param role The user's role.
+ * @return `true` if the role is valid, `false` otherwise.
+ */
 private fun isRoleValid(role: String): Boolean {
     return role == ROLE_LOADER
 }

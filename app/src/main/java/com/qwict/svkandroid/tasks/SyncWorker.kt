@@ -6,12 +6,17 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.qwict.svkandroid.SvkAndroidApplication
 import com.qwict.svkandroid.common.di.AppModule
-import com.qwict.svkandroid.data.local.schema.TransportRoomEntity
 import com.qwict.svkandroid.data.local.schema.asTransportDto
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 
+/**
+ * Background worker responsible for synchronizing data between the local database and the server.
+ *
+ * @param ctx The context in which the worker is running.
+ * @param params The parameters for the worker.
+ */
 class SyncWorker(
     private val ctx: Context,
     params: WorkerParameters,
@@ -20,6 +25,12 @@ class SyncWorker(
     private val database = AppModule.provideRoomContainer()
     private val api = AppModule.provideSvkApiService()
     private val blobApi = AppModule.provideBlobService()
+
+    /**
+     * Executes the background work of synchronizing data between the local database and the server.
+     *
+     * @return The result of the background work, either [Result.success] or [Result.failure].
+     */
     override suspend fun doWork(): Result {
         try {
             sync()
@@ -32,6 +43,10 @@ class SyncWorker(
         return Result.success()
     }
 
+    /**
+     * Synchronizes data between the local database and the server, including images and transports.
+     * Notifies the user with status notifications during the synchronization process.
+     */
     private suspend fun sync() {
         var isError = false
         var transportsFailed = 0
@@ -59,6 +74,11 @@ class SyncWorker(
         }
     }
 
+    /**
+     * Synchronizes local images with the server. It iterates through the images marked for synchronization
+     * in the local database and uploads them to the server. After successful synchronization, the local
+     * database is updated to mark the images as synchronized.
+     */
     private suspend fun syncImages() {
         val imagesToSync = database.imageDatabase.getImagesToSync()
         val resolver = SvkAndroidApplication.appContext.contentResolver
@@ -85,6 +105,15 @@ class SyncWorker(
         }
     }
 
+    /**
+     * Synchronizes local transports with the server. It iterates through the transports marked for synchronization
+     * in the local database and uploads them to the server. After successful synchronization, the local
+     * database is updated to mark the transports as synchronized. In case of errors, the [syncData] callback is invoked
+     * to provide information about the synchronization status.
+     *
+     * @param syncData Callback to report synchronization status.
+     * @throws HttpException if an HTTP error occurs during synchronization.
+     */
     private suspend fun syncTransports(syncData: (isError: Boolean, transportsFailed: Int, totalTransports: Int, failedTrans: String?) -> Unit) {
         val transportsToSync = database.transportDatabase.getTransportsToSync()
         transportsToSync.forEach {
@@ -95,8 +124,6 @@ class SyncWorker(
                 )
                 api.postTransport(
                     it.asTransportDto(),
-                    // TODO: date should probably be this again... Unix time would be great...
-                    //  Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC))
                 )
                 database.transportDatabase.update(it.transport.copy(isSynced = true))
                 syncData(false, 0, 1, null)

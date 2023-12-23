@@ -36,6 +36,11 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.qwict.svkandroid.R
 import com.qwict.svkandroid.ui.theme.SvkAndroidTheme
 
+/**
+ * Composable function representing the permission screen of the application.
+ *
+ * @param nextNav Callback to navigate to the next screen.
+ */
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionScreen(nextNav: () -> Unit) {
@@ -109,6 +114,6 @@ fun PermissionScreen(nextNav: () -> Unit) {
 @Composable
 fun PermissionScreenPreview() {
     SvkAndroidTheme {
-        PermissionScreen({})
+        PermissionScreen {}
     }
 }

@@ -14,11 +14,24 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+/**
+ * Use case responsible for handling user registration.
+ *
+ * @param repo The repository providing access to data sources.
+ * @param resourceProvider The resource provider for accessing application resources.
+ */
 class RegisterUseCase @Inject constructor(
     private val repo: SvkRepository,
     private val resourceProvider: ResourceProvider,
 
 ) {
+    /**
+     * Invokes the use case to perform user registration.
+     *
+     * @param email The user's email address.
+     * @param password The user's password.
+     * @return A [Flow] emitting [Resource] states containing the user data or an error.
+     */
     operator fun invoke(
         email: String,
         password: String,

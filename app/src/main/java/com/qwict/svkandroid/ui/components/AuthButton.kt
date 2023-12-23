@@ -12,6 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Composable function for rendering an authentication button.
+ *
+ * @param text The text to be displayed on the button.
+ * @param onClick Callback function to be invoked when the button is clicked.
+ */
 @Composable
 fun AuthButton(
     text: String,

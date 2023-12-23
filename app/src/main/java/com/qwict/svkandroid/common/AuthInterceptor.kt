@@ -4,6 +4,9 @@ import com.qwict.svkandroid.data.local.getEncryptedPreference
 import okhttp3.Interceptor
 import okhttp3.Response
 
+/**
+ * Interceptor class responsible for adding the Authorization header with the user token to the outgoing requests.
+ */
 class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
