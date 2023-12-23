@@ -1,0 +1,26 @@
+name: Automatically generate documentation
+on: 
+  push:
+    branches: 
+    - main
+    
+jobs:
+  build:
+    name: Documentation creation with dokka
+    runs-on: ubuntu-latest
+    steps:
+    - name: Small git pull and replace html files for documentation
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.QWICT_DEPLOY }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /var/www/qwict/svk/devops-23-24-android-g10
+          git pull
+          chmod +x gradlew
+          ./gradlew dokkaHtml
+          rm -rf ../StudyPlanetDocumentation/*
+          cp -R ./app/build/dokka/html/* ../SVKAndroidDocumentation

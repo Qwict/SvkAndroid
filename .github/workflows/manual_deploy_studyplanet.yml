@@ -1,0 +1,27 @@
+name: Manually generate documentation
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: Manually generate documentation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Complete rerun of Documentation creation with dokka
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.QWICT_DEPLOY }}
+        port: ${{ secrets.PORT }}
+        passphrase: ${{ secrets.PASSPHRASE }}
+        script: |
+          cd /var/www/qwict/svk/
+          rm -rf devops-23-24-android-g10
+          git clone git@github.com-svk-android:HOGENTDevOpsPrj/devops-23-24-android-g10.git
+          cd devops-23-24-android-g10
+          git status
+          cp ../local.properties ./
+          chmod +x gradlew
+          ./gradlew dokkaHtml
+          rm -rf ../SVKAndroidDocumentation/*
+          cp -R ./app/build/dokka/html/* ../SVKAndroidDocumentation
