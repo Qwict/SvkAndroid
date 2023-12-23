@@ -36,7 +36,7 @@ class RegisterUseCase @Inject constructor(
         email: String,
         password: String,
     ): Flow<Resource<User>> = flow {
-        Log.i("RegisterUseCase", "invoke: $email, $password")
+//        Log.i("RegisterUseCase", "invoke: $email, $password")
         try {
             emit(Resource.Loading())
             val userDto = repo.register(
@@ -60,7 +60,7 @@ class RegisterUseCase @Inject constructor(
             // No internet connection or whatever...
             emit(Resource.Error(resourceProvider.getString(R.string.couldn_t_reach_server_check_your_internet_connection_err)))
         } catch (e: Exception) {
-            Log.e("LoginUseCase", "invoke: ${e.message}", e)
+//            Log.e("LoginUseCase", "invoke: ${e.message}", e)
             emit(Resource.Error(resourceProvider.getString(R.string.the_developer_didn_t_do_his_job_err)))
         }
     }

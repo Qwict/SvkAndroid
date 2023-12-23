@@ -21,7 +21,13 @@ import java.time.LocalDate
 import java.util.UUID
 
 class FakeSvkRepository : SvkRepository {
-    private var users = emptyList<UserRoomEntity>()
+    private var users = listOf(
+        UserRoomEntity(
+            remoteId = 1,
+            email = "test@test.com",
+            role = "Loader",
+    ),
+    )
     private var transports = emptyList<TransportRoomEntity>()
     private var cargos = emptyList<CargoRoomEntity>()
     private var images = emptyList<ImageRoomEntity>()
@@ -34,6 +40,9 @@ class FakeSvkRepository : SvkRepository {
     }
 
     override suspend fun login(loginDto: LoginDto): UserDto {
+        if (loginDto.email.isBlank()) {
+            throw Exception("Email is blank")
+        }
         return UserDto()
     }
 
@@ -78,6 +87,9 @@ class FakeSvkRepository : SvkRepository {
     }
 
     override suspend fun register(body: LoginDto): UserDto {
+        if (body.email.isBlank()) {
+            throw Exception("Email is blank")
+        }
         return UserDto()
     }
 
