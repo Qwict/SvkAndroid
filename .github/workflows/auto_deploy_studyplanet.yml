@@ -18,9 +18,9 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /var/www/qwict/svk/devops-23-24-android-g10
+          cd /var/www/qwict/svk/SvkAndroid
           git pull
           chmod +x gradlew
           ./gradlew dokkaHtml
-          rm -rf ../StudyPlanetDocumentation/*
+          rm -rf ../SVKAndroidDocumentation/*
           cp -R ./app/build/dokka/html/* ../SVKAndroidDocumentation

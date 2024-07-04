@@ -16,9 +16,9 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
           cd /var/www/qwict/svk/
-          rm -rf devops-23-24-android-g10
-          git clone git@github.com-svk-android:HOGENTDevOpsPrj/devops-23-24-android-g10.git
-          cd devops-23-24-android-g10
+          rm -rf SvkAndroid
+          git clone git@github.com-svk-android:Qwict/SvkAndroid.git
+          cd SvkAndroid
           git status
           cp ../local.properties ./
           chmod +x gradlew
